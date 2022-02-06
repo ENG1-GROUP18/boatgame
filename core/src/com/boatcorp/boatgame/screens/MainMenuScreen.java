@@ -4,65 +4,81 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.PointSystem;
-import org.jetbrains.annotations.NotNull;
 
 public class MainMenuScreen implements Screen {
 
-    private final Game boatGame;
-    private static final int WORLD_HEIGHT = Gdx.graphics.getHeight();
-    private final SpriteBatch fontBatch;
-    private final BitmapFont font;
+
+
+    private Game boatGame;
+    private final OrthographicCamera camera;
     private final Viewport viewport;
-    private OrthographicCamera camera;
+    private Stage stage;
 
     public MainMenuScreen(Game boatGame) {
         this.boatGame = boatGame;
-        this.fontBatch = new SpriteBatch();
-        this.font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-    }
-    @Override
-    public void show() {
+
+        // Set up stage
+        stage = new Stage(viewport);
+
+
+        // Create table
+        Table table = new Table();
+        table.setFillParent(true);
+        table.setDebug(true);
+        stage.addActor(table);
+
+        // Add labels to table
+        Label.LabelStyle style = new Label.LabelStyle(new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
+
+        Label label1 = new Label("press SPACE to start", style);
+        label1.setAlignment(Align.center);
+        label1.setFontScale(0.5f);
+
+//        Label label2 = new Label("LABLE 2", style);
+//        label2.setAlignment(Align.center);
+//        label2.setFontScale(0.5f);
+
+
+        table.add(label1).fillX().uniformX();
+//        table.add(label2).fillX().uniformX().pad(80);
+
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.SPACE) {
+                    launchGame();
+                }
+                return true;
+            }
+        });
 
     }
 
     @Override
     public void render(float delta) {
-        fontBatch.setProjectionMatrix(camera.combined);
-        font.getData().setScale(0.5f);
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        fontBatch.begin();
-        String mainString = "Main Menu"; //TODO this shouldnt be here
-        String enterToStart = "Press Enter to Start";
-        GlyphLayout mainGlyph = new GlyphLayout(font, mainString); //TODO remove this, replace with table
-        GlyphLayout enterGlyph = new GlyphLayout(font, enterToStart);
-
-        font.draw(fontBatch, mainString, viewport.getScreenWidth() / 2f - mainGlyph.width/2f, viewport.getScreenHeight() / 2f);
-        font.draw(fontBatch, enterToStart, viewport.getScreenWidth() / 2f - enterGlyph.width/2f, viewport.getScreenHeight() / 2f);
-        fontBatch.end();
-        checkInputs();
-        camera.update();
-
+        stage.draw();
     }
 
-    private void checkInputs() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) ) {
-            PointSystem.setPoints(0);
-            boatGame.setScreen(new PlayScreen(boatGame, this));
-        }
+    private void launchGame() {
+        PointSystem.setPoints(0);
+        boatGame.setScreen(new PlayScreen(boatGame, this));
 
     }
 
@@ -82,13 +98,17 @@ public class MainMenuScreen implements Screen {
     }
 
     @Override
-    public void hide() {
+    public void show() {
+        Gdx.input.setInputProcessor(stage);
+    }
 
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
     public void dispose() {
-        font.dispose();
-        fontBatch.dispose();
+        stage.dispose();
     }
 }
