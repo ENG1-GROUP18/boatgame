@@ -45,13 +45,13 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         fontBatch.begin();
-        String mainString = "Main Menu";
+        String mainString = "Main Menu"; //TODO this shouldnt be here
         String enterToStart = "Press Enter to Start";
-        GlyphLayout mainGlyph = new GlyphLayout(font, mainString);
+        GlyphLayout mainGlyph = new GlyphLayout(font, mainString); //TODO remove this, replace with table
         GlyphLayout enterGlyph = new GlyphLayout(font, enterToStart);
 
-        font.draw(fontBatch, mainString, viewport.getScreenWidth() / 2f - mainGlyph.width/2, viewport.getScreenHeight() / (4f/3f));
-        font.draw(fontBatch, enterToStart, viewport.getScreenWidth() / 2f - enterGlyph.width/2, viewport.getScreenHeight() / 2f);
+        font.draw(fontBatch, mainString, viewport.getScreenWidth() / 2f - mainGlyph.width/2f, viewport.getScreenHeight() / 2f);
+        font.draw(fontBatch, enterToStart, viewport.getScreenWidth() / 2f - enterGlyph.width/2f, viewport.getScreenHeight() / 2f);
         fontBatch.end();
         checkInputs();
         camera.update();
