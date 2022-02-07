@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 
 		//----------------------------------
-		boolean FULLSCREEN = false;
+		boolean FULLSCREEN = true;
 		//----------------------------------
 
 		Graphics.Monitor primaryMonitor = Lwjgl3ApplicationConfiguration.getPrimaryMonitor();
@@ -24,7 +24,7 @@ public class DesktopLauncher {
 		} else {
 
 			config.setWindowedMode(1280, 720);
-			config.setWindowSizeLimits(720, 480, 3840,2160);
+			config.setWindowSizeLimits(640, 480, 3840,2160);
 		}
 
 		new Lwjgl3Application(new BoatGame(), config);

@@ -58,6 +58,7 @@ public class PlayScreen implements Screen {
 
 
     public PlayScreen(Game game, Screen oldScreen) {
+        Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         oldScreen.dispose();
         this.boatGame = game;
         batch = new SpriteBatch();
@@ -94,13 +95,13 @@ public class PlayScreen implements Screen {
 
 
 
-
-
+        vfxManager.resize(400, 400);
         vfxManager.addEffect(effectTv);
         vfxManager.addEffect(effectBloom);
         vfxManager.addEffect(effectDistortion);
         vfxManager.addEffect(effectVignetting);
         vfxManager.addEffect(effectFxaa);
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
     }
 
@@ -147,7 +148,9 @@ public class PlayScreen implements Screen {
 
         vfxManager.endInputCapture();
         vfxManager.applyEffects();
-        vfxManager.renderToScreen();
+        vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
+                                  (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
+                                      viewport.getScreenWidth(), viewport.getScreenHeight());
 
         combat();
     }
@@ -208,9 +211,11 @@ public class PlayScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        // camera.setToOrtho(false,(float)width/16,(float)height/16);
-        vfxManager.resize(width, height);
+        //camera.setToOrtho(false,(float)width/16,(float)height/16);
+
         viewport.update(width, height);
+        vfxManager.resize(viewport.getScreenWidth(), viewport.getScreenHeight());
+
         hud.getStage().getViewport().update(width, height);
     }
 
