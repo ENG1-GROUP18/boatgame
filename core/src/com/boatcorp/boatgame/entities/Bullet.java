@@ -27,8 +27,8 @@ public class Bullet {
     }
 
     public void draw() {
-        batch.begin();
         sprite.setPosition(position.x, position.y);
+        batch.begin();
         sprite.draw(batch);
         batch.end();
     }

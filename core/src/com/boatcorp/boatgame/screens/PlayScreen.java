@@ -5,12 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -20,6 +21,8 @@ import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
+import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.effects.*;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,19 @@ public class PlayScreen implements Screen {
     private final Hud hud;
 
 
+    // test stuff
+    private ShapeRenderer shapeRenderer;
+    private VfxManager vfxManager;
+    private BloomEffect effectBloom;
+    private OldTvEffect effectTv;
+    private RadialDistortionEffect effectDistortion;
+    private VignettingEffect effectVignetting;
+    private FxaaEffect effectFxaa;
+
+
+    private com.crashinvaders.vfx.effects.BloomEffect bloomEffect;
+
+
     public PlayScreen(Game game, Screen oldScreen) {
         oldScreen.dispose();
         this.boatGame = game;
@@ -50,6 +66,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
+
         mapLoader = new MapLoader();
         player = new Player(camera);
         colleges = new ArrayList<>();
@@ -59,6 +76,32 @@ public class PlayScreen implements Screen {
         collegeSpread();
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
+
+        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+        effectBloom = new BloomEffect();
+        effectBloom.setBlurAmount(2f);
+        effectBloom.setThreshold(5f);
+        effectTv = new OldTvEffect();
+        effectTv.setTime(0.2f);
+        effectDistortion = new RadialDistortionEffect();
+        effectDistortion.setDistortion(0.1f);
+        effectVignetting = new VignettingEffect(false);
+        effectVignetting.setIntensity(0.8f);
+        effectVignetting.setSaturation(0.2f);
+        effectFxaa = new FxaaEffect();
+
+        effectBloom = new BloomEffect();
+
+
+
+
+
+        vfxManager.addEffect(effectTv);
+        vfxManager.addEffect(effectBloom);
+        vfxManager.addEffect(effectDistortion);
+        vfxManager.addEffect(effectVignetting);
+        vfxManager.addEffect(effectFxaa);
+
     }
 
     private void collegeSpread() {
@@ -75,8 +118,25 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        vfxManager.cleanUpBuffers();
+        vfxManager.beginInputCapture();
+
+
         update(delta);
-        draw();
+        // Batch drawing
+        player.setMatrix(camera.combined);
+        for (College college : colleges) {
+            college.setMatrix(camera.combined);
+        }
+        batch.setProjectionMatrix(camera.combined);
+        b2dr.render(world, camera.combined);
+        mapLoader.render(camera);
+
+        for (College college : colleges) {
+            college.draw();
+        }
+        player.draw();
+
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
@@ -85,9 +145,14 @@ public class PlayScreen implements Screen {
 
         hud.getStage().act(delta);
 
+        vfxManager.endInputCapture();
+        vfxManager.applyEffects();
+        vfxManager.renderToScreen();
+
         combat();
     }
 
+    //TODO rename this, maybe implement directly into act/render method
     private void combat() {
         if (player.isDead()) {
             player.dispose();
@@ -111,51 +176,6 @@ public class PlayScreen implements Screen {
         player.combat(camera.combined, colleges);
     }
 
-    private void draw() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // Batch drawing
-        player.setMatrix(camera.combined);
-        for (College college : colleges) {
-            college.setMatrix(camera.combined);
-        }
-        batch.setProjectionMatrix(camera.combined);
-        b2dr.render(world, camera.combined);
-        mapLoader.render(camera);
-
-        for (College college : colleges) {
-            college.draw();
-        }
-        player.draw();
-
-
-        batch.begin();
-        // Empty batch
-        batch.end();
-
-        // FontBatch drawing
-        /*
-        fontBatch.begin();
-        font.getData().setScale(0.5f);
-        String displayPoint = "SCORE:" + PointSystem.getPoints();
-        font.draw(fontBatch, displayPoint, 8, 50);
-        */
-        // USEFUL FOR DEBUGGING
-        /*
-        fontBatch.begin();
-        Vector2 playerPos = player.getPosition();
-        String coords = "X: " + playerPos.x + " Y: " + playerPos.y;
-        String cameracoords = "X :" + camera.position.x + "Y: " + camera.position.y;
-        String screenDim = "X :" + Gdx.graphics.getWidth() + "Y: " + Gdx.graphics.getHeight();
-        font.draw(fontBatch, screenDim, 8, 480);
-        font.draw(fontBatch, coords, 8, 440);
-        font.draw(fontBatch, cameracoords, 8, 400);
-        fontBatch.end();
-        */
-
-    }
-
     private void update(final float delta) {
         camera.zoom = DEFAULT_ZOOM;
 
@@ -164,7 +184,7 @@ public class PlayScreen implements Screen {
         int mapWidth = prop.get("width", Integer.class);
         int mapHeight = prop.get("height", Integer.class);
 
-        // Using `lerping` to slightly lag camera behind player
+        // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
         float lerp = 5f;
         Vector2 playerPos = player.getPosition();
         camera.position.x += (playerPos.x - camera.position.x) * lerp * delta;
@@ -189,6 +209,7 @@ public class PlayScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         // camera.setToOrtho(false,(float)width/16,(float)height/16);
+        vfxManager.resize(width, height);
         viewport.update(width, height);
         hud.getStage().getViewport().update(width, height);
     }
@@ -210,6 +231,13 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
+        vfxManager.dispose();
+        effectBloom.dispose();
+        effectTv.dispose();
+        effectDistortion.dispose();
+        effectVignetting.dispose();
+        effectFxaa.dispose();
+
         batch.dispose();
         fontBatch.dispose();
         font.dispose();

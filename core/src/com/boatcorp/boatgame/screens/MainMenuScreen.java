@@ -39,7 +39,7 @@ public class MainMenuScreen implements Screen {
         // Create table
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(true);
+        //table.setDebug(true);
         stage.addActor(table);
 
         // Add labels to table
