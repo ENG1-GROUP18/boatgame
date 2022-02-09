@@ -22,7 +22,10 @@ import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
 import com.crashinvaders.vfx.VfxManager;
+import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.*;
+import com.crashinvaders.vfx.effects.util.MixEffect;
+import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 
 import java.util.ArrayList;
 
@@ -43,22 +46,17 @@ public class PlayScreen implements Screen {
     private final ArrayList<College> colleges;
     private final Hud hud;
 
-
-    // test stuff
-    private ShapeRenderer shapeRenderer;
+    // For Shader
     private VfxManager vfxManager;
     private BloomEffect effectBloom;
     private OldTvEffect effectTv;
     private RadialDistortionEffect effectDistortion;
     private VignettingEffect effectVignetting;
     private FxaaEffect effectFxaa;
-
-
-    private com.crashinvaders.vfx.effects.BloomEffect bloomEffect;
+    private MotionBlurEffect effectBlur;
 
 
     public PlayScreen(Game game, Screen oldScreen) {
-        Gdx.app.log("Gdx version", com.badlogic.gdx.Version.VERSION);
         oldScreen.dispose();
         this.boatGame = game;
         batch = new SpriteBatch();
@@ -67,6 +65,7 @@ public class PlayScreen implements Screen {
         b2dr = new Box2DDebugRenderer();
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
+        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
         mapLoader = new MapLoader();
         player = new Player(camera);
@@ -78,31 +77,33 @@ public class PlayScreen implements Screen {
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
 
-        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
-        effectBloom = new BloomEffect();
-        effectBloom.setBlurAmount(2f);
-        effectBloom.setThreshold(5f);
+        // Configuring shaders
         effectTv = new OldTvEffect();
         effectTv.setTime(0.2f);
+
+        effectVignetting = new VignettingEffect(false);
+        effectVignetting.setIntensity(0.4f);
+        effectVignetting.setSaturation(0.2f);
+
         effectDistortion = new RadialDistortionEffect();
         effectDistortion.setDistortion(0.1f);
-        effectVignetting = new VignettingEffect(false);
-        effectVignetting.setIntensity(0.8f);
-        effectVignetting.setSaturation(0.2f);
-        effectFxaa = new FxaaEffect();
 
         effectBloom = new BloomEffect();
 
 
+        effectFxaa = new FxaaEffect();
+        effectBlur = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MIX, 0.3f);
 
-        vfxManager.resize(400, 400);
+        // Add shaders to manager, order matters
+
         vfxManager.addEffect(effectTv);
-        vfxManager.addEffect(effectBloom);
         vfxManager.addEffect(effectDistortion);
+        vfxManager.addEffect(effectBloom);
         vfxManager.addEffect(effectVignetting);
         vfxManager.addEffect(effectFxaa);
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        vfxManager.addEffect(effectBlur);
 
+        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     private void collegeSpread() {
@@ -118,10 +119,8 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
-
 
         update(delta);
         // Batch drawing
@@ -149,8 +148,8 @@ public class PlayScreen implements Screen {
         vfxManager.endInputCapture();
         vfxManager.applyEffects();
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
-                                  (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
-                                      viewport.getScreenWidth(), viewport.getScreenHeight());
+                (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
+                viewport.getScreenWidth(), viewport.getScreenHeight());
 
         combat();
     }
@@ -236,13 +235,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void dispose() {
-        vfxManager.dispose();
-        effectBloom.dispose();
-        effectTv.dispose();
-        effectDistortion.dispose();
-        effectVignetting.dispose();
-        effectFxaa.dispose();
-
         batch.dispose();
         fontBatch.dispose();
         font.dispose();
@@ -253,5 +245,13 @@ public class PlayScreen implements Screen {
         for (College college : colleges) {
             college.dispose();
         }
+
+        vfxManager.dispose();
+        effectTv.dispose();
+        effectDistortion.dispose();
+        effectVignetting.dispose();
+        effectBloom.dispose();
+        effectFxaa.dispose();
+        effectBlur.dispose();
     }
 }
