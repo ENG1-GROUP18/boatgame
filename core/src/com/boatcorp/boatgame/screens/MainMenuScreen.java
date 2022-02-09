@@ -115,10 +115,11 @@ public class MainMenuScreen implements Screen {
                 viewport.getScreenWidth(), viewport.getScreenHeight());
     }
 
+
+
     private void launchGame() {
         PointSystem.setPoints(0);
         boatGame.setScreen(new PlayScreen(boatGame, this));
-
     }
 
     @Override

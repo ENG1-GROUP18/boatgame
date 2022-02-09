@@ -56,8 +56,7 @@ public class PlayScreen implements Screen {
     private MotionBlurEffect effectBlur;
 
 
-    public PlayScreen(Game game, Screen oldScreen) {
-        oldScreen.dispose();
+    public PlayScreen(Game game) {
         this.boatGame = game;
         batch = new SpriteBatch();
         fontBatch = new SpriteBatch();
@@ -73,7 +72,6 @@ public class PlayScreen implements Screen {
         colleges.add(new College("langwith"));
         colleges.add(new College("james"));
         colleges.add(new College("goodricke"));
-        collegeSpread();
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
 
@@ -104,10 +102,6 @@ public class PlayScreen implements Screen {
         vfxManager.addEffect(effectBlur);
 
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-    }
-
-    private void collegeSpread() {
-        // TODO: Implement function
     }
 
     @Override
@@ -161,10 +155,10 @@ public class PlayScreen implements Screen {
             for(College college : colleges) {
                 college.dispose();
             }
-            boatGame.setScreen(new resultScreen(false, boatGame, this));
+            boatGame.setScreen(new resultScreen(false, boatGame));
         }
         if (colleges.isEmpty()) {
-            boatGame.setScreen(new resultScreen(true, boatGame, this));
+            boatGame.setScreen(new resultScreen(true, boatGame));
         }
         for (int i = 0; i < colleges.size(); i++) {
             College college = colleges.get(i);
@@ -236,6 +230,7 @@ public class PlayScreen implements Screen {
     @Override
     public void dispose() {
         batch.dispose();
+        hud.dispose();
         fontBatch.dispose();
         font.dispose();
         world.dispose();
