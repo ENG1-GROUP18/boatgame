@@ -131,10 +131,10 @@ public class Player {
     }
 
     private void movement(final float delta) {
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
-        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
-        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.A);
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
 
         boolean horizontal = right || left;
         boolean vertical = up || down;

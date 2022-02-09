@@ -18,6 +18,10 @@ public class HealthBar {
     }
 
     public void draw(@NotNull Vector2 position, float maxHealth, float currentHealth, float scale) {
+        //TODO change way health bar is drawn
+        // Rather than using the max heatlh for the length, set a bar length and then barlength*(currenthp/maxhp) it
+
+
         float x = position.x;
         float y = position.y;
 

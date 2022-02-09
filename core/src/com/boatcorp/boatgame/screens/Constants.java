@@ -1,6 +1,7 @@
 package com.boatcorp.boatgame.screens;
 
 import com.badlogic.gdx.math.Vector2;
+import com.crashinvaders.vfx.effects.CompositeVfxEffect;
 
 public class Constants {
 
