@@ -181,10 +181,12 @@ public class PlayScreen implements Screen {
         int mapHeight = prop.get("height", Integer.class);
 
         // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
-        float lerp = 5f;
+        float lerp = 10f;
         Vector2 playerPos = player.getPosition();
-        camera.position.x += (playerPos.x - camera.position.x) * lerp * delta;
-        camera.position.y += (playerPos.y - camera.position.y) * lerp * delta;
+        Vector2 playerSprite = player.getSpriteDimensions();
+        camera.position.x += ((playerPos.x) - camera.position.x) * lerp * delta;
+        camera.position.y += ((playerPos.y) - camera.position.y) * lerp * delta;
+
 
         float vw = camera.viewportWidth * camera.zoom;
         float vh = camera.viewportHeight * camera.zoom;

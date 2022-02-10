@@ -73,7 +73,7 @@ public class Player {
         if(direction == Direction.DOWN_RIGHT) sprite.setRotation(225);
         if(direction == Direction.DOWN_LEFT) sprite.setRotation(135);
 
-        sprite.setPosition(position.x, position.y);
+        sprite.setPosition(position.x-(sprite.getWidth()/2), position.y-(sprite.getHeight()/2));
         sprite.draw(batch);
 
         batch.end();
@@ -227,6 +227,8 @@ public class Player {
     public float getHealth() {
         return currentHealth;
     }
+
+    public Vector2 getSpriteDimensions(){return new Vector2((sprite.getHeight()),(sprite.getWidth()));}
 
     public float getMaxHealth() { return maxHealth; }
 
