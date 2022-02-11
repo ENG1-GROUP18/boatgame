@@ -53,7 +53,7 @@ public class Bullet {
     }
 
     public boolean hitTarget(@NotNull Vector2 position) {
-        position.add(0,0); // Centre hitbox (set to 0,0 as now from center)
+        position.add(10,10); // Centre hitbox (set to 0,0 as now from center)
         Vector2 currentPos = this.getPosition();
 
         // Return true if bullet has collided with player
