@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 
@@ -23,7 +24,7 @@ public class Player {
     private final float maxHealth;
     private float currentHealth;
     private final ArrayList<Bullet> bullets;
-    private final OrthographicCamera cam;
+    private final Viewport viewport;
 
     enum Direction {
         RIGHT,
@@ -39,13 +40,14 @@ public class Player {
     private final float ACCELERATION = 3f;
     private static final float MAX_SPEED = 3f;
     private Direction direction = Direction.RIGHT;
+    private int BULLET_SPEED = 7;
     
     private final Vector2 position;
     private final Vector2 velocity;
 
 
 
-    public Player(OrthographicCamera camera) {
+    public Player(Viewport view) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
         batch = new SpriteBatch();
@@ -54,7 +56,7 @@ public class Player {
         bullets = new ArrayList<>();
         maxHealth = 100;
         currentHealth = 100;
-        cam = camera;
+        viewport = view;
     }
 
     public Vector2 getPosition() {
@@ -246,19 +248,18 @@ public class Player {
         if (Gdx.input.isTouched() || !bullets.isEmpty()) {
             if (bullets.isEmpty()) {
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                Vector3 newPosition = cam.unproject(mousePosition);
+                Vector3 newPosition = viewport.unproject(mousePosition.cpy());
                 float velX = newPosition.x - position.x;
                 float velY = newPosition.y - position.y;
                 float length = (float) Math.sqrt(velX * velX + velY * velY);
                 if (length != 0) {
-                    velX = velX * 10 / length;
-                    velY = velY * 10 / length;
+                    velX = velX * BULLET_SPEED / length;
+                    velY = velY * BULLET_SPEED / length;
                 }
                 Vector2 adjustedPos = this.getPosition().add(0,0); // unadjusted position
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-
                 bullets.add(new Bullet(adjustedPos, bulletVelocity));
             }
             for (int i = 0; i < bullets.size(); i++) {
