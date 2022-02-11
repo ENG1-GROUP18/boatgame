@@ -127,8 +127,14 @@ public class Player {
             }
         }
 
+        Vector2 prev_position = position.cpy();
         position.x = MathUtils.clamp(position.x + velocity.x, 0, 1421);
         position.y = MathUtils.clamp(position.y + velocity.y, 0, 1371);
+
+        if (prev_position.x == position.x && prev_position.y == position.y){
+            velocity.x = 0;
+            velocity.y = 0;
+        }
 
     }
 
