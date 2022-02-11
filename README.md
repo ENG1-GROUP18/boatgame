@@ -24,21 +24,6 @@ desktop/
     build.gradle           <- Gradle build file for desktop project*
     src/                   <- Source folder for your desktop project, contains LWJGL launcher class
 
-android/
-    build.gradle           <- Gradle build file for android project*
-    AndroidManifest.xml    <- Android specific config
-    assets/                <- contains for your graphics, audio, etc.  Shared with other projects.
-    res/                   <- contains icons for your app and other resources
-    src/                   <- Source folder for your Android project, contains android launcher class
-
-html/
-    build.gradle           <- Gradle build file for the html project*
-    src/                   <- Source folder for your html project, contains launcher and html definition
-    webapp/                <- War template, on generation the contents are copied to war. Contains startup url index page and web.xml
-
-ios/
-    build.gradle           <- Gradle build file for the iOS project*
-    src/                   <- Source folder for your iOS project, contains launcher
 ```
 
 Core Folder Architecture
