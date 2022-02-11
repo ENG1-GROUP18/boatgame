@@ -254,7 +254,7 @@ public class Player {
                     velX = velX * 10 / length;
                     velY = velY * 10 / length;
                 }
-                Vector2 adjustedPos = this.getPosition().add(10,10);
+                Vector2 adjustedPos = this.getPosition().add(0,0); // unadjusted position
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors

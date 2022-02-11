@@ -27,7 +27,7 @@ public class Bullet {
     }
 
     public void draw() {
-        sprite.setPosition(position.x, position.y);
+        sprite.setPosition(position.x - (sprite.getWidth()/2), position.y-(sprite.getHeight())/2);
         batch.begin();
         sprite.draw(batch);
         batch.end();
@@ -53,7 +53,7 @@ public class Bullet {
     }
 
     public boolean hitTarget(@NotNull Vector2 position) {
-        position.add(10,10); // Centre hitbox
+        position.add(0,0); // Centre hitbox (set to 0,0 as now from center)
         Vector2 currentPos = this.getPosition();
 
         // Return true if bullet has collided with player
