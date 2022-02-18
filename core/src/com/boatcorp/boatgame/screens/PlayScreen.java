@@ -53,7 +53,6 @@ public class PlayScreen implements Screen {
     private RadialDistortionEffect effectDistortion;
     private VignettingEffect effectVignetting;
     private FxaaEffect effectFxaa;
-    private MotionBlurEffect effectBlur;
 
 
     public PlayScreen(Game game) {
@@ -90,7 +89,6 @@ public class PlayScreen implements Screen {
 
 
         effectFxaa = new FxaaEffect();
-        effectBlur = new MotionBlurEffect(Pixmap.Format.RGBA8888, MixEffect.Method.MIX, 0.3f);
 
         // Add shaders to manager, order matters
 
@@ -99,7 +97,6 @@ public class PlayScreen implements Screen {
         vfxManager.addEffect(effectBloom);
         vfxManager.addEffect(effectVignetting);
         vfxManager.addEffect(effectFxaa);
-        vfxManager.addEffect(effectBlur);
 
         resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
@@ -119,7 +116,7 @@ public class PlayScreen implements Screen {
         update(delta);
         // Batch drawing
         player.setMatrix(camera.combined);
-        for (College college : colleges) {
+        for (College college : colleges) { //TODO this really needs rethinking.
             college.setMatrix(camera.combined);
         }
         batch.setProjectionMatrix(camera.combined);
@@ -250,6 +247,5 @@ public class PlayScreen implements Screen {
         effectVignetting.dispose();
         effectBloom.dispose();
         effectFxaa.dispose();
-        effectBlur.dispose();
     }
 }
