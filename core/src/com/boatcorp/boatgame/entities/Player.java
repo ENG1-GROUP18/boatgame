@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import com.boatcorp.boatgame.frameworks.PointSystem;
@@ -25,6 +26,7 @@ public class Player {
     private float currentHealth;
     private final ArrayList<Bullet> bullets;
     private final Viewport viewport;
+    private long timeSinceLastShot;
 
     enum Direction {
         RIGHT,
@@ -57,6 +59,7 @@ public class Player {
         maxHealth = 100;
         currentHealth = 100;
         viewport = view;
+        timeSinceLastShot = TimeUtils.millis();
     }
 
     public Vector2 getPosition() {
@@ -252,7 +255,9 @@ public class Player {
 
     public void combat(Matrix4 camera, ArrayList<College> colleges) {
         if (Gdx.input.isTouched() || !bullets.isEmpty()) {
-            if (bullets.isEmpty()) {
+            if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 500)) {
+                System.out.println(TimeUtils.timeSinceMillis(timeSinceLastShot) );
+                timeSinceLastShot = TimeUtils.millis();
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Vector3 newPosition = viewport.unproject(mousePosition.cpy());
                 float velX = newPosition.x - position.x;

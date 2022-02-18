@@ -147,7 +147,6 @@ public class PlayScreen implements Screen {
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
 
-
     }
 
     //TODO rename this, maybe implement directly into act/render method
