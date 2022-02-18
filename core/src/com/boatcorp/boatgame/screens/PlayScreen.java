@@ -139,13 +139,15 @@ public class PlayScreen implements Screen {
 
         hud.getStage().act(delta);
 
+        combat();
+
         vfxManager.endInputCapture();
         vfxManager.applyEffects();
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
 
-        combat();
+
     }
 
     //TODO rename this, maybe implement directly into act/render method
