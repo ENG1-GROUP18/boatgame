@@ -74,7 +74,7 @@ public class College {
     }
 
     public void combat(@NotNull Vector2 playerPos, Matrix4 camera, Player player) {
-        double distance = Math.hypot(position.x - playerPos.x, position.y - playerPos.y);
+        double distance = Math.hypot((position.x- (sprite.getWidth()/2)) - playerPos.x, (position.y- (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
         ArrayList<Vector2> randDir;
 
@@ -104,12 +104,14 @@ public class College {
     }
 
     public void draw() {
+        float correctPosX = position.x- (sprite.getWidth()/2);
+        float correctPosY = position.y - (sprite.getHeight()/2) ;
         batch.begin();
-        sprite.setPosition(position.x, position.y);
+        sprite.setPosition(correctPosX, correctPosY);
         sprite.draw(batch);
         batch.end();
         Vector2 currentPos = this.getPosition();
-        health.draw(new Vector2(currentPos.x - 9.5f, currentPos.y - 5), maxHealth, currentHealth, 0.5f);
+        health.draw(new Vector2(correctPosX - 9.5f, correctPosY - 5), maxHealth, currentHealth, 0.5f);
     }
 
     public float getHealth() {

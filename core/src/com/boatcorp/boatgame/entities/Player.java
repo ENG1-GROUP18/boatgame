@@ -256,7 +256,6 @@ public class Player {
     public void combat(Matrix4 camera, ArrayList<College> colleges) {
         if (Gdx.input.isTouched() || !bullets.isEmpty()) {
             if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 500)) {
-                System.out.println(TimeUtils.timeSinceMillis(timeSinceLastShot) );
                 timeSinceLastShot = TimeUtils.millis();
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Vector3 newPosition = viewport.unproject(mousePosition.cpy());
