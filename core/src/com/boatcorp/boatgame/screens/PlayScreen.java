@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -22,16 +21,18 @@ import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
 import com.crashinvaders.vfx.VfxManager;
-import com.crashinvaders.vfx.VfxRenderContext;
 import com.crashinvaders.vfx.effects.*;
-import com.crashinvaders.vfx.effects.util.MixEffect;
-import com.crashinvaders.vfx.framebuffer.VfxPingPongWrapper;
 
 import java.util.ArrayList;
 
 import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
+
+    //---------------
+    private boolean ENABLE_SHADERS = true;
+    //---------------
+
 
     private final Game boatGame;
     private final SpriteBatch batch;
@@ -139,7 +140,11 @@ public class PlayScreen implements Screen {
         combat();
 
         vfxManager.endInputCapture();
-        vfxManager.applyEffects();
+
+        if (ENABLE_SHADERS) {
+            vfxManager.applyEffects();
+        }
+
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());

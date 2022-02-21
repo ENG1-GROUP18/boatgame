@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -18,13 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 
-import static com.boatcorp.boatgame.screens.Constants.PPM;
-
 public class MainMenuScreen implements Screen {
+
+    //---------------
+    private boolean ENABLE_TABLE_DEBUG = true;
+    //---------------
 
     private Game boatGame;
     private final OrthographicCamera camera;
@@ -48,7 +48,7 @@ public class MainMenuScreen implements Screen {
         // Create table
         Table table = new Table();
         table.setFillParent(true);
-        //table.setDebug(true);
+        table.setDebug(ENABLE_TABLE_DEBUG);
         stage.addActor(table);
 
         // Add labels to table
@@ -118,7 +118,6 @@ public class MainMenuScreen implements Screen {
 
 
     private void launchGame() {
-        PointSystem.setPoints(0);
         boatGame.setScreen(new PlayScreen(boatGame));
     }
 

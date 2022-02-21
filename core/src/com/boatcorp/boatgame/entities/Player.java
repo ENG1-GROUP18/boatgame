@@ -155,6 +155,7 @@ public class Player {
         float diagConstant = 0.7071f;
         float maxSpeed = MAX_SPEED;
 
+        // TODO movement system needs complete rework.
         // Horizontal movement
         if(right) {
             if(diagonal) {
