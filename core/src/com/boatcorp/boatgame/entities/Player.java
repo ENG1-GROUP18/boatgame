@@ -28,24 +28,12 @@ public class Player {
     private final Viewport viewport;
     private long timeSinceLastShot;
 
-    enum Direction {
-        RIGHT,
-        LEFT,
-        UP,
-        DOWN,
-        UP_RIGHT,
-        UP_LEFT,
-        DOWN_RIGHT,
-        DOWN_LEFT,
-    }
+    private static final float PLAYER_SPEED = 100f;
 
-    private final float ACCELERATION = 3f;
-    private static final float MAX_SPEED = 3f;
-    private Direction direction = Direction.RIGHT;
-    private int BULLET_SPEED = 7;
+    private int BULLET_SPEED = 2;
     
-    private final Vector2 position;
-    private final Vector2 velocity;
+    private Vector2 position;
+    private Vector2 velocity;
 
 
 
@@ -69,15 +57,6 @@ public class Player {
     public void draw() {
         batch.begin();
 
-        if(direction == Direction.UP) sprite.setRotation(0);
-        if(direction == Direction.DOWN) sprite.setRotation(180);
-        if(direction == Direction.RIGHT) sprite.setRotation(270);
-        if(direction == Direction.LEFT) sprite.setRotation(90);
-        if(direction == Direction.UP_RIGHT) sprite.setRotation(330);
-        if(direction == Direction.UP_LEFT) sprite.setRotation(45);
-        if(direction == Direction.DOWN_RIGHT) sprite.setRotation(225);
-        if(direction == Direction.DOWN_LEFT) sprite.setRotation(135);
-
         sprite.setPosition(position.x-(sprite.getWidth()/2), position.y-(sprite.getHeight()/2));
         sprite.draw(batch);
 
@@ -87,50 +66,15 @@ public class Player {
     }
 
     public void update (final float delta) {
+        // Process player movement
         movement(delta);
 
-        if(velocity.x > 0) {
-            // moving right
-            if(velocity.y > 0) {
-                // moving up
-                direction = Direction.UP_RIGHT;
-            }
-            // moving down or no angle
-            else if(velocity.y < 0) {
-                // moving down
-                direction = Direction.DOWN_RIGHT;
-            }
-            else {
-                // just right
-                direction = Direction.RIGHT;
-            }
-        }
-        if(velocity.x < 0) {
-            // moving left
-            if(velocity.y > 0) {
-                // moving up
-                direction = Direction.UP_LEFT;
-            }
-            // moving down or no angle
-            else if(velocity.y < 0) {
-                // moving down
-                direction = Direction.DOWN_LEFT;
-            }
-            else {
-                // just left
-                direction = Direction.LEFT;
-            }
-        }
-        if(velocity.x == 0) {
-            if(velocity.y < 0) {
-                direction = Direction.DOWN;
-            }
-            else {
-                direction = Direction.UP;
-            }
-        }
+        // Rotate sprite to match movement
+        sprite.setRotation(velocity.angleDeg() - 90);
+
 
         Vector2 prev_position = position.cpy();
+        //TODO remove when box2d hibox is implemented
         position.x = MathUtils.clamp(position.x + velocity.x, 0, 1421);
         position.y = MathUtils.clamp(position.y + velocity.y, 0, 1371);
 
@@ -142,98 +86,36 @@ public class Player {
     }
 
     private void movement(final float delta) {
-        boolean right = Gdx.input.isKeyPressed(Input.Keys.D);
-        boolean left = Gdx.input.isKeyPressed(Input.Keys.A);
         boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.A);
 
-        boolean horizontal = right || left;
-        boolean vertical = up || down;
-        boolean diagonal = horizontal && vertical;
+        Vector2 inputVector = new Vector2(0, 0);
 
-        float incrementAmount = 0.1f;
-        float diagConstant = 0.7071f;
-        float maxSpeed = MAX_SPEED;
-
-        // TODO movement system needs complete rework.
-        // Horizontal movement
-        if(right) {
-            if(diagonal) {
-                maxSpeed *= diagConstant;
-                incrementAmount *= 0.5f;
-            }
-            velocity.x += ACCELERATION * delta;
-            if (velocity.x > maxSpeed) {
-                velocity.x = maxSpeed;
-            }
-            PointSystem.incrementPoint(incrementAmount);
-        }
-        else if(left) {
-            if(diagonal) {
-                maxSpeed *= diagConstant;
-                incrementAmount *= 0.5f;
-            }
-            velocity.x -= ACCELERATION * delta;
-            if(velocity.x < -maxSpeed) {
-                velocity.x = -maxSpeed;
-            }
-            PointSystem.incrementPoint(incrementAmount);
-        }
-        else {
-            // neither are pressed
-            if(velocity.x < 0) {
-                velocity.x += 2*ACCELERATION * delta;
-                if(velocity.x >= 0) {
-                    velocity.x = 0.0f;
-                }
-            }
-            else {
-                velocity.x -= 2*ACCELERATION * delta;
-                if (velocity.x <= 0) {
-                    velocity.x = 0.0f;
-                }
-            }
+        // Handle player input
+        if (up && !down) {
+            // Move up.
+            inputVector.y = 1;
+        } else if (down && !up){
+            // Move down.
+            inputVector.y = -1;
         }
 
-        // Vertical movement
+        if (right && !left) {
+            // Move right.
+            inputVector.x = 1;
+        } else if (left && !right) {
+            // Move left.
+            inputVector.x = -1;
+        }
 
-        if(up) {
-            if(diagonal) {
-                maxSpeed *= diagConstant;
-                incrementAmount *= 0.5f;
-            }
-            velocity.y += ACCELERATION * delta;
-            if (velocity.y > maxSpeed) {
-                velocity.y = maxSpeed;
-            }
-            PointSystem.incrementPoint(incrementAmount);
-        }
-        else if(down) {
-            if(diagonal) {
-                maxSpeed *= diagConstant;
-                incrementAmount *= 0.5f;
-            }
-            velocity.y -= ACCELERATION * delta;
-            if(velocity.y < -maxSpeed) {
-                velocity.y = -maxSpeed;
-            }
-            PointSystem.incrementPoint(incrementAmount);
-        }
-        else {
-            // Neither are pressed
-            if(velocity.y < 0) {
-                velocity.y += 2*ACCELERATION * delta;
-                if(velocity.y >= 0) {
-                    velocity.y = 0.0f;
-                }
-            }
-            else {
-                velocity.y -= 2*ACCELERATION * delta;
-                if (velocity.y <= 0) {
-                    velocity.y = 0.0f;
-                }
-            }
-        }
+        // Normalise inputVector
+        inputVector.nor();
+
+        // Update player velocity
+        velocity.x = inputVector.x * PLAYER_SPEED * delta;
+        velocity.y = inputVector.y * PLAYER_SPEED * delta;
     }
 
     public float getHealth() {
