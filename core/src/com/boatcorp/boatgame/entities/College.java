@@ -12,18 +12,34 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Random;
 
+/**
+ * Creates a collage object
+ */
 public class College {
     private final SpriteBatch batch;
     private final Sprite sprite;
+    /**Relative position of the player*/
     private Vector2 position;
+    /**list of bullets which are currently on screen*/
     private ArrayList<Bullet> bullets;
+    /**Holds the vectors to fire the bullets diagonally*/
     private final ArrayList<Vector2> diagonalDirections;
+    /**Holds the vectors to fire the bullets in cardinal directions*/
     private final ArrayList<Vector2> cardinalDirections;
+    /**Holds the vectors to fire the bullets in a rotating patter*/
     private final ArrayList<Vector2> rotatingDirections;
+    /**The attack patterns of the collages*/
     private final ArrayList<ArrayList<Vector2>> attackPatterns;
     private final HealthBar health;
+    /**The collages max health*/
     private final float maxHealth;
+    /**The collages current health*/
     private float currentHealth;
+
+    /**
+     * Constructor class to create and initialise a new collage
+     * @param college a String stating the name of the collage, used to get the image path
+     */
 
     public College(String college) {
         final String PATH_NAME = "Entities/" + college + ".png";
@@ -69,12 +85,22 @@ public class College {
 
     }
 
+    /**
+     * Gets the current position of the player
+     * @return A copy of it's position
+     */
     public Vector2 getPosition() {
         return position.cpy();
     }
 
+    /**
+     * Logic for calculating collisions and rendering bullets
+     * @param playerPos The players current position
+     * @param camera The current camera being used render the bullets
+     * @param player The player object
+     */
     public void combat(@NotNull Vector2 playerPos, Matrix4 camera, Player player) {
-        double distance = Math.hypot((position.x- (sprite.getWidth()/2)) - playerPos.x, (position.y- (sprite.getHeight()/2)) - playerPos.y);
+        double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
         ArrayList<Vector2> randDir;
 
@@ -103,6 +129,9 @@ public class College {
         }
     }
 
+    /**
+     * Draws the collage in the randomly selected position
+     */
     public void draw() {
         float correctPosX = position.x- (sprite.getWidth()/2);
         float correctPosY = position.y - (sprite.getHeight()/2) ;
@@ -110,29 +139,45 @@ public class College {
         sprite.setPosition(correctPosX, correctPosY);
         sprite.draw(batch);
         batch.end();
-        Vector2 currentPos = this.getPosition();
         health.draw(new Vector2(correctPosX - 9.5f, correctPosY - 5), maxHealth, currentHealth, 0.5f);
     }
 
+    /**
+     * @return a float of the collages current health
+     */
     public float getHealth() {
         return this.currentHealth;
     }
 
+    /**
+     * @return a boolean of if the collage is alive or not
+     */
     public boolean isAlive() {
         return this.currentHealth > 0;
     }
 
+    /**
+     * Reduces the collages' health by a given amount
+     * @param damage the damage inflicted onto the collage
+     */
     public void takeDamage(int damage) {
         if (this.getHealth() > 0) {
             currentHealth -= damage;
         }
     }
 
+    /**
+     * Renders the health bar above the power
+     * @param combined used to set the projection matrix to the correct amount inside the batch renderer
+     */
     public void setMatrix(Matrix4 combined) {
         batch.setProjectionMatrix(combined);
         health.setMatrix(combined);
     }
 
+    /**
+     * Disposes of each of the unneeded objects
+     */
     public void dispose() {
         batch.dispose();
         health.dispose();

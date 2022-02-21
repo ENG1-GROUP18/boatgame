@@ -3,7 +3,9 @@ package com.boatcorp.boatgame;
 import com.badlogic.gdx.Game;
 import com.boatcorp.boatgame.screens.MainMenuScreen;
 
-
+/**
+ *  Main class which initialises the Game.
+ */
 public class BoatGame extends Game {
 	
 	@Override
