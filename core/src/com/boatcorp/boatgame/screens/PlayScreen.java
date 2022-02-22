@@ -140,7 +140,7 @@ public class PlayScreen implements Screen {
 
         hud.getStage().act(delta);
 
-        combat();
+        combat(delta);
 
         vfxManager.endInputCapture();
 
@@ -159,7 +159,7 @@ public class PlayScreen implements Screen {
     }
 
     //TODO rename this, maybe implement directly into act/render method
-    private void combat() {
+    private void combat(float delta) {
         if (player.isDead()) {
             player.dispose();
             for(College college : colleges) {
@@ -173,14 +173,14 @@ public class PlayScreen implements Screen {
         for (int i = 0; i < colleges.size(); i++) {
             College college = colleges.get(i);
             if (college.isAlive()) {
-                college.combat(player.getPosition(), camera.combined, player);
+                college.combat(camera.combined, player,delta);
             } else {
                 college.dispose();
                 colleges.remove(college);
                 PointSystem.incrementPoint(500);
             }
         }
-        player.combat(camera.combined, colleges);
+        player.combat(camera.combined, colleges,delta);
     }
 
     private void update(final float delta) {

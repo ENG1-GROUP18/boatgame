@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.badlogic.gdx.physics.box2d.*;
 import org.jetbrains.annotations.NotNull;
 
 import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
@@ -24,26 +21,42 @@ public class Bullet {
     private final Vector2 startPos;
     private final Vector2 velocity;
     private Body bodyd;
+    private World gameWorld;
 
     /**
      * Initialises a bullet with a texture at the required position
      * @param position The position where the bullet should be drawn
      * @param velocity The velocity of the object which created it
      */
-    public Bullet(Vector2 position, Vector2 velocity) {
+    public Bullet(Vector2 position, Vector2 velocity, World world) {
         final Texture texture = new Texture(Gdx.files.internal(BULLET_PATH));
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
         this.position = position;
         startPos = getPosition();
         this.velocity = velocity;
+        gameWorld = world;
+
+        //Creates body definition
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(position);
+        bodyd = world.createBody(bodyDef);
+        CircleShape shape = new CircleShape();
+        shape.setRadius(sprite.getWidth()/2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        bodyd.createFixture(shape, 0.0f);
+        shape.dispose();
+
     }
 
     /**
      * Draws the updated position of the bullet
      */
     public void draw() {
-        sprite.setPosition(position.x - (sprite.getWidth()/2), position.y-(sprite.getHeight())/2);
+        sprite.setPosition(bodyd.getPosition().x - sprite.getWidth()/2,bodyd.getPosition().y-(sprite.getHeight())/2);
         batch.begin();
         sprite.draw(batch);
         batch.end();
@@ -100,7 +113,8 @@ public class Bullet {
     /**
      * Updates the position of the bullet relative to its velocity
      */
-    public void move() {
+    public void move(float delta) {
+        bodyd.setLinearVelocity(velocity.x / delta, velocity.y / delta);
         Vector2 currentPos = this.getPosition();
         Vector2 v = this.getVelocity();
         currentPos.x += v.x;
@@ -120,6 +134,7 @@ public class Bullet {
      * Disposes of unwanted objects
      */
     public void dispose() {
+        gameWorld.destroyBody(bodyd);
         batch.dispose();
     }
 }

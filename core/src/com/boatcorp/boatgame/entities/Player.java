@@ -202,8 +202,9 @@ public class Player {
      * Logic for calculating bullet position and rendering bullets
      * @param camera The current camera being used render the bullets
      * @param colleges The colleges currently alive on the map
+     * @param delta Time since last function call
      */
-    public void combat(Matrix4 camera, ArrayList<College> colleges) {
+    public void combat(Matrix4 camera, ArrayList<College> colleges, float delta) {
         if (Gdx.input.isTouched() || !bullets.isEmpty()) {
             if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 500)) {
                 timeSinceLastShot = TimeUtils.millis();
@@ -220,17 +221,20 @@ public class Player {
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(adjustedPos, bulletVelocity));
+                bullets.add(new Bullet(adjustedPos, bulletVelocity, gameWorld));
             }
             for (int i = 0; i < bullets.size(); i++) {
                 // Draw and move bullets and check for collisions
                 Bullet bullet = bullets.get(i);
                 bullet.setMatrix(camera);
                 bullet.draw();
-                bullet.move();
-                if (bullet.outOfRange(200)) { bullets.remove(bullet); }
+                bullet.move(delta);
+                if (bullet.outOfRange(200)) {
+                    bullet.dispose();
+                    bullets.remove(bullet); }
                 for (College college : colleges) {
                     if (bullet.hitTarget(college.getPosition())) {
+                        bullet.dispose();
                         bullets.remove(bullet);
                         college.takeDamage(5);
                     }

@@ -112,11 +112,12 @@ public class College {
 
     /**
      * Logic for calculating collisions and rendering bullets
-     * @param playerPos The players current position
      * @param camera The current camera being used render the bullets
      * @param player The player object
+     * @param delta Time since last function call
      */
-    public void combat(@NotNull Vector2 playerPos, Matrix4 camera, Player player) {
+    public void combat(Matrix4 camera, Player player, float delta) {
+        Vector2 playerPos = player.getPosition();
         double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
         ArrayList<Vector2> randDir;
@@ -128,7 +129,7 @@ public class College {
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
                 for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction));
+                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld));
                 }
             }
             for (int i = 0; i < bullets.size(); i++) {
@@ -136,9 +137,12 @@ public class College {
                 Bullet bullet = bullets.get(i);
                 bullet.setMatrix(camera);
                 bullet.draw();
-                bullet.move();
-                if (bullet.outOfRange(300)) { bullets.remove(bullet); }
+                bullet.move(delta);
+                if (bullet.outOfRange(300)) {
+                    bullet.dispose();
+                    bullets.remove(bullet); }
                 if (bullet.hitTarget(player.getPosition())) {
+                    bullet.dispose();
                     bullets.remove(bullet);
                     player.takeDamage(10);
                 }
