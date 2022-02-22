@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 
-public class resultScreen implements Screen {
+public class ResultScreen implements Screen {
 
     private final Game boatGame;
     private static final int WORLD_HEIGHT = Gdx.graphics.getHeight();
@@ -21,7 +21,7 @@ public class resultScreen implements Screen {
     private final String victory;
     private final Viewport viewport;
 
-    public resultScreen(boolean win, Game game) {
+    public ResultScreen(boolean win, Game game) {
         this.boatGame = game;
         victory = (win) ? "VICTORY" : "GAME OVER";
         viewport = new ExtendViewport(0, WORLD_HEIGHT);

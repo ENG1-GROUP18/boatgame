@@ -8,6 +8,8 @@ public class Constants {
     private Constants() {
     }
 
+    //TODO remove these or at the very least add them to the game class as static.
+
     public static final Vector2 GRAVITY = new Vector2(0, 0);
     public static final float DEFAULT_ZOOM = 16f;
     public static final float PPM = 25f;
