@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import org.jetbrains.annotations.NotNull;
 
 import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
@@ -16,10 +20,10 @@ import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
 public class Bullet {
     private final SpriteBatch batch;
     private final Sprite sprite;
-    /** Contains the  */
     private Vector2 position;
     private final Vector2 startPos;
     private final Vector2 velocity;
+    private Body bodyd;
 
     /**
      * Initialises a bullet with a texture at the required position

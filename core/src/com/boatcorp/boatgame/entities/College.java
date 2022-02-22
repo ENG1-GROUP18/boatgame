@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.*;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,13 +36,15 @@ public class College {
     private final float maxHealth;
     /**The collages current health*/
     private float currentHealth;
+    private Body bodyd;
+    private World gameWorld;
 
     /**
      * Constructor class to create and initialise a new collage
      * @param college a String stating the name of the collage, used to get the image path
      */
 
-    public College(String college) {
+    public College(String college, World world) {
         final String PATH_NAME = "Entities/" + college + ".png";
         final Texture texture = new Texture(Gdx.files.internal(PATH_NAME));
         batch = new SpriteBatch();
@@ -52,6 +55,7 @@ public class College {
         health = new HealthBar();
         maxHealth = 100;
         currentHealth = 100;
+        gameWorld = world;
 
         cardinalDirections = new ArrayList<>();
         cardinalDirections.add(new Vector2(5,0));
@@ -82,6 +86,19 @@ public class College {
         attackPatterns.add(cardinalDirections);
         attackPatterns.add(rotatingDirections);
         attackPatterns.add(diagonalDirections);
+
+        //Creates body definition for collages
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(position);
+        bodyd = world.createBody(bodyDef);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        bodyd.createFixture(shape, 0.0f);
+        shape.dispose();
 
     }
 
@@ -150,7 +167,7 @@ public class College {
     }
 
     /**
-     * @return a boolean of if the collage is alive or not
+     * @return a boolean if the collage is alive or not
      */
     public boolean isAlive() {
         return this.currentHealth > 0;
@@ -181,6 +198,7 @@ public class College {
     public void dispose() {
         batch.dispose();
         health.dispose();
+        gameWorld.destroyBody(bodyd);
         if (!bullets.isEmpty()) {
             for (Bullet bullet : bullets) {
                 bullet.dispose();

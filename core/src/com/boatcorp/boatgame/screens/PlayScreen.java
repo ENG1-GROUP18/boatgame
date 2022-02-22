@@ -71,9 +71,9 @@ public class PlayScreen implements Screen {
         mapLoader = new MapLoader();
         player = new Player(viewport,world);
         colleges = new ArrayList<>();
-        colleges.add(new College("langwith"));
-        colleges.add(new College("james"));
-        colleges.add(new College("goodricke"));
+        colleges.add(new College("langwith", world));
+        colleges.add(new College("james", world));
+        colleges.add(new College("goodricke", world));
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
 
@@ -175,6 +175,7 @@ public class PlayScreen implements Screen {
             if (college.isAlive()) {
                 college.combat(player.getPosition(), camera.combined, player);
             } else {
+                college.dispose();
                 colleges.remove(college);
                 PointSystem.incrementPoint(500);
             }
