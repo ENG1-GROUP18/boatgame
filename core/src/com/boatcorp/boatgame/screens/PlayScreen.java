@@ -88,18 +88,16 @@ public class PlayScreen implements Screen {
 
         effectBloom = new BloomEffect();
 
-
         effectFxaa = new FxaaEffect();
 
         // Add shaders to manager, order matters
-
         vfxManager.addEffect(effectTv);
         vfxManager.addEffect(effectDistortion);
         vfxManager.addEffect(effectBloom);
         vfxManager.addEffect(effectVignetting);
         vfxManager.addEffect(effectFxaa);
 
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override
@@ -158,10 +156,10 @@ public class PlayScreen implements Screen {
             for(College college : colleges) {
                 college.dispose();
             }
-            boatGame.setScreen(new resultScreen(false, boatGame));
+            boatGame.setScreen(new ResultScreen(false, boatGame));
         }
         if (colleges.isEmpty()) {
-            boatGame.setScreen(new resultScreen(true, boatGame));
+            boatGame.setScreen(new ResultScreen(true, boatGame));
         }
         for (int i = 0; i < colleges.size(); i++) {
             College college = colleges.get(i);

@@ -17,14 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.boatcorp.boatgame.BoatGame;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 
 public class MainMenuScreen implements Screen {
-
-    //---------------
-    private boolean ENABLE_TABLE_DEBUG = true;
-    //---------------
 
     private Game boatGame;
     private final OrthographicCamera camera;
@@ -38,7 +35,7 @@ public class MainMenuScreen implements Screen {
     private RadialDistortionEffect effectDistortion;
     private VignettingEffect effectVignetting;
 
-    public MainMenuScreen(Game boatGame) {
+    public MainMenuScreen(BoatGame boatGame) {
         this.boatGame = boatGame;
         camera = new OrthographicCamera();
         viewport = new FitViewport(640, 480, camera);
@@ -48,7 +45,7 @@ public class MainMenuScreen implements Screen {
         // Create table
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(ENABLE_TABLE_DEBUG);
+        table.setDebug(BasicMenuScreen.ENABLE_TABLE_DEBUG);
         stage.addActor(table);
 
         // Add labels to table

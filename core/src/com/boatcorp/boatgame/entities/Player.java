@@ -37,6 +37,7 @@ public class Player {
     
     private Vector2 position;
     private Vector2 velocity;
+    private Vector2 inputVector;
 
 
     /**
@@ -68,21 +69,21 @@ public class Player {
      * Draws the player in its updated position
      */
     public void draw() {
-        batch.begin();
-
         sprite.setPosition(position.x-(sprite.getWidth()/2), position.y-(sprite.getHeight()/2));
-        sprite.draw(batch);
 
+        batch.begin();
+        sprite.draw(batch);
         batch.end();
 
-        // health.draw(new Vector2(8, 20), maxHealth, currentHealth, 2);
     }
+
 
     /**
      * Updates the position,rotation and velocity of the player
      * @param delta time since function last called
      */
-    public void update (final float delta) {
+    public void update (float delta) {
+
         // Process player movement
         movement(delta);
 
