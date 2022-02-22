@@ -17,6 +17,9 @@ import com.boatcorp.boatgame.frameworks.PointSystem;
 
 import java.util.ArrayList;
 
+/**
+ * Creates a Player object
+ */
 public class Player {
     private final SpriteBatch batch;
     private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
@@ -36,7 +39,10 @@ public class Player {
     private Vector2 velocity;
 
 
-
+    /**
+     * Initialises a Player with a texture at the required position, along with other relevant attributes
+     * @param view the current viewport
+     */
     public Player(Viewport view) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
@@ -50,10 +56,17 @@ public class Player {
         timeSinceLastShot = TimeUtils.millis();
     }
 
+    /**
+     * Gets the position of the players position
+     * @return a Vector2 of a copy of the players current position
+     */
     public Vector2 getPosition() {
         return position.cpy();
     }
 
+    /**
+     * Draws the player in its updated position
+     */
     public void draw() {
         batch.begin();
 
@@ -65,6 +78,10 @@ public class Player {
         // health.draw(new Vector2(8, 20), maxHealth, currentHealth, 2);
     }
 
+    /**
+     * Updates the position,rotation and velocity of the player
+     * @param delta time since function last called
+     */
     public void update (final float delta) {
         // Process player movement
         movement(delta);
@@ -74,7 +91,7 @@ public class Player {
 
 
         Vector2 prev_position = position.cpy();
-        //TODO remove when box2d hibox is implemented
+        //TODO remove when box2d hitbox is implemented
         position.x = MathUtils.clamp(position.x + velocity.x, 0, 1421);
         position.y = MathUtils.clamp(position.y + velocity.y, 0, 1371);
 
@@ -85,6 +102,10 @@ public class Player {
 
     }
 
+    /**
+     * Updates the velocity of the player dependent on user directional inputs
+     * @param delta time since function last called
+     */
     private void movement(final float delta) {
         boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
@@ -118,24 +139,49 @@ public class Player {
         velocity.y = inputVector.y * PLAYER_SPEED * delta;
     }
 
+    /**
+     * Returns the players current health
+     * @return a float of the player health
+     */
     public float getHealth() {
         return currentHealth;
     }
 
+    /**
+     * Returns the width and height of the player sprite
+     * @return a Vector2 of the dimensions of the sprite
+     */
     public Vector2 getSpriteDimensions(){return new Vector2((sprite.getHeight()),(sprite.getWidth()));}
 
+    /**
+     * Returns the players maximum health
+     * @return a float of max health
+     */
     public float getMaxHealth() { return maxHealth; }
 
+    /**
+     * Reduces the players' health by a given amount
+     * @param damage the damage inflicted onto the player
+     */
     public void takeDamage(int damage) {
         if (this.getHealth() > 0) {
             currentHealth -= damage;
         }
     }
 
+    /**
+     * Determines if the player is dead
+     * @return True if currentHealth is zero
+     */
     public boolean isDead() {
         return currentHealth <= 0;
     }
 
+    /**
+     * Logic for calculating bullet position and rendering bullets
+     * @param camera The current camera being used render the bullets
+     * @param colleges The colleges currently alive on the map
+     */
     public void combat(Matrix4 camera, ArrayList<College> colleges) {
         if (Gdx.input.isTouched() || !bullets.isEmpty()) {
             if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 500)) {
@@ -172,10 +218,17 @@ public class Player {
         }
     }
 
+    /**
+     * Sets the correct batch projecting matrix
+     * @param combined used to set the projection matrix to the correct amount inside the batch renderer
+     */
     public void setMatrix(Matrix4 combined) {
         batch.setProjectionMatrix(combined);
     }
 
+    /**
+     * Disposes of each of the unneeded objects
+     */
     public void dispose() {
         batch.dispose();
         health.dispose();

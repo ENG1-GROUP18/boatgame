@@ -15,6 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.boatcorp.boatgame.entities.Player;
 
+/**
+ * Creates a Hud Object
+ */
 public class Hud {
     private final Stage stage;
     private final FitViewport stageViewport;
@@ -34,7 +37,7 @@ public class Hud {
         pixmap.dispose();
         return drawable;
     }
-
+    
     public Hud(SpriteBatch spriteBatch, Player player) {
         this.player = player;
         stageViewport = new FitViewport(640, 480);

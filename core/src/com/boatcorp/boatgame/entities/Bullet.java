@@ -10,13 +10,22 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
 
+/**
+ * Creates a Bullet object
+ */
 public class Bullet {
     private final SpriteBatch batch;
     private final Sprite sprite;
+    /** Contains the  */
     private Vector2 position;
     private final Vector2 startPos;
     private final Vector2 velocity;
 
+    /**
+     * Initialises a bullet with a texture at the required position
+     * @param position The position where the bullet should be drawn
+     * @param velocity The velocity of the object which created it
+     */
     public Bullet(Vector2 position, Vector2 velocity) {
         final Texture texture = new Texture(Gdx.files.internal(BULLET_PATH));
         batch = new SpriteBatch();
@@ -26,6 +35,9 @@ public class Bullet {
         this.velocity = velocity;
     }
 
+    /**
+     * Draws the updated position of the bullet
+     */
     public void draw() {
         sprite.setPosition(position.x - (sprite.getWidth()/2), position.y-(sprite.getHeight())/2);
         batch.begin();
@@ -33,34 +45,57 @@ public class Bullet {
         batch.end();
     }
 
+    /**
+     * Gets the position of the bullet
+     * @return a Vector2 of a copy of the bullets current position
+     */
     public Vector2 getPosition() {
         return position.cpy();
     }
 
+    /**
+     * sets the position of the object to the inputted vector
+     * @param pos the position where the bullet should be drawn at
+     */
     public void setPosition(@NotNull Vector2 pos) {
         position.x = pos.x;
         position.y = pos.y;
     }
 
+    /**
+     * Gets the bullets current velocity
+     * @return a Vector2 of a copy of the bullets current velocity
+     */
     public Vector2 getVelocity() {
         return velocity.cpy();
     }
 
+    /**
+     * Returns true if bullet has travelled more than the max range (300 units)
+     * @param range the maximum distance the bullet can travel
+     * @return a bool of if the bullet is out of range
+     */
     public boolean outOfRange(int range) {
-        // Returns true if bullet has travelled more than 300 units
         double distance = Math.hypot(position.x - startPos.x, position.y - startPos.y);
         return (distance > range);
     }
 
+    /**
+     * Calculates weather a collision has occurred
+     * @param position the position of the target
+     * @return True if the bullet collides with target
+     */
     public boolean hitTarget(@NotNull Vector2 position) {
-        position.add(10,10); // Centre hitbox (set to 0,0 as now from center)
+        position.add(10,10); // Centre hitbox of bullet
         Vector2 currentPos = this.getPosition();
 
-        // Return true if bullet has collided with player
         double distance = Math.hypot(currentPos.x - position.x, currentPos.y - position.y);
         return (distance < 16);
     }
 
+    /**
+     * Updates the position of the bullet relative to its velocity
+     */
     public void move() {
         Vector2 currentPos = this.getPosition();
         Vector2 v = this.getVelocity();
@@ -69,10 +104,17 @@ public class Bullet {
         this.setPosition(currentPos);
     }
 
+    /**
+     * Sets the correct batch projecting matrix
+     * @param combined used to set the projection matrix to the correct amount inside the batch renderer
+     */
     public void setMatrix(Matrix4 combined) {
         batch.setProjectionMatrix(combined);
     }
 
+    /**
+     * Disposes of unwanted objects
+     */
     public void dispose() {
         batch.dispose();
     }
