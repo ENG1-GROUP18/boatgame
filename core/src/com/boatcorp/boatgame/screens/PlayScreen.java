@@ -31,6 +31,7 @@ public class PlayScreen implements Screen {
 
     //---------------
     private boolean ENABLE_SHADERS = true;
+    private boolean BOX2D_WIREFRAME = true;
     //---------------
 
 
@@ -46,6 +47,7 @@ public class PlayScreen implements Screen {
     private final Player player;
     private final ArrayList<College> colleges;
     private final Hud hud;
+    private Box2DDebugRenderer debugRenderer;
 
     // For Shader
     private VfxManager vfxManager;
@@ -67,7 +69,7 @@ public class PlayScreen implements Screen {
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
         mapLoader = new MapLoader();
-        player = new Player(viewport);
+        player = new Player(viewport,world);
         colleges = new ArrayList<>();
         colleges.add(new College("langwith"));
         colleges.add(new College("james"));
@@ -98,6 +100,9 @@ public class PlayScreen implements Screen {
         vfxManager.addEffect(effectFxaa);
 
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        //Box2D debug renderer
+        debugRenderer = new Box2DDebugRenderer(BOX2D_WIREFRAME,false,false,false,BOX2D_WIREFRAME,BOX2D_WIREFRAME);
     }
 
     @Override
@@ -146,6 +151,10 @@ public class PlayScreen implements Screen {
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
+
+
+        //Draws box2D hitboxes for debug
+        debugRenderer.render(world, viewport.getCamera().combined);
 
     }
 

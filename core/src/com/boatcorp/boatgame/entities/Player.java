@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
@@ -30,6 +31,10 @@ public class Player {
     private final ArrayList<Bullet> bullets;
     private final Viewport viewport;
     private long timeSinceLastShot;
+    private Body bodyd;
+
+    private final World gameWorld;
+
 
     private static final float PLAYER_SPEED = 100f;
 
@@ -44,7 +49,7 @@ public class Player {
      * Initialises a Player with a texture at the required position, along with other relevant attributes
      * @param view the current viewport
      */
-    public Player(Viewport view) {
+    public Player(Viewport view, World world) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
         batch = new SpriteBatch();
@@ -54,7 +59,21 @@ public class Player {
         maxHealth = 100;
         currentHealth = 100;
         viewport = view;
+        gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
+
+        //Creates body definition
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.position.set(100,100);
+        bodyd = world.createBody(bodyDef);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        bodyd.createFixture(shape, 0.0f);
+        shape.dispose();
     }
 
     /**
@@ -70,7 +89,6 @@ public class Player {
      */
     public void draw() {
         sprite.setPosition(position.x-(sprite.getWidth()/2), position.y-(sprite.getHeight()/2));
-
         batch.begin();
         sprite.draw(batch);
         batch.end();
@@ -138,6 +156,8 @@ public class Player {
         // Update player velocity
         velocity.x = inputVector.x * PLAYER_SPEED * delta;
         velocity.y = inputVector.y * PLAYER_SPEED * delta;
+
+        bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
     }
 
     /**
