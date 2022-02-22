@@ -88,7 +88,7 @@ public class Player {
      * Draws the player in its updated position
      */
     public void draw() {
-        sprite.setPosition(position.x-(sprite.getWidth()/2), position.y-(sprite.getHeight()/2));
+        sprite.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
         batch.begin();
         sprite.draw(batch);
         batch.end();

@@ -20,6 +20,7 @@ import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
+import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 
@@ -76,6 +77,8 @@ public class PlayScreen implements Screen {
         colleges.add(new College("goodricke", world));
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
+
+        world.setContactListener(new WorldContactListener(this));
 
         // Configuring shaders
         effectTv = new OldTvEffect();
