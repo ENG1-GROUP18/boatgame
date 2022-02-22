@@ -60,7 +60,7 @@ public class BoatGame extends Game {
 
 			case PLAY:
 				if (playScreen == null) {
-					endScreen = new EndScreen(this);
+					playScreen = new PlayScreen(this);
 				}
 				setScreen(playScreen);
 				break;

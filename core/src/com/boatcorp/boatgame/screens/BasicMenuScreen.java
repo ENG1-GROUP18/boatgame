@@ -94,13 +94,14 @@ public class BasicMenuScreen implements Screen {
 
     @Override
     public void show() {
-
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void hide() {
-
+        Gdx.input.setInputProcessor(null);
     }
+
 
     @Override
     public void dispose() {
