@@ -27,8 +27,10 @@ public class Bullet {
      * Initialises a bullet with a texture at the required position
      * @param position The position where the bullet should be drawn
      * @param velocity The velocity of the object which created it
+     * @param world The world object which box2D objects are stored in
      */
-    public Bullet(Vector2 position, Vector2 velocity, World world) {
+
+    public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom) {
         final Texture texture = new Texture(Gdx.files.internal(BULLET_PATH));
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
@@ -37,19 +39,23 @@ public class Bullet {
         this.velocity = velocity;
         gameWorld = world;
 
+
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(position);
-        bodyd = world.createBody(bodyDef);
+        bodyd = gameWorld.createBody(bodyDef);
         CircleShape shape = new CircleShape();
         shape.setRadius(sprite.getWidth()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        bodyd.createFixture(shape, 0.0f);
+        fixtureDef.isSensor = true;
+//        fixtureDef.filter.maskBits = 0x0001;
+//        fixtureDef.filter.categoryBits = 0x0002;
+        bodyd.createFixture(fixtureDef).setUserData((firedFrom+"Bullet"));
+        bodyd.setUserData("");
         shape.dispose();
-
     }
 
     /**
@@ -93,7 +99,7 @@ public class Bullet {
      * @return a bool of if the bullet is out of range
      */
     public boolean outOfRange(int range) {
-        double distance = Math.hypot(position.x - startPos.x, position.y - startPos.y);
+        double distance = Math.hypot((bodyd.getPosition().x- sprite.getWidth()/2) - startPos.x, (bodyd.getPosition().y- sprite.getHeight()/2) - startPos.y);
         return (distance > range);
     }
 
@@ -108,6 +114,15 @@ public class Bullet {
 
         double distance = Math.hypot(currentPos.x - position.x, currentPos.y - position.y);
         return (distance < 16);
+
+    }
+
+    public boolean hit(){
+        if (bodyd.getUserData() == "Hit"){
+            return true;
+        } else{
+            return false;
+        }
     }
 
     /**

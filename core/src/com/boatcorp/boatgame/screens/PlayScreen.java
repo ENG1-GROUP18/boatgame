@@ -249,14 +249,13 @@ public class PlayScreen implements Screen {
         hud.dispose();
         fontBatch.dispose();
         font.dispose();
-        world.dispose();
         b2dr.dispose();
         mapLoader.dispose();
         player.dispose();
         for (College college : colleges) {
             college.dispose();
         }
-
+        world.dispose();
         vfxManager.dispose();
         effectTv.dispose();
         effectDistortion.dispose();

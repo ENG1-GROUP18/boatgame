@@ -51,7 +51,7 @@ public class College {
         sprite = new Sprite(texture);
         bullets = new ArrayList<>();
         Random rand = new Random();
-        position = new Vector2(rand.nextInt(1200), rand.nextInt(1200));
+        position = new Vector2(rand.nextInt(600), rand.nextInt(600)); //TODO change back to 1200
         health = new HealthBar();
         maxHealth = 100;
         currentHealth = 100;
@@ -91,13 +91,14 @@ public class College {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(position);
-        bodyd = world.createBody(bodyDef);
+        bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        bodyd.createFixture(shape, 0.0f);
+        bodyd.createFixture(fixtureDef).setUserData("College");
+        bodyd.setUserData("");
         shape.dispose();
 
     }
@@ -122,6 +123,7 @@ public class College {
         Random rand = new Random();
         ArrayList<Vector2> randDir;
 
+        ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
         // Only begins combat when the player is close enough and the college isn't defeated
         if (distance < 200) {
             if (bullets.isEmpty()) {
@@ -129,25 +131,38 @@ public class College {
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
                 for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld));
+                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College"));
                 }
             }
-            for (int i = 0; i < bullets.size(); i++) {
+            for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
-                Bullet bullet = bullets.get(i);
                 bullet.setMatrix(camera);
                 bullet.draw();
                 bullet.move(delta);
                 if (bullet.outOfRange(300)) {
                     bullet.dispose();
-                    bullets.remove(bullet); }
-                if (bullet.hitTarget(player.getPosition())) {
+                    toRemove.add(bullet);
+                }
+                if (player.isHit() && bullet.hit()) {
                     bullet.dispose();
-                    bullets.remove(bullet);
+                    toRemove.add(bullet);
                     player.takeDamage(10);
                 }
             }
+            bullets.removeAll(toRemove);
+
+        } else{
+            if (!bullets.isEmpty()) {
+                for (Bullet bullet: bullets){
+                    if (bullet.outOfRange(300)) {
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                    }
+                }
+            }
+            bullets.removeAll(toRemove);
         }
+
     }
 
     /**
@@ -175,6 +190,18 @@ public class College {
      */
     public boolean isAlive() {
         return this.currentHealth > 0;
+    }
+
+    /**
+     * Returns True if hit
+     * @return a boolean if the collage has been hit
+     */
+    public boolean isHit(){
+        if (bodyd.getUserData() == "Hit"){
+            return true;
+        } else{
+            return false;
+        }
     }
 
     /**

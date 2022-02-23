@@ -64,15 +64,17 @@ public class Player {
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(100,100);
-        bodyd = world.createBody(bodyDef);
+        bodyDef.fixedRotation = true;
+        bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        bodyd.createFixture(shape, 0.0f);
+        bodyd.createFixture(fixtureDef).setUserData("Player");
+        bodyd.setUserData("");
         shape.dispose();
     }
 
@@ -81,7 +83,7 @@ public class Player {
      * @return a Vector2 of a copy of the players current position
      */
     public Vector2 getPosition() {
-        return position.cpy();
+        return bodyd.getPosition();
     }
 
     /**
@@ -157,7 +159,12 @@ public class Player {
         velocity.x = inputVector.x * PLAYER_SPEED * delta;
         velocity.y = inputVector.y * PLAYER_SPEED * delta;
 
-        bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
+        if (bodyd.getPosition().x > 0 && bodyd.getPosition().x < 1421 && bodyd.getPosition().y > 0 && bodyd.getPosition().y < 1371){
+            bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
+        } else{
+            bodyd.setLinearVelocity(0,0);
+        }
+
     }
 
     /**
@@ -198,6 +205,19 @@ public class Player {
         return currentHealth <= 0;
     }
 
+
+    /**
+     * Returns True if hit
+     * @return a boolean if the player has been hit
+     */
+    public boolean isHit(){
+        if (bodyd.getUserData() == "Hit"){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     /**
      * Logic for calculating bullet position and rendering bullets
      * @param camera The current camera being used render the bullets
@@ -221,25 +241,27 @@ public class Player {
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(adjustedPos, bulletVelocity, gameWorld));
+                bullets.add(new Bullet(adjustedPos, bulletVelocity, gameWorld, "Player"));
             }
-            for (int i = 0; i < bullets.size(); i++) {
+            ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
+            for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
-                Bullet bullet = bullets.get(i);
                 bullet.setMatrix(camera);
                 bullet.draw();
                 bullet.move(delta);
                 if (bullet.outOfRange(200)) {
                     bullet.dispose();
-                    bullets.remove(bullet); }
+                    toRemove.add(bullet);
+                }
                 for (College college : colleges) {
-                    if (bullet.hitTarget(college.getPosition())) {
+                    if (college.isHit() && bullet.hit()) {
                         bullet.dispose();
-                        bullets.remove(bullet);
+                        toRemove.add(bullet);
                         college.takeDamage(5);
                     }
                 }
             }
+            bullets.removeAll(toRemove);
         }
     }
 

@@ -18,11 +18,29 @@ public class WorldContactListener implements ContactListener {
         Fixture fa = contact.getFixtureA();
         Fixture fb = contact.getFixtureB();
 
+        if (fa.getUserData().toString().equals("College") && fb.getUserData().toString().equals("PlayerBullet")){
+            fa.getBody().setUserData("Hit");
+            fb.getBody().setUserData("Hit");
+        }
+
+        if (fa.getUserData().toString().equals("Player") && fb.getUserData().toString().equals("CollegeBullet")){
+            fa.getBody().setUserData("Hit");
+            fb.getBody().setUserData("Hit");
+        }
     }
 
     @Override
     public void endContact(Contact contact) {
-
+        Fixture fa = contact.getFixtureA();
+        Fixture fb = contact.getFixtureB();
+        if (fa.getBody().getUserData() != null) {
+            if (fa.getBody().getUserData().toString().equals("Hit")) {
+                fa.getBody().setUserData("");
+            }
+            if (fb.getBody().getUserData().toString().equals("Hit")) {
+                fb.getBody().setUserData("");
+            }
+        }
     }
 
     @Override
