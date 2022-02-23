@@ -11,8 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.entities.College;
@@ -80,6 +79,8 @@ public class PlayScreen implements Screen {
 
         world.setContactListener(new WorldContactListener(this));
 
+        addWorldBorder();
+
         // Configuring shaders
         effectTv = new OldTvEffect();
         effectTv.setTime(0.2f);
@@ -106,6 +107,39 @@ public class PlayScreen implements Screen {
 
         //Box2D debug renderer
         debugRenderer = new Box2DDebugRenderer(BOX2D_WIREFRAME,false,false,false,BOX2D_WIREFRAME,BOX2D_WIREFRAME);
+    }
+    private void addWorldBorder(){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(0,0);
+        Body worldBorder = world.createBody(bodyDef);
+
+        //Left side of world
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(0,1371);
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        worldBorder.createFixture(fixtureDef);
+
+        //Bottom side of world
+        shape.setAsBox(1421,0);
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        worldBorder.createFixture(fixtureDef);
+
+        //Top side of world
+        shape.setAsBox(1421,0,new Vector2(1421,1371),0);
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        worldBorder.createFixture(fixtureDef);
+
+        //Right side of world
+        shape.setAsBox(0,1371,new Vector2(1421,1371),0);
+        fixtureDef.shape = shape;
+        fixtureDef.density = 1f;
+        worldBorder.createFixture(fixtureDef);
+
     }
 
     @Override

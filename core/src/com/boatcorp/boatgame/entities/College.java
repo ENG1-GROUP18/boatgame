@@ -51,7 +51,7 @@ public class College {
         sprite = new Sprite(texture);
         bullets = new ArrayList<>();
         Random rand = new Random();
-        position = new Vector2(rand.nextInt(600), rand.nextInt(600)); //TODO change back to 1200
+        position = new Vector2(rand.nextInt(1200), rand.nextInt(1200));
         health = new HealthBar();
         maxHealth = 100;
         currentHealth = 100;

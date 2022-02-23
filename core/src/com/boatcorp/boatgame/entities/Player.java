@@ -111,16 +111,6 @@ public class Player {
         sprite.setRotation(velocity.angleDeg() - 90);
 
 
-        Vector2 prev_position = position.cpy();
-        //TODO remove when box2d hitbox is implemented
-        position.x = MathUtils.clamp(position.x + velocity.x, 0, 1421);
-        position.y = MathUtils.clamp(position.y + velocity.y, 0, 1371);
-
-        if (prev_position.x == position.x && prev_position.y == position.y){
-            velocity.x = 0;
-            velocity.y = 0;
-        }
-
     }
 
     /**
@@ -159,11 +149,9 @@ public class Player {
         velocity.x = inputVector.x * PLAYER_SPEED * delta;
         velocity.y = inputVector.y * PLAYER_SPEED * delta;
 
-        if (bodyd.getPosition().x > 0 && bodyd.getPosition().x < 1421 && bodyd.getPosition().y > 0 && bodyd.getPosition().y < 1371){
-            bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
-        } else{
-            bodyd.setLinearVelocity(0,0);
-        }
+
+        bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
+
 
     }
 
@@ -230,8 +218,8 @@ public class Player {
                 timeSinceLastShot = TimeUtils.millis();
                 Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 Vector3 newPosition = viewport.unproject(mousePosition.cpy());
-                float velX = newPosition.x - position.x;
-                float velY = newPosition.y - position.y;
+                float velX = newPosition.x - bodyd.getPosition().x;
+                float velY = newPosition.y - bodyd.getPosition().y;
                 float length = (float) Math.sqrt(velX * velX + velY * velY);
                 if (length != 0) {
                     velX = velX * BULLET_SPEED / length;
@@ -243,7 +231,7 @@ public class Player {
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
                 bullets.add(new Bullet(adjustedPos, bulletVelocity, gameWorld, "Player"));
             }
-            ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
+            ArrayList<Bullet> toRemove = new ArrayList<>();
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
                 bullet.setMatrix(camera);
