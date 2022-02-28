@@ -213,13 +213,31 @@ public class Player {
      * @param delta Time since last function call
      */
     public void combat(Matrix4 camera, ArrayList<College> colleges, float delta) {
-        if (Gdx.input.isTouched() || !bullets.isEmpty()) {
-            if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 500)) {
+
+        float velX = 0;
+        float velY = 0;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||Gdx.input.isKeyPressed(Input.Keys.RIGHT) || !bullets.isEmpty()) {
+            if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 250)) {
+                System.out.println(TimeUtils.timeSinceMillis(timeSinceLastShot));
                 timeSinceLastShot = TimeUtils.millis();
-                Vector3 mousePosition = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                Vector3 newPosition = viewport.unproject(mousePosition.cpy());
-                float velX = newPosition.x - bodyd.getPosition().x;
-                float velY = newPosition.y - bodyd.getPosition().y;
+                if (Gdx.input.isKeyPressed(Input.Keys.UP)|| !bullets.isEmpty()) {
+                   velX = 0;
+                   velY = 10;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)|| !bullets.isEmpty()) {
+                   velX = 0;
+                   velY = -10;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)|| !bullets.isEmpty()) {
+                    velX = 10;
+                    velY = 0;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)|| !bullets.isEmpty()) {
+                    velX = -10;
+                    velY = 0;
+                }
+
                 float length = (float) Math.sqrt(velX * velX + velY * velY);
                 if (length != 0) {
                     velX = velX * BULLET_SPEED / length;
