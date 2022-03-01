@@ -81,20 +81,18 @@ public class PlayScreen implements Screen {
 
         addWorldBorder();
 
-        // Configuring shaders
+        // Create shaders
         effectTv = new OldTvEffect();
-        effectTv.setTime(0.2f);
-
         effectVignetting = new VignettingEffect(false);
+        effectDistortion = new RadialDistortionEffect();
+        effectBloom = new BloomEffect();
+        effectFxaa = new FxaaEffect();
+
+        // Configure shaders
+        effectTv.setTime(0.2f);
         effectVignetting.setIntensity(0.4f);
         effectVignetting.setSaturation(0.2f);
-
-        effectDistortion = new RadialDistortionEffect();
         effectDistortion.setDistortion(0.1f);
-
-        effectBloom = new BloomEffect();
-
-        effectFxaa = new FxaaEffect();
 
         // Add shaders to manager, order matters
         vfxManager.addEffect(effectTv);
@@ -119,25 +117,21 @@ public class PlayScreen implements Screen {
         shape.setAsBox(0,1371);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
         worldBorder.createFixture(fixtureDef);
 
         //Bottom side of world
         shape.setAsBox(1421,0);
         fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
         worldBorder.createFixture(fixtureDef);
 
         //Top side of world
         shape.setAsBox(1421,0,new Vector2(1421,1371),0);
         fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
         worldBorder.createFixture(fixtureDef);
 
         //Right side of world
         shape.setAsBox(0,1371,new Vector2(1421,1371),0);
         fixtureDef.shape = shape;
-        fixtureDef.density = 1f;
         worldBorder.createFixture(fixtureDef);
 
     }

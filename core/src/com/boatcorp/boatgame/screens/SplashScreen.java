@@ -35,7 +35,7 @@ public class SplashScreen extends BasicMenuScreen {
                 game.changeScreen(BoatGame.screenType.START_MENU);
             }
         };
-        Timer.schedule(myTimerTask, 4f);
+        Timer.schedule(myTimerTask, 2f);
     }
 
 

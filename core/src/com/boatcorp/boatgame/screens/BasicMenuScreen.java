@@ -47,7 +47,6 @@ public class BasicMenuScreen implements Screen {
 
         style = new Label.LabelStyle(
                 new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
-
        }
 
 
@@ -105,6 +104,7 @@ public class BasicMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        vfxManager.dispose();
+        stage.dispose();
     }
 }

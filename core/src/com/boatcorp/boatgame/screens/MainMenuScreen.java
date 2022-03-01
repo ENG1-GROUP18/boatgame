@@ -55,7 +55,7 @@ public class MainMenuScreen implements Screen {
         label1.setAlignment(Align.center);
         label1.setFontScale(0.3f);
 
-        Label label2 = new Label("aim and fire with MOUSE", style);
+        Label label2 = new Label("aim and fire with ARROW KEYS", style);
         label2.setAlignment(Align.center);
         label2.setFontScale(0.3f);
 
@@ -77,15 +77,17 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        // Configuring shaders
+        // Create shaders
         effectTv = new OldTvEffect();
-        effectTv.setTime(0.2f);
         effectVignetting = new VignettingEffect(false);
+        effectDistortion = new RadialDistortionEffect();
+        effectBloom = new BloomEffect();
+
+        // Configuring shaders
+        effectTv.setTime(0.2f);
         effectVignetting.setIntensity(0.8f);
         effectVignetting.setSaturation(0.2f);
-        effectDistortion = new RadialDistortionEffect();
         effectDistortion.setDistortion(0.1f);
-        effectBloom = new BloomEffect();
 
         // Add shaders to manager, order matters
         vfxManager.addEffect(effectTv);
@@ -93,7 +95,7 @@ public class MainMenuScreen implements Screen {
         vfxManager.addEffect(effectDistortion);
         vfxManager.addEffect(effectBloom);
 
-        resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
     @Override
