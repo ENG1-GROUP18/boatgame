@@ -14,14 +14,14 @@ import com.boatcorp.boatgame.frameworks.PointSystem;
 
 public class ResultScreen implements Screen {
 
-    private final Game boatGame;
+    private final BoatGame boatGame;
     private static final int WORLD_HEIGHT = Gdx.graphics.getHeight();
     private final SpriteBatch fontBatch;
     private final BitmapFont font;
     private final String victory;
     private final Viewport viewport;
 
-    public ResultScreen(boolean win, Game game) {
+    public ResultScreen(boolean win, BoatGame game) {
         this.boatGame = game;
         victory = (win) ? "VICTORY" : "GAME OVER";
         viewport = new ExtendViewport(0, WORLD_HEIGHT);
