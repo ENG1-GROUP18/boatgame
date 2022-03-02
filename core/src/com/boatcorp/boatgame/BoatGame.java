@@ -1,10 +1,14 @@
 package com.boatcorp.boatgame;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
+import com.google.gson.Gson;
+
 
 /**
  *  Main class which initialises the Game.
