@@ -23,7 +23,7 @@ import com.crashinvaders.vfx.effects.*;
 
 public class MainMenuScreen implements Screen {
 
-    private Game boatGame;
+    private BoatGame boatGame;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private Stage stage;
