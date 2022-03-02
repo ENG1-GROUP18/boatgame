@@ -215,6 +215,13 @@ public class PlayScreen implements Screen {
     }
 
     private void update(final float delta) {
+        
+        boolean save = Gdx.input.isKeyPressed(Input.Keys.C);
+        boolean load = Gdx.input.isKeyPressed(Input.Keys.V);
+
+        if(save){boatGame.saveGame();}
+        if(load){boatGame.loadGame();}
+        
         camera.zoom = DEFAULT_ZOOM;
 
         // Get properties of the map from the TileMap
