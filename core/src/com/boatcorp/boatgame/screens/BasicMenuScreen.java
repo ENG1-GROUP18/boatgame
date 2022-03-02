@@ -30,7 +30,7 @@ public class BasicMenuScreen implements Screen {
     //---------------
 
     protected int jamOnToast = 5;
-    private Game boatGame;
+    private BoatGame boatGame;
     private OrthographicCamera camera;
     private Viewport viewport;
     protected Stage stage;
