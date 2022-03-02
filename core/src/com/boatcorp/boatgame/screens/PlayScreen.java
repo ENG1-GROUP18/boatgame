@@ -35,7 +35,7 @@ public class PlayScreen implements Screen {
     //---------------
 
 
-    private final Game boatGame;
+    private final BoatGame boatGame;
     private final SpriteBatch batch;
     private final SpriteBatch fontBatch;
     private final World world;
@@ -58,7 +58,7 @@ public class PlayScreen implements Screen {
     private FxaaEffect effectFxaa;
 
 
-    public PlayScreen(Game game) {
+    public PlayScreen(BoatGame game) {
         this.boatGame = game;
         batch = new SpriteBatch();
         fontBatch = new SpriteBatch();
