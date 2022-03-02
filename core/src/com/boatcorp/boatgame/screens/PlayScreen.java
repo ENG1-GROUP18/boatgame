@@ -218,8 +218,8 @@ public class PlayScreen implements Screen {
 
     private void update(final float delta) {
         
-        boolean save = Gdx.input.isKeyPressed(Input.Keys.C);
-        boolean load = Gdx.input.isKeyPressed(Input.Keys.V);
+        boolean save = Gdx.input.isKeyJustPressed(Input.Keys.C);
+        boolean load = Gdx.input.isKeyJustPressed(Input.Keys.V);
 
         if(save){boatGame.saveGame();}
         if(load){boatGame.loadGame();}
