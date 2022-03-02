@@ -127,5 +127,19 @@ public class BoatGame extends Game {
 	public VfxManager getVfxManager() {
 		return vfxManager;
 	}
+	
+	public void saveGame(){
+		Gson gson = new Gson();
+		String json = gson.toJson(this.getScreen());
+		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
+		p.putString("0", json);
+	}
+
+	public void loadGame(){
+		Gson gson = new Gson();
+		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
+		PlayScreen loader = gson.fromJson(p.getString("0"), PlayScreen.class);
+		this.setScreen(loader);
+	}
 
 }
