@@ -38,11 +38,10 @@ public class Player {
 
     private static final float PLAYER_SPEED = 100f;
 
-    private int BULLET_SPEED = 2;
+    private int BULLET_SPEED = 20;
     
     private Vector2 position;
     private Vector2 velocity;
-    private Vector2 inputVector;
 
 
     /**
@@ -217,23 +216,22 @@ public class Player {
         float velX = 0;
         float velY = 0;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||Gdx.input.isKeyPressed(Input.Keys.RIGHT) || !bullets.isEmpty()) {
-            if (bullets.isEmpty() && ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 250)) {
-                System.out.println(TimeUtils.timeSinceMillis(timeSinceLastShot));
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 250)) {
                 timeSinceLastShot = TimeUtils.millis();
-                if (Gdx.input.isKeyPressed(Input.Keys.UP)|| !bullets.isEmpty()) {
+                if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
                    velX = 0;
                    velY = 10;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)|| !bullets.isEmpty()) {
+                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
                    velX = 0;
                    velY = -10;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)|| !bullets.isEmpty()) {
+                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
                     velX = 10;
                     velY = 0;
                 }
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)|| !bullets.isEmpty()) {
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
                     velX = -10;
                     velY = 0;
                 }
@@ -243,12 +241,15 @@ public class Player {
                     velX = velX * BULLET_SPEED / length;
                     velY = velY * BULLET_SPEED / length;
                 }
-                Vector2 adjustedPos = this.getPosition().add(0,0); // unadjusted position
+
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(adjustedPos, bulletVelocity, gameWorld, "Player"));
+                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player"));
             }
+        }
+
+        if (!bullets.isEmpty()){
             ArrayList<Bullet> toRemove = new ArrayList<>();
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions

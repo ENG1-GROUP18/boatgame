@@ -165,6 +165,8 @@ public class PlayScreen implements Screen {
         }
         player.draw();
 
+        //Draws box2D hitboxes for debug
+        debugRenderer.render(world, viewport.getCamera().combined);
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
@@ -186,8 +188,7 @@ public class PlayScreen implements Screen {
                 viewport.getScreenWidth(), viewport.getScreenHeight());
 
 
-        //Draws box2D hitboxes for debug
-        debugRenderer.render(world, viewport.getCamera().combined);
+
 
     }
 

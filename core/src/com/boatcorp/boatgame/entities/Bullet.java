@@ -56,6 +56,7 @@ public class Bullet {
         bodyd.createFixture(fixtureDef).setUserData((firedFrom+"Bullet"));
         bodyd.setUserData("");
         shape.dispose();
+        bodyd.setLinearVelocity(velocity);
     }
 
     /**
@@ -77,23 +78,6 @@ public class Bullet {
     }
 
     /**
-     * sets the position of the object to the inputted vector
-     * @param pos the position where the bullet should be drawn at
-     */
-    public void setPosition(@NotNull Vector2 pos) {
-        position.x = pos.x;
-        position.y = pos.y;
-    }
-
-    /**
-     * Gets the bullets current velocity
-     * @return a Vector2 of a copy of the bullets current velocity
-     */
-    public Vector2 getVelocity() {
-        return velocity.cpy();
-    }
-
-    /**
      * Returns true if bullet has travelled more than the max range (300 units)
      * @param range the maximum distance the bullet can travel
      * @return a bool of if the bullet is out of range
@@ -104,19 +88,9 @@ public class Bullet {
     }
 
     /**
-     * Calculates weather a collision has occurred
-     * @param position the position of the target
-     * @return True if the bullet collides with target
+     * Returns if the bullet has hit another object
+     * @return True if hit, false if not hit
      */
-    public boolean hitTarget(@NotNull Vector2 position) {
-        position.add(10,10); // Centre hitbox of bullet
-        Vector2 currentPos = this.getPosition();
-
-        double distance = Math.hypot(currentPos.x - position.x, currentPos.y - position.y);
-        return (distance < 16);
-
-    }
-
     public boolean hit(){
         if (bodyd.getUserData() == "Hit"){
             return true;
@@ -130,11 +104,6 @@ public class Bullet {
      */
     public void move(float delta) {
         bodyd.setLinearVelocity(velocity.x / delta, velocity.y / delta);
-        Vector2 currentPos = this.getPosition();
-        Vector2 v = this.getVelocity();
-        currentPos.x += v.x;
-        currentPos.y += v.y;
-        this.setPosition(currentPos);
     }
 
     /**
