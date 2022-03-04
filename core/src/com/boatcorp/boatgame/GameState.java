@@ -3,9 +3,9 @@ import com.badlogic.gdx.math.Vector2;
 
 public class GameState {
     private Vector2 playerPosition = new Vector2(100,100);
-    private int currentHealth;
+    private float currentHealth;
     private float maxHealth;
-    private float points;
+    private int points;
 
     public GameState() {
         this(new Vector2(100,100),100,100, 0);
