@@ -11,4 +11,7 @@ public class GameState {
     public Vector2 getPlayerPosition() {
         return playerPosition;
     }
+    public void initialise(){
+        playerPosition = new Vector2(100,100);
+    }
 }
