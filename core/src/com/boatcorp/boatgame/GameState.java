@@ -2,7 +2,7 @@ package com.boatcorp.boatgame;
 import com.badlogic.gdx.math.Vector2;
 
 public class GameState {
-    public Vector2 playerPosition = new Vector2(100,100);
+    public Vector2 playerPosition;
     public float currentHealth;
     public float maxHealth;
     public int points;
