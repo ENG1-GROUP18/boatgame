@@ -2,19 +2,21 @@ package com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import org.jetbrains.annotations.NotNull;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
 
 /**
  * Creates a Bullet object
  */
-public class Bullet {
+public class Bullet extends Group {
     private final SpriteBatch batch;
     private final Sprite sprite;
     private Vector2 position;
@@ -51,23 +53,43 @@ public class Bullet {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         fixtureDef.isSensor = true;
-//        fixtureDef.filter.maskBits = 0x0001;
-//        fixtureDef.filter.categoryBits = 0x0002;
+
         bodyd.createFixture(fixtureDef).setUserData((firedFrom+"Bullet"));
         bodyd.setUserData("");
         shape.dispose();
         bodyd.setLinearVelocity(velocity);
+
+        this.addActor(new Image(sprite));
+        this.setPosition(position.x,position.y);
+        this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
+
+
     }
 
     /**
      * Draws the updated position of the bullet
      */
-    public void draw() {
+    public void draws() {
         sprite.setPosition(bodyd.getPosition().x - sprite.getWidth()/2,bodyd.getPosition().y-(sprite.getHeight())/2);
         batch.begin();
         sprite.draw(batch);
         batch.end();
     }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        move(delta);
+
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        this.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
+
+    }
+
 
     /**
      * Gets the position of the bullet

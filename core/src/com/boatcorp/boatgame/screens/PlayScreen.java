@@ -1,6 +1,5 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -13,9 +12,11 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
+import com.boatcorp.boatgame.entities.Bullet;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
@@ -50,6 +51,7 @@ public class PlayScreen implements Screen {
     private final ArrayList<College> colleges;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
+    private Stage gameStage;
 
     // For Shader
     private VfxManager vfxManager;
@@ -69,6 +71,7 @@ public class PlayScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+        gameStage = new Stage(viewport);
 
         mapLoader = new MapLoader();
         player = new Player(viewport,world);
@@ -80,6 +83,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(fontBatch, player);
 
         world.setContactListener(new WorldContactListener(this));
+        gameStage.addActor(player);
 
         addWorldBorder();
 
@@ -151,6 +155,7 @@ public class PlayScreen implements Screen {
         vfxManager.beginInputCapture();
 
         update(delta);
+        gameStage.act();
         // Batch drawing
         player.setMatrix(camera.combined);
         for (College college : colleges) { //TODO this really needs rethinking.
@@ -163,7 +168,8 @@ public class PlayScreen implements Screen {
         for (College college : colleges) {
             college.draw();
         }
-        player.draw();
+        gameStage.draw();
+        combat(delta);
 
         //Draws box2D hitboxes for debug
         debugRenderer.render(world, viewport.getCamera().combined);
@@ -175,7 +181,7 @@ public class PlayScreen implements Screen {
 
         hud.getStage().act(delta);
 
-        combat(delta);
+
 
         vfxManager.endInputCapture();
 
@@ -214,11 +220,23 @@ public class PlayScreen implements Screen {
                 PointSystem.incrementPoint(500);
             }
         }
-        player.combat(camera.combined, colleges,delta);
+        batch.begin();
+        ArrayList<Bullet> bullets;
+        bullets = player.combat(colleges);
+        if (!bullets.isEmpty()){
+            for (Bullet bullet: bullets) {
+                // Draw and move bullets and check for collisions
+                bullet.setMatrix(camera.combined);
+                bullet.draw(batch,1);
+                bullet.move(delta);
+            }
+        }
+
+        batch.end();
     }
 
     private void update(final float delta) {
-        
+
         boolean save = Gdx.input.isKeyJustPressed(Input.Keys.C);
         boolean load = Gdx.input.isKeyJustPressed(Input.Keys.V);
 
@@ -251,7 +269,7 @@ public class PlayScreen implements Screen {
 
         world.step(delta, 6,2);
 
-        player.update(delta);
+        //player.update(delta);
 
 
     }

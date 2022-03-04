@@ -2,26 +2,25 @@ package com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
-import com.boatcorp.boatgame.frameworks.PointSystem;
 
 import java.util.ArrayList;
 
 /**
  * Creates a Player object
  */
-public class Player {
+public class Player extends Group {
     private final SpriteBatch batch;
     private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
     private final Sprite sprite;
@@ -68,13 +67,18 @@ public class Player {
         bodyDef.fixedRotation = true;
         bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
+        shape.setAsBox(sprite.getWidth()/4, sprite.getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         bodyd.createFixture(fixtureDef).setUserData("Player");
         bodyd.setUserData("");
+
         shape.dispose();
+
+        this.addActor(new Image(sprite));
+        this.setPosition(100,100);
+        this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
     }
 
     /**
@@ -85,17 +89,19 @@ public class Player {
         return bodyd.getPosition();
     }
 
-    /**
-     * Draws the player in its updated position
-     */
-    public void draw() {
-        sprite.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
-        batch.begin();
-        sprite.draw(batch);
-        batch.end();
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        update(delta);
 
     }
 
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        this.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
+
+    }
 
     /**
      * Updates the position,rotation and velocity of the player
@@ -107,7 +113,10 @@ public class Player {
         movement(delta);
 
         // Rotate sprite to match movement
-        sprite.setRotation(velocity.angleDeg() - 90);
+        if (bodyd.getLinearVelocity().x != 0 || bodyd.getLinearVelocity().y != 0){
+            this.setRotation(velocity.angleDeg() - 90);
+            bodyd.setTransform(bodyd.getPosition(),velocity.angleRad() - ((float) Math.PI/2));
+        }
 
 
     }
@@ -206,12 +215,10 @@ public class Player {
     }
 
     /**
-     * Logic for calculating bullet position and rendering bullets
-     * @param camera The current camera being used render the bullets
-     * @param colleges The colleges currently alive on the map
-     * @param delta Time since last function call
+     * Logic for calculating bullet position
+     * @return a list of bullets
      */
-    public void combat(Matrix4 camera, ArrayList<College> colleges, float delta) {
+    public ArrayList<Bullet> combat(ArrayList<College> colleges) {
 
         float velX = 0;
         float velY = 0;
@@ -253,9 +260,6 @@ public class Player {
             ArrayList<Bullet> toRemove = new ArrayList<>();
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera);
-                bullet.draw();
-                bullet.move(delta);
                 if (bullet.outOfRange(200)) {
                     bullet.dispose();
                     toRemove.add(bullet);
@@ -270,6 +274,7 @@ public class Player {
             }
             bullets.removeAll(toRemove);
         }
+        return bullets;
     }
 
     /**
