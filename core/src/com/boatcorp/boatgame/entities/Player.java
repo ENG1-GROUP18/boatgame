@@ -57,7 +57,7 @@ public class Player {
         health = new HealthBar();
         bullets = new ArrayList<>();
         maxHealth = state.getMaxHealth();
-        currentHealth = state.getCurrentHealth;
+        currentHealth = state.getCurrentHealth();
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
