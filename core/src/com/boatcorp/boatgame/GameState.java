@@ -10,7 +10,7 @@ public class GameState {
     public GameState() {
         this(new Vector2(100,100),100,100, 0);
     }
-    public GameState(Vector2 playerPosition,int currentHealth, int maxHealth, int points){
+    public GameState(Vector2 playerPosition,float currentHealth, float maxHealth, int points){
         this.playerPosition = playerPosition;
         this.currentHealth = currentHealth;
         this.maxHealth = maxHealth;
