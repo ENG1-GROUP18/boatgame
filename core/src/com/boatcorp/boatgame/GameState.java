@@ -1,22 +1,21 @@
 package com.boatcorp.boatgame;
 import com.badlogic.gdx.math.Vector2;
 
-import java.util.ArrayList;
-
 public class GameState {
     private Vector2 playerPosition = new Vector2(100,100);
+    private int currentHealth;
+    private int maxHealth;
     private int points;
 
     public GameState() {
-        this(new Vector2(100,100), 0);
+        this(new Vector2(100,100),100,100, 0);
     }
-    public GameState(Vector2 playerPosition, int points){
+    public GameState(Vector2 playerPosition,int currentHealth, int maxHealth, int points){
         this.playerPosition = playerPosition;
+        this.currentHealth = currentHealth;
+        this.maxHealth = maxHealth;
         this.points = points;
-    }
 
-    public void setPlayerPosition(Vector2 newPosition){
-        playerPosition = newPosition;
     }
 
     public Vector2 getPlayerPosition() {
@@ -25,5 +24,13 @@ public class GameState {
 
     public int getPoints() {
         return points;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public int getMaxHealth(){
+        return currentHealth;
     }
 }
