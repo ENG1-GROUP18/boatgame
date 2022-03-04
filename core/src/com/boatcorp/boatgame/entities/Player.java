@@ -56,8 +56,8 @@ public class Player {
         sprite = new Sprite(texture);
         health = new HealthBar();
         bullets = new ArrayList<>();
-        maxHealth = state.getMaxHealth();
-        currentHealth = state.getCurrentHealth();
+        maxHealth = state.maxHealth;
+        currentHealth = state.currentHealth;
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
@@ -65,7 +65,7 @@ public class Player {
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(state.getPlayerPosition().x,state.getPlayerPosition().y);
+        bodyDef.position.set(state.playerPosition.x,state.playerPosition.y);
         bodyDef.fixedRotation = true;
         bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
