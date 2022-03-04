@@ -71,7 +71,7 @@ public class PlayScreen implements Screen {
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
         mapLoader = new MapLoader();
-        player = new Player(viewport,world);
+        player = new Player(viewport,world,state);
         colleges = new ArrayList<>();
         colleges.add(new College("langwith", world));
         colleges.add(new College("james", world));
