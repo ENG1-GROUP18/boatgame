@@ -79,7 +79,7 @@ public class PlayScreen implements Screen {
         colleges.add(new College("goodricke", world));
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
-        PointSystem.setPoints(state.getPoints());
+        PointSystem.setPoints(state.points);
 
         world.setContactListener(new WorldContactListener(this));
 
