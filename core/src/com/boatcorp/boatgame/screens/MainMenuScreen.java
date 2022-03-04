@@ -117,7 +117,7 @@ public class MainMenuScreen implements Screen {
 
 
     private void launchGame() {
-        boatGame.setScreen(new PlayScreen(boatGame),new GameState());
+        boatGame.setScreen(new PlayScreen(boatGame,new GameState()));
     }
 
     @Override
