@@ -4,8 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 public class GameState {
     private Vector2 playerPosition = new Vector2(100,100);
     private int currentHealth;
-    private int maxHealth;
-    private int points;
+    private float maxHealth;
+    private float points;
 
     public GameState() {
         this(new Vector2(100,100),100,100, 0);
@@ -26,11 +26,11 @@ public class GameState {
         return points;
     }
 
-    public int getCurrentHealth() {
+    public float getCurrentHealth() {
         return currentHealth;
     }
 
-    public int getMaxHealth(){
+    public float getMaxHealth(){
         return currentHealth;
     }
 }
