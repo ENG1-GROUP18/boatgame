@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
 
