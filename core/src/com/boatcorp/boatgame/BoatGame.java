@@ -145,6 +145,7 @@ public class BoatGame extends Game {
 		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
 		GameState loader = gson.fromJson(p.getString("0"), GameState.class);
 		playScreen = new PlayScreen(this, loader);
+		this.setScreen(playScreen);
 	}
 
 }
