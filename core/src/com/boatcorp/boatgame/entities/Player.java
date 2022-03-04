@@ -56,8 +56,8 @@ public class Player {
         sprite = new Sprite(texture);
         health = new HealthBar();
         bullets = new ArrayList<>();
-        maxHealth = 100;
-        currentHealth = 100;
+        maxHealth = state.getMaxHealth();
+        currentHealth = state.getCurrentHealth;
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
