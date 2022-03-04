@@ -305,6 +305,6 @@ public class PlayScreen implements Screen {
     }
     
     public GameState getState(){
-        return new GameState(player.getPosition(), PointSystem.getPoints());
+        return new GameState(player.getPosition(), player.getHealth(), player.getMaxHealth(), PointSystem.getPoints());
     }
 }
