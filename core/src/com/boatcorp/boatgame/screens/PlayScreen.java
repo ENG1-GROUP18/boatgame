@@ -79,6 +79,7 @@ public class PlayScreen implements Screen {
         colleges.add(new College("goodricke", world));
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
+        PointSystem.setPoints(state.getPoints());
 
         world.setContactListener(new WorldContactListener(this));
 
@@ -304,6 +305,6 @@ public class PlayScreen implements Screen {
     }
     
     public GameState getState(){
-        return new GameState(player.getPosition());
+        return new GameState(player.getPosition(), PointSystem.getPoints());
     }
 }
