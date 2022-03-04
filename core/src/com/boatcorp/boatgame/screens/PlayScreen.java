@@ -301,4 +301,8 @@ public class PlayScreen implements Screen {
         effectBloom.dispose();
         effectFxaa.dispose();
     }
+    
+    public GameState getState(){
+        return new GameState(player.getPosition());
+    }
 }
