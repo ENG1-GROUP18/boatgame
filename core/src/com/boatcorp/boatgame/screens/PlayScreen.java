@@ -24,6 +24,7 @@ import com.boatcorp.boatgame.tools.MapLoader;
 import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
+import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
 
