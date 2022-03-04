@@ -48,7 +48,7 @@ public class Player {
      * Initialises a Player with a texture at the required position, along with other relevant attributes
      * @param view the current viewport
      */
-    public Player(Viewport view, World world) {
+    public Player(Viewport view, World world, GameState state) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
         batch = new SpriteBatch();
@@ -64,7 +64,7 @@ public class Player {
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(100,100);
+        bodyDef.position.set(state.getPlayerPosition().x,state.getPlayerPosition().y);
         bodyDef.fixedRotation = true;
         bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
