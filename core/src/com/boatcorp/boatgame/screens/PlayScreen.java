@@ -27,6 +27,7 @@ import com.crashinvaders.vfx.effects.*;
 import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.boatcorp.boatgame.screens.Constants.*;
 
@@ -74,12 +75,13 @@ public class PlayScreen implements Screen {
         mapLoader = new MapLoader();
         player = new Player(viewport,world,state);
         colleges = new ArrayList<>();
-        colleges.add(new College("langwith", world));
-        colleges.add(new College("james", world));
-        colleges.add(new College("goodricke", world));
+        colleges.add(new College("langwith", world,state));
+        colleges.add(new College("james", world, state));
+        colleges.add(new College("goodricke", world,state));
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
+        System.out.println(state.collegePositions.get("james").x);
 
         world.setContactListener(new WorldContactListener(this));
 
@@ -305,6 +307,20 @@ public class PlayScreen implements Screen {
     }
     
     public GameState getState(){
-        return new GameState(player.getPosition(), player.getHealth(), player.getMaxHealth(), PointSystem.getPoints());
+        GameState state = new GameState();
+        Random rand = new Random();
+        state.playerPosition = player.getPosition();
+        state.currentHealth = player.getHealth();
+        state.maxHealth = player.getMaxHealth();
+        state.points = PointSystem.getPoints();
+        state.collegeHealths.clear();
+        state.collegePositions.clear();
+        for (College college : colleges) {
+            float[] healths = {college.getCurrentHealth(), college.getMaxHealth()};
+            state.collegeHealths.put(college.getUserData(),healths);
+            state.collegePositions.put(college.getUserData(), college.getPosition());
+        }
+        return state;
     }
 }
+
