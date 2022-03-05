@@ -1,10 +1,4 @@
-package com.boatcorp.boatgame.screens;
-
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
+port com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -52,6 +46,7 @@ public class PlayScreen implements Screen {
     private final ArrayList<College> colleges;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
+    private GameState state;
 
     // For Shader
     private VfxManager vfxManager;
@@ -71,13 +66,12 @@ public class PlayScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+        this.state = state;
 
         mapLoader = new MapLoader();
         player = new Player(viewport,world,state);
         colleges = new ArrayList<>();
-        colleges.add(new College("langwith", world,state));
-        colleges.add(new College("james", world, state));
-        colleges.add(new College("goodricke", world,state));
+        addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
@@ -214,6 +208,8 @@ public class PlayScreen implements Screen {
             } else {
                 college.dispose();
                 colleges.remove(college);
+                state.collegeHealths.remove(college.getUserData());
+                state.collegePositions.remove(college.getUserData());
                 PointSystem.incrementPoint(500);
             }
         }
@@ -304,21 +300,25 @@ public class PlayScreen implements Screen {
         effectBloom.dispose();
         effectFxaa.dispose();
     }
+
+    public void addColleges(ArrayList colleges){
+        Random rand = new Random();
+        for (int i = 0; i < 3; i++) {
+            state.collegeHealths.put(state.collegeNames[i], state.collegeHealth);
+            if (state.isSpawn){
+            state.collegePositions.put(state.collegeNames[i], new Vector2(rand.nextInt(1200), rand.nextInt(1200)));}
+            colleges.add(new College(state.collegeNames[i], world,state));
+        }
+
+
+    }
     
     public GameState getState(){
-        GameState state = new GameState();
-        Random rand = new Random();
-        state.playerPosition = player.getPosition();
-        state.currentHealth = player.getHealth();
-        state.maxHealth = player.getMaxHealth();
-        state.points = PointSystem.getPoints();
-        state.collegeHealths.clear();
-        state.collegePositions.clear();
+        player.updateState();
         for (College college : colleges) {
-            float[] healths = {college.getCurrentHealth(), college.getMaxHealth()};
-            state.collegeHealths.put(college.getUserData(),healths);
-            state.collegePositions.put(college.getUserData(), college.getPosition());
+            college.updateState();
         }
+        state.isSpawn = false;
         return state;
     }
 }
