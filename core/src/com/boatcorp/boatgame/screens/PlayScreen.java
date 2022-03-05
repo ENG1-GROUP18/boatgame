@@ -81,8 +81,7 @@ public class PlayScreen implements Screen {
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
-        System.out.println(state.collegePositions.get("james").x);
-
+        
         world.setContactListener(new WorldContactListener(this));
 
         addWorldBorder();
