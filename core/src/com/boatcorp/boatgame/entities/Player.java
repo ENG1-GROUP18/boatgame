@@ -1,4 +1,4 @@
-package com.boatcorp.boatgame.entities;
+ackage com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -33,6 +33,7 @@ public class Player {
     private final Viewport viewport;
     private long timeSinceLastShot;
     private Body bodyd;
+    private GameState state;
 
     private final World gameWorld;
 
@@ -61,6 +62,7 @@ public class Player {
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
+        this.state = state;
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -293,4 +295,12 @@ public class Player {
             }
         }
     }
+
+    public void updateState(){
+        state.playerPosition = this.getPosition();
+        state.currentHealth = this.getHealth();
+        state.maxHealth = this.getMaxHealth();
+        state.points = PointSystem.getPoints();
+    }
 }
+
