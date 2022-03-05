@@ -12,7 +12,7 @@ public class GameState{
     public float[] collegeHealth = {100,100};
     Random rand = new Random();
     public Object[] collegeNames = {"langwith","james","goodricke"};
-	public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
+    public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
     public Map<Object, Vector2> collegePositions = new HashMap<Object,Vector2>();
     public GameState() {
         for (int i = 0; i < 3; i++) {
