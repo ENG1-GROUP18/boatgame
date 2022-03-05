@@ -1,203 +1,204 @@
 package com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
-import com.boatcorp.boatgame.GameState;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
-import org.jetbrains.annotations.NotNull;
+import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
 /**
- * Creates a collage object
+ * Creates a Player object
  */
-public class College {
+public class Player {
     private final SpriteBatch batch;
+    private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
     private final Sprite sprite;
-    /**Relative position of the player*/
-    private Vector2 position;
-    /**list of bullets which are currently on screen*/
-    private ArrayList<Bullet> bullets;
-    /**Holds the vectors to fire the bullets diagonally*/
-    private final ArrayList<Vector2> diagonalDirections;
-    /**Holds the vectors to fire the bullets in cardinal directions*/
-    private final ArrayList<Vector2> cardinalDirections;
-    /**Holds the vectors to fire the bullets in a rotating patter*/
-    private final ArrayList<Vector2> rotatingDirections;
-    /**The attack patterns of the collages*/
-    private final ArrayList<ArrayList<Vector2>> attackPatterns;
     private final HealthBar health;
-    /**The collages max health*/
     private final float maxHealth;
-    /**The collages current health*/
     private float currentHealth;
+    private final ArrayList<Bullet> bullets;
+    private final Viewport viewport;
+    private long timeSinceLastShot;
     private Body bodyd;
-    private World gameWorld;
+    private GameState state;
+
+    private final World gameWorld;
+
+
+    private static final float PLAYER_SPEED = 100f;
+
+    private int BULLET_SPEED = 20;
+    
+    private Vector2 position;
+    private Vector2 velocity;
+
 
     /**
-     * Constructor class to create and initialise a new collage
-     * @param college a String stating the name of the collage, used to get the image path
+     * Initialises a Player with a texture at the required position, along with other relevant attributes
+     * @param view the current viewport
      */
-
-    public College(String college, World world, GameState state) {
-        final String PATH_NAME = "Entities/" + college + ".png";
-        final Texture texture = new Texture(Gdx.files.internal(PATH_NAME));
+    public Player(Viewport view, World world, GameState state) {
+        position = new Vector2(100,100);
+        velocity = new Vector2(0,0);
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
-        bullets = new ArrayList<>();
-        Random rand = new Random();
-        position = state.collegePositions.get(college);
         health = new HealthBar();
-        maxHealth = state.collegeHealths.get(college)[1];
-        currentHealth = state.collegeHealths.get(college)[0];
+        bullets = new ArrayList<>();
+        maxHealth = state.maxHealth;
+        currentHealth = state.currentHealth;
+        viewport = view;
         gameWorld = world;
+        timeSinceLastShot = TimeUtils.millis();
+        this.state = state;
 
-        cardinalDirections = new ArrayList<>();
-        cardinalDirections.add(new Vector2(5,0));
-        cardinalDirections.add(new Vector2(-5,0));
-        cardinalDirections.add(new Vector2(0,5));
-        cardinalDirections.add(new Vector2(0,-5));
-
-        diagonalDirections = new ArrayList<>();
-        diagonalDirections.add(new Vector2(4,4));
-        diagonalDirections.add(new Vector2(4,4));
-        diagonalDirections.add(new Vector2(4,-4));
-        diagonalDirections.add(new Vector2(-4,4));
-        diagonalDirections.add(new Vector2(-4,-4));
-
-        rotatingDirections = new ArrayList<>();
-        rotatingDirections.add(new Vector2(5, 0));
-        rotatingDirections.add(new Vector2(4, 4));
-        rotatingDirections.add(new Vector2(-5, 0));
-        rotatingDirections.add(new Vector2(4, 4));
-        rotatingDirections.add(new Vector2(4, -4));
-        rotatingDirections.add(new Vector2(0, 5));
-        rotatingDirections.add(new Vector2(-4, 4));
-        rotatingDirections.add(new Vector2(-4, -4));
-        rotatingDirections.add(new Vector2(0, -5));
-
-
-        attackPatterns = new ArrayList<>();
-        attackPatterns.add(cardinalDirections);
-        attackPatterns.add(rotatingDirections);
-        attackPatterns.add(diagonalDirections);
-
-        //Creates body definition for collages
+        //Creates body definition
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(position);
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(state.playerPosition.x,state.playerPosition.y);
+        bodyDef.fixedRotation = true;
         bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
-        bodyd.createFixture(fixtureDef).setUserData("College");
-        bodyd.setUserData(college);
+        bodyd.createFixture(fixtureDef).setUserData("Player");
+        bodyd.setUserData("");
         shape.dispose();
-
     }
 
     /**
-     * Gets the current position of the player
-     * @return A copy of it's position
+     * Gets the position of the players position
+     * @return a Vector2 of a copy of the players current position
      */
     public Vector2 getPosition() {
-        return position.cpy();
+        return bodyd.getPosition();
     }
 
     /**
-     * Logic for calculating collisions and rendering bullets
-     * @param camera The current camera being used render the bullets
-     * @param player The player object
-     * @param delta Time since last function call
-     */
-    public void combat(Matrix4 camera, Player player, float delta) {
-        Vector2 playerPos = player.getPosition();
-        double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
-        Random rand = new Random();
-        ArrayList<Vector2> randDir;
-
-        ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
-        // Only begins combat when the player is close enough and the college isn't defeated
-        if (distance < 200) {
-            if (bullets.isEmpty()) {
-                // Randomly choose from set attack patterns
-                int random_number = rand.nextInt(attackPatterns.size());
-                randDir = attackPatterns.get(random_number);
-                for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College"));
-                }
-            }
-            for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera);
-                bullet.draw();
-                bullet.move(delta);
-                if (bullet.outOfRange(300)) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                }
-                if (player.isHit() && bullet.hit()) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                    player.takeDamage(10);
-                }
-            }
-            bullets.removeAll(toRemove);
-
-        } else{
-            if (!bullets.isEmpty()) {
-                for (Bullet bullet: bullets){
-                    if (bullet.outOfRange(300)) {
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-            }
-            bullets.removeAll(toRemove);
-        }
-
-    }
-
-    /**
-     * Draws the collage in the randomly selected position
+     * Draws the player in its updated position
      */
     public void draw() {
-        float correctPosX = position.x- (sprite.getWidth()/2);
-        float correctPosY = position.y - (sprite.getHeight()/2) ;
+        sprite.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
         batch.begin();
-        sprite.setPosition(correctPosX, correctPosY);
         sprite.draw(batch);
         batch.end();
-        health.draw(new Vector2(correctPosX - 9.5f, correctPosY - 5), maxHealth, currentHealth, 0.5f);
+
+    }
+
+
+    /**
+     * Updates the position,rotation and velocity of the player
+     * @param delta time since function last called
+     */
+    public void update (float delta) {
+
+        // Process player movement
+        movement(delta);
+
+        // Rotate sprite to match movement
+        sprite.setRotation(velocity.angleDeg() - 90);
+
+
     }
 
     /**
-     * @return a float of the collages current health
+     * Updates the velocity of the player dependent on user directional inputs
+     * @param delta time since function last called
+     */
+    private void movement(final float delta) {
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.W);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.S);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.D);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.A);
+
+        Vector2 inputVector = new Vector2(0, 0);
+
+        // Handle player input
+        if (up && !down) {
+            // Move up.
+            inputVector.y = 1;
+        } else if (down && !up){
+            // Move down.
+            inputVector.y = -1;
+        }
+
+        if (right && !left) {
+            // Move right.
+            inputVector.x = 1;
+        } else if (left && !right) {
+            // Move left.
+            inputVector.x = -1;
+        }
+
+        // Normalise inputVector
+        inputVector.nor();
+
+        // Update player velocity
+        velocity.x = inputVector.x * PLAYER_SPEED * delta;
+        velocity.y = inputVector.y * PLAYER_SPEED * delta;
+
+
+        bodyd.setLinearVelocity(velocity.x/delta, velocity.y/delta);
+
+
+    }
+
+    /**
+     * Returns the players current health
+     * @return a float of the player health
      */
     public float getHealth() {
-        return this.currentHealth;
+        return currentHealth;
     }
 
     /**
-     * @return a boolean if the collage is alive or not
+     * Returns the width and height of the player sprite
+     * @return a Vector2 of the dimensions of the sprite
      */
-    public boolean isAlive() {
-        return this.currentHealth > 0;
+    public Vector2 getSpriteDimensions(){return new Vector2((sprite.getHeight()),(sprite.getWidth()));}
+
+    /**
+     * Returns the players maximum health
+     * @return a float of max health
+     */
+    public float getMaxHealth() { return maxHealth; }
+
+    /**
+     * Reduces the players' health by a given amount
+     * @param damage the damage inflicted onto the player
+     */
+    public void takeDamage(int damage) {
+        if (this.getHealth() > 0) {
+            currentHealth -= damage;
+        }
     }
+
+    /**
+     * Determines if the player is dead
+     * @return True if currentHealth is zero
+     */
+    public boolean isDead() {
+        return currentHealth <= 0;
+    }
+
 
     /**
      * Returns True if hit
-     * @return a boolean if the collage has been hit
+     * @return a boolean if the player has been hit
      */
     public boolean isHit(){
         if (bodyd.getUserData() == "Hit"){
@@ -208,22 +209,78 @@ public class College {
     }
 
     /**
-     * Reduces the collages' health by a given amount
-     * @param damage the damage inflicted onto the collage
+     * Logic for calculating bullet position and rendering bullets
+     * @param camera The current camera being used render the bullets
+     * @param colleges The colleges currently alive on the map
+     * @param delta Time since last function call
      */
-    public void takeDamage(int damage) {
-        if (this.getHealth() > 0) {
-            currentHealth -= damage;
+    public void combat(Matrix4 camera, ArrayList<College> colleges, float delta) {
+
+        float velX = 0;
+        float velY = 0;
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            if (((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 250)) {
+                timeSinceLastShot = TimeUtils.millis();
+                if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+                   velX = 0;
+                   velY = 10;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+                   velX = 0;
+                   velY = -10;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+                    velX = 10;
+                    velY = 0;
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+                    velX = -10;
+                    velY = 0;
+                }
+
+                float length = (float) Math.sqrt(velX * velX + velY * velY);
+                if (length != 0) {
+                    velX = velX * BULLET_SPEED / length;
+                    velY = velY * BULLET_SPEED / length;
+                }
+
+                Vector2 bulletVelocity = new Vector2(velX, velY);
+
+                // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
+                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player"));
+            }
+        }
+
+        if (!bullets.isEmpty()){
+            ArrayList<Bullet> toRemove = new ArrayList<>();
+            for (Bullet bullet: bullets) {
+                // Draw and move bullets and check for collisions
+                bullet.setMatrix(camera);
+                bullet.draw();
+                bullet.move(delta);
+                if (bullet.outOfRange(200)) {
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                }
+                for (College college : colleges) {
+                    if (college.isHit() && bullet.hit()) {
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                        college.takeDamage(5);
+                    }
+                }
+            }
+            bullets.removeAll(toRemove);
         }
     }
 
     /**
-     * Renders the health bar above the power
+     * Sets the correct batch projecting matrix
      * @param combined used to set the projection matrix to the correct amount inside the batch renderer
      */
     public void setMatrix(Matrix4 combined) {
         batch.setProjectionMatrix(combined);
-        health.setMatrix(combined);
     }
 
     /**
@@ -232,7 +289,6 @@ public class College {
     public void dispose() {
         batch.dispose();
         health.dispose();
-        gameWorld.destroyBody(bodyd);
         if (!bullets.isEmpty()) {
             for (Bullet bullet : bullets) {
                 bullet.dispose();
@@ -240,14 +296,11 @@ public class College {
         }
     }
 
-    public Object getUserData(){
-        return bodyd.getUserData();
+    public void updateState(){
+        state.playerPosition = this.getPosition();
+        state.currentHealth = this.getHealth();
+        state.maxHealth = this.getMaxHealth();
+        state.points = PointSystem.getPoints();
     }
-    public float getMaxHealth(){
-        return maxHealth;
-    }
-    public float getCurrentHealth(){
-        return currentHealth;
-    }
-
 }
+
