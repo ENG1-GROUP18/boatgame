@@ -211,7 +211,8 @@ public class PlayScreen implements Screen {
             College college = colleges.get(i);
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
-            } else {
+            } 
+            else {
                 college.dispose();
                 colleges.remove(college);
                 state.collegeHealths.remove(college.getUserData());
@@ -312,8 +313,9 @@ public class PlayScreen implements Screen {
         Random rand = new Random();
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
-            state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-            state.collegePositions.put(state.collegeNames.get(i), new Vector2(rand.nextInt(1200), rand.nextInt(1200)));}
+                state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2(rand.nextInt(1200), rand.nextInt(1200)));
+            }
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
