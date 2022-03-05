@@ -7,10 +7,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -44,17 +47,17 @@ public class College {
      * @param college a String stating the name of the collage, used to get the image path
      */
 
-    public College(String college, World world) {
+    public College(String college, World world, GameState state) {
         final String PATH_NAME = "Entities/" + college + ".png";
         final Texture texture = new Texture(Gdx.files.internal(PATH_NAME));
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
         bullets = new ArrayList<>();
         Random rand = new Random();
-        position = new Vector2(rand.nextInt(1200), rand.nextInt(1200));
+        position = state.collegePositions.get(college);
         health = new HealthBar();
-        maxHealth = 100;
-        currentHealth = 100;
+        maxHealth = state.collegeHealths.get(college)[1];
+        currentHealth = state.collegeHealths.get(college)[0];
         gameWorld = world;
 
         cardinalDirections = new ArrayList<>();
@@ -98,7 +101,7 @@ public class College {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         bodyd.createFixture(fixtureDef).setUserData("College");
-        bodyd.setUserData("");
+        bodyd.setUserData(college);
         shape.dispose();
 
     }
@@ -236,4 +239,15 @@ public class College {
             }
         }
     }
+
+    public Object getUserData(){
+        return bodyd.getUserData();
+    }
+    public float getMaxHealth(){
+        return maxHealth;
+    }
+    public float getCurrentHealth(){
+        return currentHealth;
+    }
+
 }
