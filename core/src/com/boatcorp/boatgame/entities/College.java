@@ -42,6 +42,7 @@ public class College {
     private Body bodyd;
     private World gameWorld;
     private GameState state;
+    private Object college;
 
     /**
      * Constructor class to create and initialise a new collage
@@ -61,6 +62,7 @@ public class College {
         currentHealth = state.collegeHealths.get(college)[0];
         gameWorld = world;
         this.state = state;
+        this.college = college;
 
         cardinalDirections = new ArrayList<>();
         cardinalDirections.add(new Vector2(5,0));
@@ -243,7 +245,7 @@ public class College {
     }
 
     public Object getUserData(){
-        return bodyd.getUserData();
+        return college;
     }
     public float getMaxHealth(){
         return maxHealth;
@@ -253,8 +255,8 @@ public class College {
     }
     public void updateState(){
         float[] healths = {currentHealth,maxHealth};
-        state.collegeHealths.put(this.getUserData(), healths);
-        state.collegePositions.put(this.getUserData(), this.getPosition());
+        state.collegeHealths.put(college, healths);
+        state.collegePositions.put(college, this.getPosition());
     }
 
 }
