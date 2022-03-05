@@ -215,6 +215,7 @@ public class PlayScreen implements Screen {
                 college.dispose();
                 colleges.remove(college);
                 state.collegeHealths.remove(college.getUserData());
+                state.collegeNames.remove(college.getUserData());
                 state.collegePositions.remove(college.getUserData());
                 PointSystem.incrementPoint(500);
             }
@@ -309,11 +310,11 @@ public class PlayScreen implements Screen {
 
     public void addColleges(ArrayList colleges){
         Random rand = new Random();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
-            state.collegeHealths.put(state.collegeNames[i], state.collegeHealth);
-            state.collegePositions.put(state.collegeNames[i], new Vector2(rand.nextInt(1200), rand.nextInt(1200)));}
-            colleges.add(new College(state.collegeNames[i], world,state));
+            state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
+            state.collegePositions.put(state.collegeNames.get(i), new Vector2(rand.nextInt(1200), rand.nextInt(1200)));}
+            colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
 
