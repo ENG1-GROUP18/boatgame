@@ -9,7 +9,6 @@ public class GameState{
     public float maxHealth = 100;
     public int points = 0;
     public float[] collegeHealth = {100,100};
-    Random rand = new Random();
     public List<String> collegeNames = Arrays.asList("langwith","james","goodricke");
     public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
     public Map<Object, Vector2> collegePositions = new HashMap<Object,Vector2>();
