@@ -205,11 +205,11 @@ public class PlayScreen implements Screen {
                 college.combat(camera.combined, player,delta);
             } 
             else {
-                college.dispose();
-                colleges.remove(college);
                 state.collegeHealths.remove(college.getUserData());
                 state.collegeNames.remove(college.getUserData());
                 state.collegePositions.remove(college.getUserData());
+                college.dispose();
+                colleges.remove(college);
                 PointSystem.incrementPoint(500);
             }
         }
