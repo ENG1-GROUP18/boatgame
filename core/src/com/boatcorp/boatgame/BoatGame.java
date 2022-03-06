@@ -8,7 +8,6 @@ import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
-import com.boatcorp.boatgame.GameState;
 
 
 /**
@@ -36,7 +35,7 @@ public class BoatGame extends Game {
 		SPLASH,
 		START_MENU,
 		PLAY,
-		PAUSE,
+		PAUSE_MENU,
 		SHOP,
 		END_MENU
 	}
@@ -71,7 +70,8 @@ public class BoatGame extends Game {
 				}
 				setScreen(playScreen);
 				break;
-			case PAUSE:
+
+			case PAUSE_MENU:
 				if (pauseScreen == null) {
 					pauseScreen = new PauseScreen(this);
 				}
@@ -92,9 +92,6 @@ public class BoatGame extends Game {
 				setScreen(endScreen);
 				break;
 		}
-
-
-
 	}
 
 	private void setUpShaders() {

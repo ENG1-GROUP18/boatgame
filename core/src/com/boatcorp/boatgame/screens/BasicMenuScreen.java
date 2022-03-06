@@ -3,13 +3,14 @@ package com.boatcorp.boatgame.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -26,16 +27,19 @@ public class BasicMenuScreen implements Screen {
     // TODO tidy all of this stuff a tiny bit.
 
     //---------------
-    static final boolean ENABLE_TABLE_DEBUG = true;
+    static final boolean ENABLE_TABLE_DEBUG = false;
     //---------------
 
-    protected int jamOnToast = 5;
     private BoatGame boatGame;
     private OrthographicCamera camera;
     private Viewport viewport;
     protected Stage stage;
     private VfxManager vfxManager;
     protected Label.LabelStyle style;
+    protected Pixmap pixmap;
+    protected Texture texture;
+    protected TextureRegionDrawable drawable;
+    protected SpriteBatch batch;
 
 
     public BasicMenuScreen(BoatGame game) {
@@ -45,8 +49,17 @@ public class BasicMenuScreen implements Screen {
         stage = new Stage(viewport);
         vfxManager = game.getVfxManager();
 
+        // Style to be applied to labels
         style = new Label.LabelStyle(
                 new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
+        style.font.getData().markupEnabled = true;
+
+        // Solid color texture created to use as screen background
+        pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(10/255f, 10/255f, 10/255f, 1));
+        pixmap.fill();
+        texture = new Texture(pixmap);
+        batch = new SpriteBatch();
        }
 
 
@@ -63,6 +76,12 @@ public class BasicMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
+
+        // Draw background texture
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(texture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.end();
 
         stage.draw();
 
@@ -106,5 +125,7 @@ public class BasicMenuScreen implements Screen {
     public void dispose() {
         vfxManager.dispose();
         stage.dispose();
+        pixmap.dispose();
+        texture.dispose();
     }
 }

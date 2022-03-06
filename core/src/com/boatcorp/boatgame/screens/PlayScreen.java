@@ -35,7 +35,7 @@ public class PlayScreen implements Screen {
 
     //---------------
     private boolean ENABLE_SHADERS = true;
-    private boolean BOX2D_WIREFRAME = true;
+    private boolean BOX2D_WIREFRAME = false;
     //---------------
 
 
