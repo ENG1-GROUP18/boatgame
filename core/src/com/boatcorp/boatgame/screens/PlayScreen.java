@@ -199,20 +199,23 @@ public class PlayScreen implements Screen {
         if (colleges.isEmpty()) {
             boatGame.setScreen(new ResultScreen(true, boatGame));
         }
-        for (int i = 0; i < colleges.size(); i++) {
-            College college = colleges.get(i);
+        ArrayList<String> toRemoveName = new ArrayList<>();
+        ArrayList<College> toRemoveCollage = new ArrayList<>(0);
+        for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
             } 
             else {
-                state.collegeHealths.remove(college.getUserData());
-                state.collegeNames.remove(college.getUserData());
-                state.collegePositions.remove(college.getUserData());
+                toRemoveName.add(college.getUserData().toString());
+                state.collegeHealths.remove(college.getUserData().toString());
+                state.collegePositions.remove(college.getUserData().toString());
+                toRemoveCollage.add(college);
                 college.dispose();
-                colleges.remove(college);
                 PointSystem.incrementPoint(500);
             }
         }
+        state.collegeNames.removeAll(toRemoveName);
+        colleges.removeAll(toRemoveCollage);
         player.combat(camera.combined, colleges,delta);
     }
 
