@@ -12,14 +12,14 @@ public class SplashScreen extends BasicMenuScreen {
         super(game);
 
         // Create items
-        Label label1 = new Label("boatgame", style);
+        Label label1 = new Label("Boatgame", style);
         label1.setAlignment(Align.center);
         label1.setFontScale(0.6f);
 
         // Add items to table
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(BasicMenuScreen.ENABLE_TABLE_DEBUG);
+        table.setDebug(game.ENABLE_TABLE_DEBUG);
         table.add(label1).fillX().uniformX();
 
         // Add table to stage

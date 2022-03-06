@@ -20,20 +20,19 @@ public class StartMenuScreen extends BasicMenuScreen{
         // Create table
         Table table = new Table();
         table.setFillParent(true);
-        table.setDebug(BasicMenuScreen.ENABLE_TABLE_DEBUG);
-        table.setColor(140/255f, 140/255f, 140/255f, 1);
+        table.setDebug(game.ENABLE_TABLE_DEBUG);
         stage.addActor(table);
 
         // Add labels to table
-        Label label1 = new Label("[WHITE]move with [GOLD]WASD", style);
+        Label label1 = new Label("[NORMAL]MOVE WITH [HIGHLIGHTED]WASD", style);
         label1.setAlignment(Align.center);
         label1.setFontScale(0.4f);
 
-        Label label2 = new Label("[WHITE]aim and fire with [GOLD]ARROW KEYS", style);
+        Label label2 = new Label("[NORMAL]AIM AND FIRE WITH [HIGHLIGHTED]ARROW KEYS", style);
         label2.setAlignment(Align.center);
         label2.setFontScale(0.4f);
 
-        Label label3 = new Label("[WHITE]press [GOLD]SPACE [WHITE]to start", style);
+        Label label3 = new Label("[NORMAL]PRESS [HIGHLIGHTED]SPACE [NORMAL]TO START", style);
         label3.setAlignment(Align.center);
         label3.setFontScale(0.4f);
 

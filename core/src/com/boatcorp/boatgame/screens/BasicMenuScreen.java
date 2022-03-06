@@ -26,10 +26,6 @@ public class BasicMenuScreen implements Screen {
 
     // TODO tidy all of this stuff a tiny bit.
 
-    //---------------
-    static final boolean ENABLE_TABLE_DEBUG = false;
-    //---------------
-
     private BoatGame boatGame;
     private OrthographicCamera camera;
     private Viewport viewport;
@@ -53,6 +49,10 @@ public class BasicMenuScreen implements Screen {
         style = new Label.LabelStyle(
                 new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
         style.font.getData().markupEnabled = true;
+
+        // Custom colours
+        Colors.put("NORMAL", new Color(225/255f, 225/255f, 225/255f, 1));
+        Colors.put("HIGHLIGHTED", new Color(200/255f, 35/255f, 75/255f, 1));
 
         // Solid color texture created to use as screen background
         pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
@@ -87,7 +87,10 @@ public class BasicMenuScreen implements Screen {
 
         // Render with shaders added
         vfxManager.endInputCapture();
-        vfxManager.applyEffects();
+        if (boatGame.ENABLE_SHADERS) {
+            vfxManager.applyEffects();
+        }
+
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());

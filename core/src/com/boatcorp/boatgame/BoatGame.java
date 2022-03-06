@@ -8,6 +8,7 @@ import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
+import org.graalvm.compiler.virtual.phases.ea.EffectList;
 
 
 /**
@@ -15,12 +16,21 @@ import com.google.gson.Gson;
  */
 public class BoatGame extends Game {
 
+	//---------------
+	public final boolean ENABLE_SHADERS = false;
+	public final boolean ENABLE_TABLE_DEBUG = false;
+	//---------------
+
+
+
+
 	// For a universal set of shaders
 	private VfxManager vfxManager;
 	private OldTvEffect effectTv;
 	private VignettingEffect effectVignetting;
 	private RadialDistortionEffect effectDistortion;
 	private BloomEffect effectBloom;
+	private NfaaEffect effectAA;
 
 	// Screens
 	private SplashScreen splashScreen;
@@ -99,7 +109,7 @@ public class BoatGame extends Game {
 		vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
 		effectTv = new OldTvEffect();
-		effectTv.setTime(0.2f);
+		effectTv.setTime(0f);
 
 		effectVignetting = new VignettingEffect(false);
 		effectVignetting.setIntensity(0.8f);
@@ -109,12 +119,19 @@ public class BoatGame extends Game {
 		effectDistortion.setDistortion(0.1f);
 
 		effectBloom = new BloomEffect();
+		effectBloom.setThreshold(0.2f);
+		effectBloom.setBloomIntensity(1.2f);
+		effectBloom.setBaseIntensity(1.2f);
+
+		effectAA = new NfaaEffect(false);
 
 		// Add shaders to manager, order matters
 		vfxManager.addEffect(effectTv);
 		vfxManager.addEffect(effectVignetting);
 		vfxManager.addEffect(effectDistortion);
 		vfxManager.addEffect(effectBloom);
+		//vfxManager.addEffect(effectAA);
+
 	}
 
 	@Override
@@ -124,6 +141,7 @@ public class BoatGame extends Game {
 		effectTv.dispose();
 		effectDistortion.dispose();
 		effectVignetting.dispose();
+		effectAA.dispose();
 	}
 
 	public VfxManager getVfxManager() {

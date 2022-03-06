@@ -33,12 +33,6 @@ import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
 
-    //---------------
-    private boolean ENABLE_SHADERS = true;
-    private boolean BOX2D_WIREFRAME = false;
-    //---------------
-
-
     private final BoatGame boatGame;
     private final SpriteBatch batch;
     private final SpriteBatch fontBatch;
@@ -109,7 +103,7 @@ public class PlayScreen implements Screen {
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Box2D debug renderer
-        debugRenderer = new Box2DDebugRenderer(BOX2D_WIREFRAME,false,false,false,BOX2D_WIREFRAME,BOX2D_WIREFRAME);
+        debugRenderer = new Box2DDebugRenderer();
     }
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
@@ -168,8 +162,6 @@ public class PlayScreen implements Screen {
         }
         player.draw();
 
-        //Draws box2D hitboxes for debug
-        debugRenderer.render(world, viewport.getCamera().combined);
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
@@ -177,22 +169,22 @@ public class PlayScreen implements Screen {
         hud.getStage().draw();
 
         hud.getStage().act(delta);
-
         combat(delta);
+
+        //Draws box2D hitboxes for debug
+        if (boatGame.ENABLE_SHADERS) {
+            debugRenderer.render(world, viewport.getCamera().combined);
+        }
 
         vfxManager.endInputCapture();
 
-        if (ENABLE_SHADERS) {
+        if (boatGame.ENABLE_SHADERS) {
             vfxManager.applyEffects();
         }
 
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
-
-
-
-
     }
 
     //TODO rename this, maybe implement directly into act/render method
