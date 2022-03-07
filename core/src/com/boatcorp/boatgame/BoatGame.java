@@ -8,6 +8,7 @@ import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
+import org.graalvm.compiler.virtual.phases.ea.EffectList;
 
 
 /**
@@ -15,12 +16,21 @@ import com.google.gson.Gson;
  */
 public class BoatGame extends Game {
 
+	//---------------
+	public final boolean ENABLE_SHADERS = false;
+	public final boolean ENABLE_TABLE_DEBUG = false;
+	//---------------
+
+
+
+
 	// For a universal set of shaders
 	private VfxManager vfxManager;
 	private OldTvEffect effectTv;
 	private VignettingEffect effectVignetting;
 	private RadialDistortionEffect effectDistortion;
 	private BloomEffect effectBloom;
+	private NfaaEffect effectAA;
 
 	// Screens
 	private SplashScreen splashScreen;
@@ -35,7 +45,7 @@ public class BoatGame extends Game {
 		SPLASH,
 		START_MENU,
 		PLAY,
-		PAUSE,
+		PAUSE_MENU,
 		SHOP,
 		END_MENU
 	}
@@ -66,11 +76,12 @@ public class BoatGame extends Game {
 
 			case PLAY:
 				if (playScreen == null) {
-					playScreen = new PlayScreen(this);
+					playScreen = new PlayScreen(this, new GameState());
 				}
 				setScreen(playScreen);
 				break;
-			case PAUSE:
+
+			case PAUSE_MENU:
 				if (pauseScreen == null) {
 					pauseScreen = new PauseScreen(this);
 				}
@@ -91,9 +102,6 @@ public class BoatGame extends Game {
 				setScreen(endScreen);
 				break;
 		}
-
-
-
 	}
 
 	private void setUpShaders() {
@@ -101,7 +109,7 @@ public class BoatGame extends Game {
 		vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
 		effectTv = new OldTvEffect();
-		effectTv.setTime(0.2f);
+		effectTv.setTime(0f);
 
 		effectVignetting = new VignettingEffect(false);
 		effectVignetting.setIntensity(0.8f);
@@ -111,12 +119,19 @@ public class BoatGame extends Game {
 		effectDistortion.setDistortion(0.1f);
 
 		effectBloom = new BloomEffect();
+		effectBloom.setThreshold(0.2f);
+		effectBloom.setBloomIntensity(1.2f);
+		effectBloom.setBaseIntensity(1.2f);
+
+		effectAA = new NfaaEffect(false);
 
 		// Add shaders to manager, order matters
 		vfxManager.addEffect(effectTv);
 		vfxManager.addEffect(effectVignetting);
 		vfxManager.addEffect(effectDistortion);
 		vfxManager.addEffect(effectBloom);
+		//vfxManager.addEffect(effectAA);
+
 	}
 
 	@Override
@@ -126,6 +141,7 @@ public class BoatGame extends Game {
 		effectTv.dispose();
 		effectDistortion.dispose();
 		effectVignetting.dispose();
+		effectAA.dispose();
 	}
 
 	public VfxManager getVfxManager() {
@@ -134,16 +150,18 @@ public class BoatGame extends Game {
 	
 	public void saveGame(){
 		Gson gson = new Gson();
-		String json = gson.toJson(this.getScreen());
+		String json = gson.toJson(playScreen.getState(),GameState.class);
 		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
 		p.putString("0", json);
+		p.flush();
 	}
 
 	public void loadGame(){
 		Gson gson = new Gson();
 		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
-		PlayScreen loader = gson.fromJson(p.getString("0"), PlayScreen.class);
-		this.setScreen(loader);
+		GameState loader = gson.fromJson(p.getString("0"), GameState.class);
+		playScreen = new PlayScreen(this, loader);
+		this.setScreen(playScreen);
 	}
 
 }

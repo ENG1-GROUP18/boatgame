@@ -25,18 +25,14 @@ import com.boatcorp.boatgame.tools.MapLoader;
 import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
+import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
-
-    //---------------
-    private boolean ENABLE_SHADERS = true;
-    private boolean BOX2D_WIREFRAME = true;
-    //---------------
-
 
     private final BoatGame boatGame;
     private final SpriteBatch batch;
@@ -52,6 +48,8 @@ public class PlayScreen implements Screen {
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
+    private GameState state;
+
 
     // For Shader
     private VfxManager vfxManager;
@@ -62,7 +60,7 @@ public class PlayScreen implements Screen {
     private FxaaEffect effectFxaa;
 
 
-    public PlayScreen(BoatGame game) {
+    public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
         batch = new SpriteBatch();
         fontBatch = new SpriteBatch();
@@ -72,16 +70,16 @@ public class PlayScreen implements Screen {
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
         gameStage = new Stage(viewport);
+        this.state = state;
 
         mapLoader = new MapLoader();
-        player = new Player(viewport,world);
+        player = new Player(viewport,world,state);
         colleges = new ArrayList<>();
-        colleges.add(new College("langwith", world));
-        colleges.add(new College("james", world));
-        colleges.add(new College("goodricke", world));
+        addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
-
+        PointSystem.setPoints(state.points);
+        
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
@@ -110,7 +108,7 @@ public class PlayScreen implements Screen {
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Box2D debug renderer
-        debugRenderer = new Box2DDebugRenderer(BOX2D_WIREFRAME,false,false,false,BOX2D_WIREFRAME,BOX2D_WIREFRAME);
+        debugRenderer = new Box2DDebugRenderer();
     }
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
@@ -171,8 +169,6 @@ public class PlayScreen implements Screen {
         gameStage.draw();
         combat(delta);
 
-        //Draws box2D hitboxes for debug
-        debugRenderer.render(world, viewport.getCamera().combined);
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
@@ -183,19 +179,20 @@ public class PlayScreen implements Screen {
 
 
 
+        //Draws box2D hitboxes for debug
+        if (boatGame.ENABLE_SHADERS) {
+            debugRenderer.render(world, viewport.getCamera().combined);
+        }
+
         vfxManager.endInputCapture();
 
-        if (ENABLE_SHADERS) {
+        if (boatGame.ENABLE_SHADERS) {
             vfxManager.applyEffects();
         }
 
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
-
-
-
-
     }
 
     //TODO rename this, maybe implement directly into act/render method
@@ -210,29 +207,41 @@ public class PlayScreen implements Screen {
         if (colleges.isEmpty()) {
             boatGame.setScreen(new ResultScreen(true, boatGame));
         }
-        for (int i = 0; i < colleges.size(); i++) {
-            College college = colleges.get(i);
+        ArrayList<String> toRemoveName = new ArrayList<>();
+        ArrayList<College> toRemoveCollage = new ArrayList<>(0);
+        for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
-            } else {
+            } 
+            else {
+                toRemoveName.add(college.getUserData().toString());
+                state.collegeHealths.remove(college.getUserData().toString());
+                state.collegePositions.remove(college.getUserData().toString());
+                toRemoveCollage.add(college);
                 college.dispose();
-                colleges.remove(college);
                 PointSystem.incrementPoint(500);
             }
         }
-        batch.begin();
+
+        state.collegeNames.removeAll(toRemoveName);
+        colleges.removeAll(toRemoveCollage);
+
+
         ArrayList<Bullet> bullets;
         bullets = player.combat(colleges);
         if (!bullets.isEmpty()){
+            batch.begin();
             for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera.combined);
+                // Draw and move bullets
                 bullet.draw(batch,1);
                 bullet.move(delta);
             }
+            batch.end();
         }
 
-        batch.end();
+
+
+
     }
 
     private void update(final float delta) {
@@ -319,4 +328,27 @@ public class PlayScreen implements Screen {
         effectBloom.dispose();
         effectFxaa.dispose();
     }
+
+    public void addColleges(ArrayList colleges){
+        Random rand = new Random();
+        for (int i = 0; i < state.collegeNames.size(); i++) {
+            if (state.isSpawn){
+                state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2(rand.nextInt(1200), rand.nextInt(1200)));
+            }
+            colleges.add(new College(state.collegeNames.get(i), world,state));
+        }
+
+
+    }
+    
+    public GameState getState(){
+        player.updateState();
+        for (College college : colleges) {
+            college.updateState();
+        }
+        state.isSpawn = false;
+        return state;
+    }
 }
+
