@@ -153,7 +153,9 @@ public class PlayScreen implements Screen {
         vfxManager.beginInputCapture();
 
         update(delta);
+
         gameStage.act();
+
         // Batch drawing
         player.setMatrix(camera.combined);
         for (College college : colleges) { //TODO this really needs rethinking.
@@ -173,11 +175,11 @@ public class PlayScreen implements Screen {
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
         hud.setHealthValue(player.getHealth());
+
+        combat(delta);
         hud.getStage().draw();
 
         hud.getStage().act(delta);
-
-
 
         //Draws box2D hitboxes for debug
         if (boatGame.ENABLE_SHADERS) {
@@ -254,6 +256,7 @@ public class PlayScreen implements Screen {
         
         camera.zoom = DEFAULT_ZOOM;
 
+        // TODO this really shouldn't be here, no need to get this every update
         // Get properties of the map from the TileMap
         MapProperties prop = mapLoader.getMap().getProperties();
         int mapWidth = prop.get("width", Integer.class);

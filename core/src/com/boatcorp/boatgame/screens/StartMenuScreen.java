@@ -24,17 +24,17 @@ public class StartMenuScreen extends BasicMenuScreen{
         stage.addActor(table);
 
         // Add labels to table
-        Label label1 = new Label("[NORMAL]MOVE WITH [HIGHLIGHTED]WASD", style);
+        Label label1 = new Label("[NORMAL]move with [HIGHLIGHTED]WASD", style);
         label1.setAlignment(Align.center);
-        label1.setFontScale(0.4f);
+        label1.setFontScale(1f);
 
-        Label label2 = new Label("[NORMAL]AIM AND FIRE WITH [HIGHLIGHTED]ARROW KEYS", style);
+        Label label2 = new Label("[NORMAL]aim and fire with [HIGHLIGHTED]ARROW KEYS", style);
         label2.setAlignment(Align.center);
-        label2.setFontScale(0.4f);
+        label2.setFontScale(1f);
 
-        Label label3 = new Label("[NORMAL]PRESS [HIGHLIGHTED]SPACE [NORMAL]TO START", style);
+        Label label3 = new Label("[NORMAL]press [HIGHLIGHTED]SPACE [NORMAL]to start", style);
         label3.setAlignment(Align.center);
-        label3.setFontScale(0.4f);
+        label3.setFontScale(1f);
 
         table.add(label1).fillX().uniformX().pad(20).row();
         table.add(label2).fillX().uniformX().pad(20).row();

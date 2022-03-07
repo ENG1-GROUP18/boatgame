@@ -14,7 +14,7 @@ public class SplashScreen extends BasicMenuScreen {
         // Create items
         Label label1 = new Label("Boatgame", style);
         label1.setAlignment(Align.center);
-        label1.setFontScale(0.6f);
+        label1.setFontScale(1f);
 
         // Add items to table
         Table table = new Table();
