@@ -22,8 +22,6 @@ public class BoatGame extends Game {
 	//---------------
 
 
-
-
 	// For a universal set of shaders
 	private VfxManager vfxManager;
 	private OldTvEffect effectTv;

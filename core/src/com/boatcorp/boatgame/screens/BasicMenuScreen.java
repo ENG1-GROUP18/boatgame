@@ -47,7 +47,7 @@ public class BasicMenuScreen implements Screen {
 
         // Style to be applied to labels
         style = new Label.LabelStyle(
-                new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
+                new BitmapFont(Gdx.files.internal("fonts/PressStart2P.fnt")), Color.WHITE);
         style.font.getData().markupEnabled = true;
 
         // Custom colours
