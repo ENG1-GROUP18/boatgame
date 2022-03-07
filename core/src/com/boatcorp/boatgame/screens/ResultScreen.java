@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.BoatGame;
+import com.boatcorp.boatgame.GameState;
 
 public class ResultScreen implements Screen {
 
@@ -55,7 +56,7 @@ public class ResultScreen implements Screen {
     private void checkInputs() {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER) ) {
             PointSystem.setPoints(0);
-            boatGame.setScreen(new PlayScreen(boatGame));
+            boatGame.setScreen(new PlayScreen(boatGame, new GameState()));
         }
 
     }

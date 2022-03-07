@@ -3,13 +3,14 @@ package com.boatcorp.boatgame.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -25,17 +26,16 @@ public class BasicMenuScreen implements Screen {
 
     // TODO tidy all of this stuff a tiny bit.
 
-    //---------------
-    static final boolean ENABLE_TABLE_DEBUG = true;
-    //---------------
-
-    protected int jamOnToast = 5;
     private BoatGame boatGame;
     private OrthographicCamera camera;
     private Viewport viewport;
     protected Stage stage;
     private VfxManager vfxManager;
     protected Label.LabelStyle style;
+    protected Pixmap pixmap;
+    protected Texture texture;
+    protected TextureRegionDrawable drawable;
+    protected SpriteBatch batch;
 
 
     public BasicMenuScreen(BoatGame game) {
@@ -45,8 +45,21 @@ public class BasicMenuScreen implements Screen {
         stage = new Stage(viewport);
         vfxManager = game.getVfxManager();
 
+        // Style to be applied to labels
         style = new Label.LabelStyle(
                 new BitmapFont(Gdx.files.internal("fonts/korg.fnt")), Color.WHITE);
+        style.font.getData().markupEnabled = true;
+
+        // Custom colours
+        Colors.put("NORMAL", new Color(225/255f, 225/255f, 225/255f, 1));
+        Colors.put("HIGHLIGHTED", new Color(200/255f, 35/255f, 75/255f, 1));
+
+        // Solid color texture created to use as screen background
+        pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(new Color(10/255f, 10/255f, 10/255f, 1));
+        pixmap.fill();
+        texture = new Texture(pixmap);
+        batch = new SpriteBatch();
        }
 
 
@@ -64,11 +77,20 @@ public class BasicMenuScreen implements Screen {
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
+        // Draw background texture
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(texture, 0, 0, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.end();
+
         stage.draw();
 
         // Render with shaders added
         vfxManager.endInputCapture();
-        vfxManager.applyEffects();
+        if (boatGame.ENABLE_SHADERS) {
+            vfxManager.applyEffects();
+        }
+
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
@@ -106,5 +128,7 @@ public class BasicMenuScreen implements Screen {
     public void dispose() {
         vfxManager.dispose();
         stage.dispose();
+        pixmap.dispose();
+        texture.dispose();
     }
 }

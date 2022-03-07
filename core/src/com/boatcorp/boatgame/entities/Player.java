@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
+import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;
 
@@ -31,6 +33,7 @@ public class Player extends Group {
     private final Viewport viewport;
     private long timeSinceLastShot;
     private Body bodyd;
+    private GameState state;
 
     private final World gameWorld;
 
@@ -47,23 +50,24 @@ public class Player extends Group {
      * Initialises a Player with a texture at the required position, along with other relevant attributes
      * @param view the current viewport
      */
-    public Player(Viewport view, World world) {
+    public Player(Viewport view, World world, GameState state) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
         health = new HealthBar();
         bullets = new ArrayList<>();
-        maxHealth = 100;
-        currentHealth = 100;
+        maxHealth = state.maxHealth;
+        currentHealth = state.currentHealth;
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
+        this.state = state;
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(100,100);
+        bodyDef.position.set(state.playerPosition.x,state.playerPosition.y);
         bodyDef.fixedRotation = true;
         bodyd = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
@@ -255,9 +259,8 @@ public class Player extends Group {
                 bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player"));
             }
         }
-
+        ArrayList<Bullet> toRemove = new ArrayList<>();
         if (!bullets.isEmpty()){
-            ArrayList<Bullet> toRemove = new ArrayList<>();
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
                 if (bullet.outOfRange(200)) {
@@ -272,8 +275,8 @@ public class Player extends Group {
                     }
                 }
             }
-            bullets.removeAll(toRemove);
         }
+        bullets.removeAll(toRemove);
         return bullets;
     }
 
@@ -297,4 +300,12 @@ public class Player extends Group {
             }
         }
     }
+
+    public void updateState(){
+        state.playerPosition = this.getPosition();
+        state.currentHealth = this.getHealth();
+        state.maxHealth = this.getMaxHealth();
+        state.points = PointSystem.getPoints();
+    }
 }
+
