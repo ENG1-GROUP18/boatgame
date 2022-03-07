@@ -1,6 +1,5 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -13,9 +12,11 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
+import com.boatcorp.boatgame.entities.Bullet;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
@@ -46,7 +47,9 @@ public class PlayScreen implements Screen {
     private final ArrayList<College> colleges;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
+    private Stage gameStage;
     private GameState state;
+
 
     // For Shader
     private VfxManager vfxManager;
@@ -66,6 +69,7 @@ public class PlayScreen implements Screen {
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
+        gameStage = new Stage(viewport);
         this.state = state;
 
         mapLoader = new MapLoader();
@@ -77,6 +81,7 @@ public class PlayScreen implements Screen {
         PointSystem.setPoints(state.points);
         
         world.setContactListener(new WorldContactListener(this));
+        gameStage.addActor(player);
 
         addWorldBorder();
 
@@ -149,6 +154,7 @@ public class PlayScreen implements Screen {
 
         update(delta);
 
+        gameStage.act();
 
         // Batch drawing
         player.setMatrix(camera.combined);
@@ -162,7 +168,8 @@ public class PlayScreen implements Screen {
         for (College college : colleges) {
             college.draw();
         }
-        player.draw();
+        gameStage.draw();
+        combat(delta);
 
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
@@ -217,13 +224,30 @@ public class PlayScreen implements Screen {
                 PointSystem.incrementPoint(500);
             }
         }
+
         state.collegeNames.removeAll(toRemoveName);
         colleges.removeAll(toRemoveCollage);
-        player.combat(camera.combined, colleges,delta);
+
+
+        ArrayList<Bullet> bullets;
+        bullets = player.combat(colleges);
+        if (!bullets.isEmpty()){
+            batch.begin();
+            for (Bullet bullet: bullets) {
+                // Draw and move bullets
+                bullet.draw(batch,1);
+                bullet.move(delta);
+            }
+            batch.end();
+        }
+
+
+
+
     }
 
     private void update(final float delta) {
-        
+
         boolean save = Gdx.input.isKeyJustPressed(Input.Keys.C);
         boolean load = Gdx.input.isKeyJustPressed(Input.Keys.V);
 
@@ -257,7 +281,7 @@ public class PlayScreen implements Screen {
 
         world.step(delta, 6,2);
 
-        player.update(delta);
+        //player.update(delta);
 
 
     }

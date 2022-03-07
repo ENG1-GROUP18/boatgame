@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.frameworks.HealthBar;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,7 +143,7 @@ public class College {
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
                 bullet.setMatrix(camera);
-                bullet.draw();
+                bullet.draws();
                 bullet.move(delta);
                 if (bullet.outOfRange(300)) {
                     bullet.dispose();
