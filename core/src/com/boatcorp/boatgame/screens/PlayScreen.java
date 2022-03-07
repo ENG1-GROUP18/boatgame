@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
+import com.boatcorp.boatgame.entities.PlayerShip;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
@@ -47,6 +48,9 @@ public class PlayScreen implements Screen {
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
     private GameState state;
+
+
+    PlayerShip testPlayerShip;
 
     // For Shader
     private VfxManager vfxManager;
@@ -104,7 +108,10 @@ public class PlayScreen implements Screen {
 
         //Box2D debug renderer
         debugRenderer = new Box2DDebugRenderer();
+
+        testPlayerShip = new PlayerShip();
     }
+
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
@@ -132,7 +139,6 @@ public class PlayScreen implements Screen {
         shape.setAsBox(0,1371,new Vector2(1421,1371),0);
         fixtureDef.shape = shape;
         worldBorder.createFixture(fixtureDef);
-
     }
 
     @Override
@@ -148,6 +154,8 @@ public class PlayScreen implements Screen {
         vfxManager.beginInputCapture();
 
         update(delta);
+        testPlayerShip.act(delta);
+
 
 
         // Batch drawing
@@ -227,8 +235,8 @@ public class PlayScreen implements Screen {
         boolean save = Gdx.input.isKeyJustPressed(Input.Keys.C);
         boolean load = Gdx.input.isKeyJustPressed(Input.Keys.V);
 
-        if(save){boatGame.saveGame();}
-        if(load){boatGame.loadGame();}
+//        if(save){boatGame.saveGame();}
+//        if(load){boatGame.loadGame();}
         
         camera.zoom = DEFAULT_ZOOM;
 

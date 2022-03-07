@@ -33,7 +33,7 @@ public class BoatGame extends Game {
 	// Screens
 	private SplashScreen splashScreen;
 	private StartMenuScreen startMenuScreen;
-	private PlayScreen playScreen;
+	private newPlayScreen playScreen;
 	private PauseScreen pauseScreen;
 	private ShopScreen shopScreen;
 	private EndScreen endScreen;
@@ -74,7 +74,7 @@ public class BoatGame extends Game {
 
 			case PLAY:
 				if (playScreen == null) {
-					playScreen = new PlayScreen(this, new GameState());
+					playScreen = new newPlayScreen(this);
 				}
 				setScreen(playScreen);
 				break;
@@ -146,20 +146,20 @@ public class BoatGame extends Game {
 		return vfxManager;
 	}
 	
-	public void saveGame(){
-		Gson gson = new Gson();
-		String json = gson.toJson(playScreen.getState(),GameState.class);
-		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
-		p.putString("0", json);
-		p.flush();
-	}
+//	public void saveGame(){
+//		Gson gson = new Gson();
+//		String json = gson.toJson(playScreen.getState(),GameState.class);
+//		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
+//		p.putString("0", json);
+//		p.flush();
+//	}
 
-	public void loadGame(){
-		Gson gson = new Gson();
-		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
-		GameState loader = gson.fromJson(p.getString("0"), GameState.class);
-		playScreen = new PlayScreen(this, loader);
-		this.setScreen(playScreen);
-	}
+//	public void loadGame(){
+//		Gson gson = new Gson();
+//		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
+//		GameState loader = gson.fromJson(p.getString("0"), GameState.class);
+//		playScreen = new PlayScreen(this, loader);
+//		this.setScreen(playScreen);
+//	}
 
 }
