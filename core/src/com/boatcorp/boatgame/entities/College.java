@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * Creates a collage object
+ * Creates a college object
  */
 public class College {
     private final SpriteBatch batch;
@@ -31,7 +31,7 @@ public class College {
     private final ArrayList<Vector2> cardinalDirections;
     /**Holds the vectors to fire the bullets in a rotating patter*/
     private final ArrayList<Vector2> rotatingDirections;
-    /**The attack patterns of the collages*/
+    /**The attack patterns of the colleges*/
     private final ArrayList<ArrayList<Vector2>> attackPatterns;
     private final HealthBar health;
     /**The collages max health*/
@@ -44,8 +44,8 @@ public class College {
     private Object college;
 
     /**
-     * Constructor class to create and initialise a new collage
-     * @param college a String stating the name of the collage, used to get the image path
+     * Constructor class to create and initialise a new college
+     * @param college a String stating the name of the college, used to get the image path
      */
 
     public College(Object college, World world, GameState state) {
@@ -172,7 +172,7 @@ public class College {
     }
 
     /**
-     * Draws the collage in the randomly selected position
+     * Draws the college in the randomly selected position
      */
     public void draw() {
         float correctPosX = position.x- (sprite.getWidth()/2);
@@ -185,14 +185,14 @@ public class College {
     }
 
     /**
-     * @return a float of the collages current health
+     * @return a float of the colleges current health
      */
     public float getHealth() {
         return this.currentHealth;
     }
 
     /**
-     * @return a boolean if the collage is alive or not
+     * @return a boolean if the college is alive or not
      */
     public boolean isAlive() {
         return this.currentHealth > 0;
@@ -200,7 +200,7 @@ public class College {
 
     /**
      * Returns True if hit
-     * @return a boolean if the collage has been hit
+     * @return a boolean if the college has been hit
      */
     public boolean isHit(){
         if (bodyd.getUserData() == "Hit"){
@@ -211,7 +211,7 @@ public class College {
     }
 
     /**
-     * Reduces the collages' health by a given amount
+     * Reduces the colleges' health by a given amount
      * @param damage the damage inflicted onto the collage
      */
     public void takeDamage(int damage) {
@@ -242,7 +242,9 @@ public class College {
             }
         }
     }
-
+    /**
+     * Gets the name of the college
+     */
     public Object getUserData(){
         return college;
     }
@@ -252,6 +254,9 @@ public class College {
     public float getCurrentHealth(){
         return currentHealth;
     }
+    /**
+     * Updates the game state with the college's properties
+     */
     public void updateState(){
         float[] healths = {currentHealth,maxHealth};
         state.collegeHealths.put(college, healths);
