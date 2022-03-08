@@ -300,7 +300,10 @@ public class Player extends Group {
             }
         }
     }
-
+    
+    /**
+     * Updates the gamestate with the player's properties
+     */
     public void updateState(){
         state.playerPosition = this.getPosition();
         state.currentHealth = this.getHealth();
