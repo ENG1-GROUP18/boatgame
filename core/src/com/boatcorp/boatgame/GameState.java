@@ -3,6 +3,10 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.*;
 
+/**
+* Game state used for intiliasing, saving and loading game.
+*/
+
 public class GameState{
     public Vector2 playerPosition = new Vector2(100,100);
     public float currentHealth = 100;
