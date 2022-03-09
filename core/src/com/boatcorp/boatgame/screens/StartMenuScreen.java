@@ -32,19 +32,38 @@ public class StartMenuScreen extends BasicMenuScreen{
         label2.setAlignment(Align.center);
         label2.setFontScale(1f);
 
-        Label label3 = new Label("[NORMAL]press [HIGHLIGHTED]SPACE [NORMAL]to start", style);
+        Label label3 = new Label("[NORMAL]save to the 4 memory slots \n with [HIGHLIGHTED]1, 2, 3 or 4", style);
         label3.setAlignment(Align.center);
         label3.setFontScale(1f);
 
+        Label label4 = new Label("[NORMAL]press [HIGHLIGHTED]SPACE [NORMAL]to start", style);
+        label4.setAlignment(Align.center);
+        label4.setFontScale(1f);
+
+        Label label5 = new Label("[NORMAL]press [HIGHLIGHTED]ENTER [NORMAL]to browse saved games", style);
+        label4.setAlignment(Align.center);
+        label4.setFontScale(1f);
+
         table.add(label1).fillX().uniformX().pad(20).row();
         table.add(label2).fillX().uniformX().pad(20).row();
-        table.add(label3).fillX().uniformX().pad(20);
+        table.add(label3).fillX().uniformX().pad(20).row();
+        table.add(label4).fillX().uniformX().pad(20).row();
+        table.add(label5).fillX().uniformX().pad(20);
 
         // Listener to detect input to progress past menu screen
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
                 if (keycode == Input.Keys.SPACE) {
                     game.changeScreen(BoatGame.screenType.PLAY);
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.ENTER) {
+                    game.changeScreen(BoatGame.screenType.SAVE);
                 }
                 return true;
             }
@@ -57,3 +76,4 @@ public class StartMenuScreen extends BasicMenuScreen{
         super.update();
     }
 }
+
