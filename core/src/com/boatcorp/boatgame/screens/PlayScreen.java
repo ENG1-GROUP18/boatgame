@@ -20,6 +20,7 @@ import com.boatcorp.boatgame.entities.Bullet;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
+import com.boatcorp.boatgame.frameworks.PlunderSystem;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
 import com.boatcorp.boatgame.tools.WorldContactListener;
@@ -175,6 +176,7 @@ public class PlayScreen implements Screen {
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
         hud.setPointScore("Points: " + PointSystem.getPoints());
         hud.setHealthValue(player.getHealth());
+        hud.setPlunderScore("Plunder: " + PlunderSystem.getPlunder());
 
         combat(delta);
         hud.getStage().draw();
@@ -222,6 +224,8 @@ public class PlayScreen implements Screen {
                 toRemoveCollage.add(college);
                 college.dispose();
                 PointSystem.incrementPoint(500);
+                float doubleRandomNumber = (float) Math.random() * 50;
+                PlunderSystem.incrementPlunder(doubleRandomNumber + 50);
             }
         }
 
