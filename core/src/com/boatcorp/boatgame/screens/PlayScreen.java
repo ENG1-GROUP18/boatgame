@@ -248,11 +248,15 @@ public class PlayScreen implements Screen {
 
     private void update(final float delta) {
 
-        boolean save = Gdx.input.isKeyJustPressed(Input.Keys.C);
-        boolean load = Gdx.input.isKeyJustPressed(Input.Keys.V);
+        boolean save1 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_1);
+        boolean save2 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_2);
+        boolean save3 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_3);
+        boolean save4 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_4);
 
-        if(save){boatGame.saveGame();}
-        if(load){boatGame.loadGame();}
+        if(save1){boatGame.saveGame("1");}
+        if(save2){boatGame.saveGame("2");}
+        if(save3){boatGame.saveGame("3");}
+        if(save4){boatGame.saveGame("4");}
         
         camera.zoom = DEFAULT_ZOOM;
 
