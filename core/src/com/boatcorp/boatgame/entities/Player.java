@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
+import com.boatcorp.boatgame.frameworks.PlunderSystem;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.GameState;
 
@@ -309,6 +310,7 @@ public class Player extends Group {
         state.currentHealth = this.getHealth();
         state.maxHealth = this.getMaxHealth();
         state.points = PointSystem.getPoints();
+        state.plunder = PlunderSystem.getPlunder();
     }
 }
 
