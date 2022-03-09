@@ -17,7 +17,7 @@ import org.graalvm.compiler.virtual.phases.ea.EffectList;
 public class BoatGame extends Game {
 
 	//---------------
-	public final boolean ENABLE_SHADERS = false;
+	public final boolean ENABLE_SHADERS = true;
 	public final boolean ENABLE_TABLE_DEBUG = false;
 	//---------------
 
