@@ -37,6 +37,7 @@ public class BoatGame extends Game {
 	private PauseScreen pauseScreen;
 	private ShopScreen shopScreen;
 	private EndScreen endScreen;
+	private SaveScreen saveScreen;
 
 
 	public enum screenType {
@@ -45,7 +46,8 @@ public class BoatGame extends Game {
 		PLAY,
 		PAUSE_MENU,
 		SHOP,
-		END_MENU
+		END_MENU,
+		SAVE
 	}
 
 	@Override
@@ -99,6 +101,13 @@ public class BoatGame extends Game {
 				}
 				setScreen(endScreen);
 				break;
+
+			case SAVE:
+				if (saveScreen == null) {
+					saveScreen = new SaveScreen(this);
+				}
+				setScreen(saveScreen);
+				break;
 		}
 	}
 
@@ -146,20 +155,24 @@ public class BoatGame extends Game {
 		return vfxManager;
 	}
 	
-	public void saveGame(){
+	public void saveGame(String numSave){
 		Gson gson = new Gson();
 		String json = gson.toJson(playScreen.getState(),GameState.class);
 		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
-		p.putString("0", json);
+		p.putString(numSave, json);
 		p.flush();
 	}
 
-	public void loadGame(){
+	public void loadGame(String numSave){
 		Gson gson = new Gson();
 		Preferences p = Gdx.app.getPreferences("SAVEDGAME");
-		GameState loader = gson.fromJson(p.getString("0"), GameState.class);
-		playScreen = new PlayScreen(this, loader);
-		this.setScreen(playScreen);
+		String gameString = p.getString(numSave,"absent");
+		if (gameString == "absent"){
+			this.changeScreen(BoatGame.screenType.PLAY);}
+		else {
+			GameState loader = gson.fromJson(gameString, GameState.class);
+			playScreen = new PlayScreen(this, loader);
+			this.setScreen(playScreen);}
 	}
 
 }
