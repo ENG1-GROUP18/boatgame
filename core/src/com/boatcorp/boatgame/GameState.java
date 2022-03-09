@@ -12,6 +12,7 @@ public class GameState{
     public float currentHealth = 100;
     public float maxHealth = 100;
     public int points = 0;
+    public int plunder = 0;
     public float[] collegeHealth = {100,100};
     public ArrayList<String> collegeNames = new ArrayList<>( Arrays.asList("langwith","james","goodricke"));
     public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
