@@ -26,6 +26,7 @@ public class Hud {
     private final Player player;
     private final ProgressBar.ProgressBarStyle healthBarStyle;
     private final ProgressBar healthBar;
+    private final Label plunderScore;
 
     private Drawable getColouredDrawable(float width, float height, Color color) {
         Pixmap pixmap = new Pixmap((int)width, (int)height, Pixmap.Format.RGBA8888);
@@ -49,6 +50,12 @@ public class Hud {
         pointScore.setFontScale(0.5f);
         pointScore.setPosition(8, 40);
         pointScore.setText("Points: " + PointSystem.getPoints());
+        
+        plunderScore = new Label("Plunder: " + PlunderSystem.getPlunder(), new Label.LabelStyle(font, Color.WHITE));
+        plunderScore.setWrap(true);
+        plunderScore.setFontScale(0.5f);
+        plunderScore.setPosition(8, 430);
+        plunderScore.setText("Plunder: "+ PlunderSystem.getPlunder());
 
         healthBarStyle = new ProgressBar.ProgressBarStyle();
 
@@ -66,6 +73,7 @@ public class Hud {
 
         stage.addActor(pointScore);
         stage.addActor(healthBar);
+        stage.addActor(plunderScore);
     }
 
     public Stage getStage() { return stage; }
@@ -80,6 +88,10 @@ public class Hud {
         healthBarStyle.knobBefore = getColouredDrawable(newValue, 10, Color.RED);
 
 
+    }
+    
+    public void setPlunderScore(String newText) {
+        plunderScore.setText(newText);
     }
 
     public void dispose() {
