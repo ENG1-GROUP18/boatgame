@@ -225,34 +225,38 @@ public class Player extends Group {
      */
     public ArrayList<Bullet> combat(ArrayList<College> colleges) {
 
-        float velX = 0;
-        float velY = 0;
+        boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
+        boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
+        boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
+        boolean left = Gdx.input.isKeyPressed(Input.Keys.LEFT);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+        if (up || down || left ||right) {
             if (((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 250)) {
                 timeSinceLastShot = TimeUtils.millis();
-                if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-                   velX = 0;
-                   velY = 10;
-                }
-                if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-                   velX = 0;
-                   velY = -10;
-                }
-                if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-                    velX = 10;
-                    velY = 0;
-                }
-                if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-                    velX = -10;
-                    velY = 0;
+                Vector2 inputVector = new Vector2(0, 0);
+
+                // Handle player input
+                if (up && !down) {
+                    // Shoot up.
+                    inputVector.y = 1;
+                } else if (down && !up){
+                    // Shoot down.
+                    inputVector.y = -1;
                 }
 
-                float length = (float) Math.sqrt(velX * velX + velY * velY);
-                if (length != 0) {
-                    velX = velX * BULLET_SPEED / length;
-                    velY = velY * BULLET_SPEED / length;
+                if (right && !left) {
+                    // Shoot right.
+                    inputVector.x = 1;
+                } else if (left && !right) {
+                    // Shoot left.
+                    inputVector.x = -1;
                 }
+
+                // Normalise inputVector
+                inputVector.nor();
+
+                float velX = inputVector.x * BULLET_SPEED;
+                float velY = inputVector.y * BULLET_SPEED;
 
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
