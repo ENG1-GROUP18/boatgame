@@ -1,4 +1,4 @@
-package com.boatcorp.boatgame.frameworks;
+package com.boatcorp.boatgame.utils;
 
 public class PointSystem {
     private static float points;

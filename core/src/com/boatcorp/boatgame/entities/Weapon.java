@@ -11,7 +11,6 @@ public class Weapon extends Actor {
 
     public Weapon() {
 
-
     }
 
     @Override
@@ -26,8 +25,8 @@ public class Weapon extends Actor {
     }
 
     public void attack() {
+        System.out.println("pew pew");
         if (attackTimer > attackRate) {
-            System.out.println("pew pew");
             attackTimer = 0f;
         }
     }

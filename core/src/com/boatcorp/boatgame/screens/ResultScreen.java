@@ -1,6 +1,5 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -10,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.utils.PointSystem;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.GameState;
 

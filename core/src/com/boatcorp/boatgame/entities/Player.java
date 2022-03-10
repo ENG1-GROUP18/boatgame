@@ -2,19 +2,16 @@ package com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.boatcorp.boatgame.frameworks.HealthBar;
-import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.utils.HealthBar;
+import com.boatcorp.boatgame.utils.PointSystem;
 import com.boatcorp.boatgame.GameState;
 
 import java.util.ArrayList;

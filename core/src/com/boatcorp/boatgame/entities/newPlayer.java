@@ -5,14 +5,13 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 
-public class PlayerShip extends Group {
+public class newPlayer extends Group {
 
     private Weapon equippedWeapon;
 
 
-    public PlayerShip() {
+    public newPlayer() {
         equippedWeapon = new Weapon();
-
     }
 
     @Override
@@ -24,11 +23,10 @@ public class PlayerShip extends Group {
 
     private void processMovement() {
         //boolean up = Gdx.input.isButtonJustPressed(Input.Keys.W);
-
     }
 
     private void processAttack() {
-        boolean up = Gdx.input.isButtonJustPressed(Input.Keys.SPACE);
+        boolean up = Gdx.input.isKeyJustPressed(Input.Keys.UP);
         if (up) {
             equippedWeapon.attack();
         }

@@ -8,12 +8,9 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.boatcorp.boatgame.GameState;
-import com.boatcorp.boatgame.frameworks.HealthBar;
-import org.jetbrains.annotations.NotNull;
+import com.boatcorp.boatgame.utils.HealthBar;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**

@@ -1,6 +1,5 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -18,9 +17,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
-import com.boatcorp.boatgame.entities.PlayerShip;
-import com.boatcorp.boatgame.frameworks.Hud;
-import com.boatcorp.boatgame.frameworks.PointSystem;
+import com.boatcorp.boatgame.entities.newPlayer;
+import com.boatcorp.boatgame.utils.Hud;
+import com.boatcorp.boatgame.utils.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
 import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
@@ -50,7 +49,7 @@ public class PlayScreen implements Screen {
     private GameState state;
 
 
-    PlayerShip testPlayerShip;
+    newPlayer testPlayerShip;
 
     // For Shader
     private VfxManager vfxManager;
@@ -109,7 +108,7 @@ public class PlayScreen implements Screen {
         //Box2D debug renderer
         debugRenderer = new Box2DDebugRenderer();
 
-        testPlayerShip = new PlayerShip();
+        testPlayerShip = new newPlayer();
     }
 
     private void addWorldBorder(){
