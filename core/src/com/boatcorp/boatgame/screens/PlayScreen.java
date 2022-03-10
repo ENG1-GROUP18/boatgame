@@ -12,7 +12,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
@@ -158,7 +160,6 @@ public class PlayScreen implements Screen {
         gameStage.act();
 
         // Batch drawing
-        player.setMatrix(camera.combined);
         for (College college : colleges) { //TODO this really needs rethinking.
             college.setMatrix(camera.combined);
         }
@@ -170,7 +171,6 @@ public class PlayScreen implements Screen {
             college.draw();
         }
         gameStage.draw();
-        combat(delta);
 
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
@@ -178,7 +178,7 @@ public class PlayScreen implements Screen {
         hud.setHealthValue(player.getHealth());
         hud.setPlunderScore("Plunder: " + PlunderSystem.getPlunder());
 
-        combat(delta);
+
         hud.getStage().draw();
 
         hud.getStage().act(delta);
@@ -197,26 +197,17 @@ public class PlayScreen implements Screen {
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
+        combat(delta);
     }
 
     //TODO rename this, maybe implement directly into act/render method
     private void combat(float delta) {
-        if (player.isDead()) {
-            player.dispose();
-            for(College college : colleges) {
-                college.dispose();
-            }
-            boatGame.setScreen(new ResultScreen(false, boatGame));
-        }
-        if (colleges.isEmpty()) {
-            boatGame.setScreen(new ResultScreen(true, boatGame));
-        }
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>(0);
         for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
-            } 
+            }
             else {
                 toRemoveName.add(college.getUserData().toString());
                 state.collegeHealths.remove(college.getUserData().toString());
@@ -245,7 +236,19 @@ public class PlayScreen implements Screen {
             batch.end();
         }
 
-
+        if (player.isDead()) {
+            player.dispose();
+            for (Actor actor: gameStage.getActors()){
+                actor.addAction(Actions.removeActor());
+            }
+            for(College college : colleges) {
+                college.dispose();
+            }
+            boatGame.setScreen(new ResultScreen(false, boatGame));
+        }
+        if (colleges.isEmpty()) {
+            boatGame.setScreen(new ResultScreen(true, boatGame));
+        }
 
 
     }

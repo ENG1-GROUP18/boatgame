@@ -24,7 +24,6 @@ import java.util.ArrayList;
  * Creates a Player object
  */
 public class Player extends Group {
-    private final SpriteBatch batch;
     private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
     private final Sprite sprite;
     private final HealthBar health;
@@ -54,7 +53,6 @@ public class Player extends Group {
     public Player(Viewport view, World world, GameState state) {
         position = new Vector2(100,100);
         velocity = new Vector2(0,0);
-        batch = new SpriteBatch();
         sprite = new Sprite(texture);
         health = new HealthBar();
         bullets = new ArrayList<>();
@@ -281,19 +279,11 @@ public class Player extends Group {
         return bullets;
     }
 
-    /**
-     * Sets the correct batch projecting matrix
-     * @param combined used to set the projection matrix to the correct amount inside the batch renderer
-     */
-    public void setMatrix(Matrix4 combined) {
-        batch.setProjectionMatrix(combined);
-    }
 
     /**
      * Disposes of each of the unneeded objects
      */
     public void dispose() {
-        batch.dispose();
         health.dispose();
         if (!bullets.isEmpty()) {
             for (Bullet bullet : bullets) {
