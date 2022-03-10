@@ -184,7 +184,7 @@ public class PlayScreen implements Screen {
         hud.getStage().act(delta);
 
         //Draws box2D hitboxes for debug
-        if (boatGame.ENABLE_SHADERS == false) {
+        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
             debugRenderer.render(world, viewport.getCamera().combined);
         }
 
