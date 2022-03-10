@@ -18,6 +18,7 @@ public class BoatGame extends Game {
 
 	//---------------
 	public final boolean ENABLE_SHADERS = true;
+	public final boolean ENABLE_BOX2D_WIREFRAME = false;
 	public final boolean ENABLE_TABLE_DEBUG = false;
 	//---------------
 
