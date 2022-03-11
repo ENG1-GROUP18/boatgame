@@ -345,10 +345,12 @@ public class PlayScreen implements Screen {
 
     public void addColleges(ArrayList colleges){
         Random rand = new Random();
+        int xUnit = 1200 / state.collegeNames.size();
+        int yUnit = 1200 / state.collegeNames.size();
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2(rand.nextInt(1200), rand.nextInt(1200)));
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*i) + rand.nextInt(xUnit), (yUnit*i) + rand.nextInt(yUnit)));
             }
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
