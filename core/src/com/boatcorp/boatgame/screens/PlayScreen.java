@@ -210,6 +210,7 @@ public class PlayScreen implements Screen {
                 college.combat(camera.combined, player,delta);
             }
             else {
+                player.upgrade(3 - colleges.size());
                 toRemoveName.add(college.getUserData().toString());
                 state.collegeHealths.remove(college.getUserData().toString());
                 state.collegePositions.remove(college.getUserData().toString());
@@ -381,8 +382,7 @@ public class PlayScreen implements Screen {
 
     }
 **/
-    
-    
+
     
     public GameState getState(){
         player.updateState();
@@ -393,4 +393,5 @@ public class PlayScreen implements Screen {
         return state;
     }
 }
+
 
