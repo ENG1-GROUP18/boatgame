@@ -74,6 +74,7 @@ gradle-app.setting
 
 #Avoid ignoring gradle wrapper jar file
 !gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
 
 #Cache
 .gradletasknamecache
