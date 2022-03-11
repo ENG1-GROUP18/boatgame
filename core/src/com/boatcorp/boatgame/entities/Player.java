@@ -27,14 +27,17 @@ public class Player extends Group {
     private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
     private final Sprite sprite;
     private final HealthBar health;
-    private final float maxHealth;
+    private float maxHealth;
     private float currentHealth;
+    private int immuneSeconds;
+    private float timeSeconds;
+    private float period;
+    private float damageScaler;
     private final ArrayList<Bullet> bullets;
     private final Viewport viewport;
     private long timeSinceLastShot;
     private Body bodyd;
     private GameState state;
-
     private final World gameWorld;
 
 
@@ -61,6 +64,10 @@ public class Player extends Group {
         viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
+        immuneSeconds = state.immuneSeconds;
+        timeSeconds = 0f;
+        period = 1f;
+        damageScaler = state.damageScaler;
         this.state = state;
 
         //Creates body definition
@@ -120,7 +127,14 @@ public class Player extends Group {
             this.setRotation(velocity.angleDeg() - 90);
             bodyd.setTransform(bodyd.getPosition(),velocity.angleRad() - ((float) Math.PI/2));
         }
-
+        if (immuneSeconds > 0){
+            timeSeconds += Gdx.graphics.getDeltaTime();
+            if(timeSeconds > period){
+                timeSeconds -= period;
+                immuneSeconds -= period;
+                //TODO: display to screen
+            }
+        }
 
     }
 
@@ -191,8 +205,8 @@ public class Player extends Group {
      * @param damage the damage inflicted onto the player
      */
     public void takeDamage(int damage) {
-        if (this.getHealth() > 0) {
-            currentHealth -= damage;
+        if (this.getHealth() > 0 && immuneSeconds == 0) {
+            currentHealth -= damage*damageScaler;
         }
     }
 
@@ -295,6 +309,20 @@ public class Player extends Group {
             }
         }
     }
+
+    public void upgrade(int type){
+        switch(type){
+            case 0:
+                damageScaler = 0.8f;
+                break;
+            case 1:
+                currentHealth = maxHealth;
+                break;
+            case 2:
+                immuneSeconds = 20;
+                break;
+        }
+    }
     
     /**
      * Updates the gamestate with the player's properties
@@ -305,6 +333,10 @@ public class Player extends Group {
         state.maxHealth = this.getMaxHealth();
         state.points = PointSystem.getPoints();
         state.plunder = PlunderSystem.getPlunder();
+        state.immuneSeconds = immuneSeconds;
+        state.damageScaler = damageScaler;
     }
-}
 
+
+
+}
