@@ -1,0 +1,22 @@
+{
+  "colleges":[
+    {
+      "health": 100,
+      "attackDamage": 10,
+      "attackPatternPool":[
+        {
+          "aimAtPlayer": true,
+          "numberOfTimes": 8,
+          "delay": 0.5,
+          "angles": [0]
+        },
+        {
+          "aimAtPlayer": false,
+          "numberOfTimes": 8,
+          "delay": 0,
+          "angles": [0, 45, 90, 135, 180, 225, 270, 315]
+        }
+      ]
+    }
+  ]
+}
