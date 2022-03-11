@@ -76,7 +76,7 @@ public class PlayScreen implements Screen {
         this.state = state;
 
         mapLoader = new MapLoader();
-        player = new Player(viewport,world,state);
+        player = new Player(world,state);
         colleges = new ArrayList<>();
         addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
@@ -204,7 +204,7 @@ public class PlayScreen implements Screen {
     //TODO rename this, maybe implement directly into act/render method
     private void combat(float delta) {
         ArrayList<String> toRemoveName = new ArrayList<>();
-        ArrayList<College> toRemoveCollage = new ArrayList<>(0);
+        ArrayList<College> toRemoveCollage = new ArrayList<>();
         for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
@@ -346,7 +346,7 @@ public class PlayScreen implements Screen {
         effectFxaa.dispose();
     }
 
-    public void addColleges(ArrayList colleges){
+    public void addColleges(ArrayList<College> colleges){
         Random rand = new Random();
         int xUnit = 1200 / state.collegeNames.size();
         for (int i = 0; i < state.collegeNames.size(); i++) {
@@ -361,7 +361,7 @@ public class PlayScreen implements Screen {
     }
     
     // following code splits colleges into slices for even numbers of colleges
-    /**
+    /*
     public void addColleges(ArrayList colleges){
         Random rand = new Random();
         int divider = state.collegeNames.size() / 2;
@@ -381,7 +381,7 @@ public class PlayScreen implements Screen {
 
 
     }
-**/
+    */
 
     
     public GameState getState(){
