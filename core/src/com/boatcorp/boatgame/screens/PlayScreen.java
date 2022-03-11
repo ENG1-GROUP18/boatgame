@@ -358,6 +358,31 @@ public class PlayScreen implements Screen {
 
     }
     
+    // following code splits colleges into slices for even numbers of colleges
+    /**
+    public void addColleges(ArrayList colleges){
+        Random rand = new Random();
+        int divider = state.collegeNames.size() / 2;
+        int xUnit = 1200 / divider;
+        for (int i = 0; i < state.collegeNames.size(); i++) {
+            if (state.isSpawn){
+                state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
+                if( i+1 < divider){
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
+
+                }
+                else{
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
+            }}
+            colleges.add(new College(state.collegeNames.get(i), world,state));
+        }
+
+
+    }
+**/
+    
+    
+    
     public GameState getState(){
         player.updateState();
         for (College college : colleges) {
