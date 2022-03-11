@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.entities.Bullet;
 import com.boatcorp.boatgame.entities.College;
+import com.boatcorp.boatgame.entities.EnemyShip;
 import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PlunderSystem;
@@ -87,6 +88,9 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
+        EnemyShip enemyBoat = new EnemyShip(world,state,"1",new Vector2(100,100));
+        gameStage.addActor(enemyBoat);
+
         addWorldBorder();
 
         // Create shaders
@@ -151,8 +155,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+//        Gdx.gl.glClearColor(0,0,0,1);
+//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
