@@ -82,6 +82,7 @@ public class PlayScreen implements Screen {
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
+        PlunderSystem.setPlunder(state.plunder);
         
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
