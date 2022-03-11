@@ -6,6 +6,10 @@ public class PlunderSystem {
     public static int getPlunder() {
         return (int) plunder;
     }
+    
+    public static void setPlunder(int newPlunder) {
+        plunder = newPlunder;
+    }
 
     public static void incrementPlunder(float amount) {
         plunder += amount;
