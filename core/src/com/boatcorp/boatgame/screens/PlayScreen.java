@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.entities.College;
 import com.boatcorp.boatgame.entities.Player;
-import com.boatcorp.boatgame.entities.newPlayer;
+import com.boatcorp.boatgame.entities.NewPlayer;
 import com.boatcorp.boatgame.utils.Hud;
 import com.boatcorp.boatgame.utils.PointSystem;
 import com.boatcorp.boatgame.tools.MapLoader;
@@ -49,7 +49,7 @@ public class PlayScreen implements Screen {
     private GameState state;
 
 
-    newPlayer testPlayerShip;
+    NewPlayer testPlayerShip;
 
     // For Shader
     private VfxManager vfxManager;
@@ -107,8 +107,6 @@ public class PlayScreen implements Screen {
 
         //Box2D debug renderer
         debugRenderer = new Box2DDebugRenderer();
-
-        testPlayerShip = new newPlayer();
     }
 
     private void addWorldBorder(){

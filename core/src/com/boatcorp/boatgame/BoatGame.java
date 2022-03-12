@@ -1,14 +1,10 @@
 package com.boatcorp.boatgame;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
-import com.google.gson.Gson;
-import org.graalvm.compiler.virtual.phases.ea.EffectList;
 
 
 /**
@@ -33,7 +29,7 @@ public class BoatGame extends Game {
 	// Screens
 	private SplashScreen splashScreen;
 	private StartMenuScreen startMenuScreen;
-	private newPlayScreen playScreen;
+	private NewPlayScreen playScreen;
 	private PauseScreen pauseScreen;
 	private ShopScreen shopScreen;
 	private EndScreen endScreen;
@@ -51,7 +47,6 @@ public class BoatGame extends Game {
 	@Override
 	public void create () {
 		setUpShaders();
-		splashScreen = new SplashScreen(this);
 		changeScreen(screenType.SPLASH);
 	}
 
@@ -74,7 +69,7 @@ public class BoatGame extends Game {
 
 			case PLAY:
 				if (playScreen == null) {
-					playScreen = new newPlayScreen(this);
+					playScreen = new NewPlayScreen(this);
 				}
 				setScreen(playScreen);
 				break;

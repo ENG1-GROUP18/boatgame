@@ -44,7 +44,7 @@ public class Bullet {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(position);
-        bodyd = gameWorld.createBody(bodyDef);
+        bodyd = gameWorld.createBody(bodyDef);////
         CircleShape shape = new CircleShape();
         shape.setRadius(sprite.getWidth()/2);
         FixtureDef fixtureDef = new FixtureDef();
