@@ -88,7 +88,7 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-        EnemyShip enemyBoat = new EnemyShip(world,state,"1",new Vector2(100,100));
+        EnemyShip enemyBoat = new EnemyShip(world,state,"1",new Vector2(140,100),player);
         gameStage.addActor(enemyBoat);
 
         addWorldBorder();
@@ -116,7 +116,7 @@ public class PlayScreen implements Screen {
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Box2D debug renderer
-        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer(true,false,false,false,true,true);
     }
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();

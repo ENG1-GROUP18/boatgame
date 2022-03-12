@@ -320,6 +320,14 @@ public class Player extends Group {
                 break;
         }
     }
+
+    /**
+     * Gets the body of the player
+     * @return a box2D object of the player
+     */
+    public Body getBody(){
+        return bodyd;
+    }
     
     /**
      * Updates the gamestate with the player's properties
