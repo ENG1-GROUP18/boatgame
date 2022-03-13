@@ -346,7 +346,7 @@ public class PlayScreen implements Screen {
         effectBloom.dispose();
         effectFxaa.dispose();
     }
-
+/**
     public void addColleges(ArrayList colleges){
         Random rand = new Random();
         int xUnit = 1200 / state.collegeNames.size();
@@ -360,9 +360,8 @@ public class PlayScreen implements Screen {
 
 
     }
-    
-    // following code splits colleges into slices for even numbers of colleges
-    /**
+ **/   
+
     public void addColleges(ArrayList colleges){
         Random rand = new Random();
         int divider = state.collegeNames.size() / 2;
@@ -382,7 +381,7 @@ public class PlayScreen implements Screen {
 
 
     }
-**/
+
     public void setMode(int mode){
         switch(mode){
             case 0:
