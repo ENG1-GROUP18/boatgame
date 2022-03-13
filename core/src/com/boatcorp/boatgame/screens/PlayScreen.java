@@ -78,6 +78,7 @@ public class PlayScreen implements Screen {
         mapLoader = new MapLoader();
         player = new Player(viewport,world,state);
         colleges = new ArrayList<>();
+        if (state.isSpawn){setMode(state.difficulty);}
         addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
@@ -382,7 +383,22 @@ public class PlayScreen implements Screen {
 
     }
 **/
-
+    public void setMode(int mode){
+        switch(mode){
+            case 0:
+                player.scaleDamage(0.7f);
+                for (College college : this.colleges){
+                    college.scaleDamage(1.3f);}
+                break;
+            case 1:
+                break;
+            case 2:
+                player.scaleDamage(1.3f);
+                for (College college : this.colleges){
+                    college.scaleDamage(0.7f);}
+                break;
+        }
+    }
     
     public GameState getState(){
         player.updateState();
@@ -393,5 +409,6 @@ public class PlayScreen implements Screen {
         return state;
     }
 }
+
 
 
