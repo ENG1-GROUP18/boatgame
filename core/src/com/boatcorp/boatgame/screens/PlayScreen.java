@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.entities.Bullet;
 import com.boatcorp.boatgame.entities.College;
+import com.boatcorp.boatgame.entities.EnemyShip;
 import com.boatcorp.boatgame.entities.Player;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PlunderSystem;
@@ -48,6 +49,7 @@ public class PlayScreen implements Screen {
     private final BitmapFont font;
     private final Player player;
     private final ArrayList<College> colleges;
+    private ArrayList<EnemyShip> enemyShips;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
@@ -76,8 +78,10 @@ public class PlayScreen implements Screen {
         this.state = state;
 
         mapLoader = new MapLoader();
-        player = new Player(viewport,world,state);
+        player = new Player(world,state);
         colleges = new ArrayList<>();
+        enemyShips = new ArrayList<>();
+
         if (state.isSpawn){setMode(state.difficulty);}
         addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
@@ -87,6 +91,7 @@ public class PlayScreen implements Screen {
         
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
+
 
         addWorldBorder();
 
@@ -113,7 +118,7 @@ public class PlayScreen implements Screen {
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         //Box2D debug renderer
-        debugRenderer = new Box2DDebugRenderer();
+        debugRenderer = new Box2DDebugRenderer(true,false,false,false,true,true);
     }
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
@@ -152,8 +157,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
@@ -190,6 +193,7 @@ public class PlayScreen implements Screen {
             debugRenderer.render(world, viewport.getCamera().combined);
         }
 
+        combat(delta);
         vfxManager.endInputCapture();
 
         if (boatGame.ENABLE_SHADERS) {
@@ -199,13 +203,14 @@ public class PlayScreen implements Screen {
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
-        combat(delta);
+
     }
 
     //TODO rename this, maybe implement directly into act/render method
     private void combat(float delta) {
         ArrayList<String> toRemoveName = new ArrayList<>();
-        ArrayList<College> toRemoveCollage = new ArrayList<>(0);
+        ArrayList<College> toRemoveCollage = new ArrayList<>();
+        ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
         for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
@@ -223,15 +228,11 @@ public class PlayScreen implements Screen {
             }
         }
 
-        state.collegeNames.removeAll(toRemoveName);
-        colleges.removeAll(toRemoveCollage);
-
-
-        ArrayList<Bullet> bullets;
-        bullets = player.combat(colleges);
-        if (!bullets.isEmpty()){
+        ArrayList<Bullet> bulletsP;
+        bulletsP = player.combat(colleges,enemyShips);
+        if (!bulletsP.isEmpty()){
             batch.begin();
-            for (Bullet bullet: bullets) {
+            for (Bullet bullet: bulletsP) {
                 // Draw and move bullets
                 bullet.draw(batch,1);
                 bullet.move(delta);
@@ -239,10 +240,35 @@ public class PlayScreen implements Screen {
             batch.end();
         }
 
+
+        for (EnemyShip ship: enemyShips){
+            if (ship.isAlive()){
+                ship.shoot(delta);
+            } else{
+                ship.dispose();
+                toRemoveShip.add(ship);
+            }
+        }
+
+        for (Actor actor: gameStage.getActors()){
+            if (actor.getX() < 0 && actor.getY() < 0){
+                actor.remove();
+            }
+        }
+
+        state.collegeNames.removeAll(toRemoveName);
+        colleges.removeAll(toRemoveCollage);
+        enemyShips.removeAll(toRemoveShip);
+
+
+
+
+
         if (player.isDead()) {
             player.dispose();
             for (Actor actor: gameStage.getActors()){
                 actor.addAction(Actions.removeActor());
+
             }
             for(College college : colleges) {
                 college.dispose();
@@ -297,7 +323,6 @@ public class PlayScreen implements Screen {
 
         world.step(delta, 6,2);
 
-        //player.update(delta);
 
 
     }
@@ -346,41 +371,29 @@ public class PlayScreen implements Screen {
         effectBloom.dispose();
         effectFxaa.dispose();
     }
-/**
-    public void addColleges(ArrayList colleges){
+
+
+    public void addColleges(ArrayList<College> colleges) {
+
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size();
+        int xUnit = 1200 / state.collegeNames.size(); //TODO change back to 1200
         for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn){
+            if (state.isSpawn) {
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*i) + rand.nextInt(xUnit), rand.nextInt(1200)));
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit * i) + rand.nextInt(xUnit), rand.nextInt(1200)));
             }
-            colleges.add(new College(state.collegeNames.get(i), world,state));
+            colleges.add(new College(state.collegeNames.get(i), world, state));
         }
 
+        //Place enemy ships at collages
+        for (College college : colleges) {
+            enemyShips.add((new EnemyShip(world, state, "1",
+                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player, camera.combined)));
+            gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
 
-    }
- **/   
-
-    public void addColleges(ArrayList colleges){
-        Random rand = new Random();
-        int divider = state.collegeNames.size() / 2;
-        int xUnit = 1200 / divider;
-        for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn){
-                state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                if( i < divider){
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
-
-                }
-                else{
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
-            }}
-            colleges.add(new College(state.collegeNames.get(i), world,state));
         }
-
-
     }
+
 
     public void setMode(int mode){
         switch(mode){

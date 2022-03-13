@@ -5,29 +5,24 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 import com.boatcorp.boatgame.frameworks.PlunderSystem;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.GameState;
-
 import java.util.ArrayList;
 
 /**
  * Creates a Player object
  */
 public class Player extends Group {
-    private final Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
     private final Sprite sprite;
     private final HealthBar health;
-    private float maxHealth;
+    private final float maxHealth;
     private float currentHealth;
     private int immuneSeconds;
     private float timeSeconds;
@@ -35,36 +30,35 @@ public class Player extends Group {
     private String bulletColor;
     private boolean hasBoughtRed;
     private boolean hasBoughtGreen;
+
     private float damageScaler;
     private final ArrayList<Bullet> bullets;
-    private final Viewport viewport;
     private long timeSinceLastShot;
-    private Body bodyd;
-    private GameState state;
+    private final Body bodyd;
+    private final GameState state;
     private final World gameWorld;
 
 
     private static final float PLAYER_SPEED = 100f;
 
     private int BULLET_SPEED = 20;
-    
-    private Vector2 position;
+
     private Vector2 velocity;
 
 
     /**
      * Initialises a Player with a texture at the required position, along with other relevant attributes
-     * @param view the current viewport
+     * @param world the current world which contains the box2D objects
+     * @param state the gamestate which holds the parameters needed to save/reload the game
      */
-    public Player(Viewport view, World world, GameState state) {
-        position = new Vector2(100,100);
+    public Player(World world, GameState state) {
         velocity = new Vector2(0,0);
+        Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
         sprite = new Sprite(texture);
         health = new HealthBar();
         bullets = new ArrayList<>();
         maxHealth = state.maxHealth;
         currentHealth = state.currentHealth;
-        viewport = view;
         gameWorld = world;
         timeSinceLastShot = TimeUtils.millis();
         immuneSeconds = state.immuneSeconds;
@@ -92,6 +86,7 @@ public class Player extends Group {
 
         shape.dispose();
 
+        //Creates sprite
         this.addActor(new Image(sprite));
         this.setPosition(100,100);
         this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
@@ -262,7 +257,7 @@ public class Player extends Group {
      * Logic for calculating bullet position
      * @return a list of bullets
      */
-    public ArrayList<Bullet> combat(ArrayList<College> colleges) {
+    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips) {
 
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
@@ -318,12 +313,18 @@ public class Player extends Group {
                         college.takeDamage(5);
                     }
                 }
+                for (EnemyShip ship : enemyShips){
+                    if (ship.isHit() && bullet.hit()){
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                        ship.takeDamage(5);
+                    }
+                }
             }
         }
         bullets.removeAll(toRemove);
         return bullets;
     }
-
 
     /**
      * Disposes of each of the unneeded objects
@@ -337,11 +338,16 @@ public class Player extends Group {
         }
     }
 
+
     public void scaleDamage(float scale){
         damageScaler *= scale;
 
     }
 
+    /**
+     * Gives the player a power-up, like immunity or increased health
+     * @param type Picks which power-up to apply: 0. Damage Increase, 1.Full health, 2. Immunity
+     */
     public void upgrade(int type){
         switch(type){
             case 0:
@@ -354,6 +360,14 @@ public class Player extends Group {
                 immuneSeconds = 20;
                 break;
         }
+    }
+
+    /**
+     * Gets the body of the player
+     * @return a box2D object of the player
+     */
+    public Body getBody(){
+        return bodyd;
     }
     
     /**
@@ -370,8 +384,6 @@ public class Player extends Group {
         state.hasBoughtGreen = hasBoughtGreen;
         state.hasBoughtRed = hasBoughtRed;
     }
-
-
 
 }
 

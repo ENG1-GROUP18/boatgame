@@ -19,7 +19,6 @@ import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
 public class Bullet extends Group {
     private final SpriteBatch batch;
     private final Sprite sprite;
-    private Vector2 position;
     private final Vector2 startPos;
     private final Vector2 velocity;
     private Body bodyd;
@@ -36,8 +35,7 @@ public class Bullet extends Group {
         final Texture texture = new Texture("Entities/" + color + ".png");
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
-        this.position = position;
-        startPos = getPosition();
+        startPos = position;
         this.velocity = velocity;
         gameWorld = world;
 
@@ -90,14 +88,6 @@ public class Bullet extends Group {
 
     }
 
-
-    /**
-     * Gets the position of the bullet
-     * @return a Vector2 of a copy of the bullets current position
-     */
-    public Vector2 getPosition() {
-        return position.cpy();
-    }
 
     /**
      * Returns true if bullet has travelled more than the max range (300 units)
