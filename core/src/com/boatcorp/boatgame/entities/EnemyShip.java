@@ -138,7 +138,7 @@ public class EnemyShip extends Group {
                 Vector2 velocity = new Vector2();
                 velocity.x =(float) -Math.sin(entity.getOrientation());
                 velocity.y =(float) Math.cos(entity.getOrientation());
-                bullets.add(new Bullet(bodyd.getPosition(), velocity, gameWorld, "EnemyShip"));
+                bullets.add(new Bullet(bodyd.getPosition(), velocity, gameWorld, "EnemyShip","bullet"));
 
             }
             for (Bullet bullet: bullets) {

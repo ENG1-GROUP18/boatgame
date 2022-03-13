@@ -373,24 +373,25 @@ public class PlayScreen implements Screen {
     }
 
 
-    public void addColleges(ArrayList<College> colleges){
+    public void addColleges(ArrayList<College> colleges) {
 
         Random rand = new Random();
         int xUnit = 1200 / state.collegeNames.size(); //TODO change back to 1200
         for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn){
+            if (state.isSpawn) {
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*i) + rand.nextInt(xUnit), rand.nextInt(1200)));
+                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit * i) + rand.nextInt(xUnit), rand.nextInt(1200)));
             }
-            colleges.add(new College(state.collegeNames.get(i), world,state));
+            colleges.add(new College(state.collegeNames.get(i), world, state));
         }
 
         //Place enemy ships at collages
-        for (College college: colleges){
-            enemyShips.add((new EnemyShip(world,state,"1",
-                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,camera.combined)));
-            gameStage.addActor(enemyShips.get(enemyShips.size()-1));
+        for (College college : colleges) {
+            enemyShips.add((new EnemyShip(world, state, "1",
+                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player, camera.combined)));
+            gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
 
+        }
     }
 
 
