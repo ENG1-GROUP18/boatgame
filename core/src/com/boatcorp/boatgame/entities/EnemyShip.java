@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.tools.B2dSteeringEntity;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 public class EnemyShip extends Group {
     private final Sprite sprite;
     private final Vector2 position;
-    private float health = 100;
+    private float health = 20;
     private final Body bodyd;
     private final World gameWorld;
     private B2dSteeringEntity entity,targetP,targetC;
@@ -29,6 +30,7 @@ public class EnemyShip extends Group {
     private Player player;
     private GameState gameState;
     private FiniteState currentState;
+    private long timeSinceLastShot;
 
     //TODO simplify/cleanup so not so many objects are passed in
     public EnemyShip(World world, GameState state, String ID, Vector2 position,Player player,Matrix4 camera){
@@ -38,6 +40,7 @@ public class EnemyShip extends Group {
         gameState = state;
         this.player = player;
         this.camera = camera;
+        timeSinceLastShot = TimeUtils.millis();
 
         this.position = position;
         bullets = new ArrayList<>();
@@ -54,7 +57,7 @@ public class EnemyShip extends Group {
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
-        bodyd.createFixture(fixtureDef).setUserData("EnemyShip"+ID);
+        bodyd.createFixture(fixtureDef).setUserData("EnemyShip");
         bodyd.setUserData("");
         bodyd.setLinearDamping(5);
 
@@ -129,13 +132,12 @@ public class EnemyShip extends Group {
         if (currentState == FiniteState.FOLLOW){
             // Only begins combat when the player is close enough and the college isn't defeated
 
-            if (bullets.isEmpty()) {
-                // Randomly choose from set attack patterns
+            if ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 1000) {
+                timeSinceLastShot = TimeUtils.millis();
+
                 Vector2 velocity = new Vector2();
                 velocity.x =(float) -Math.sin(entity.getOrientation());
                 velocity.y =(float) Math.cos(entity.getOrientation());
-                System.out.println(entity.getOrientation());
-                System.out.println(velocity);
                 bullets.add(new Bullet(bodyd.getPosition(), velocity, gameWorld, "EnemyShip"));
 
             }
@@ -183,7 +185,35 @@ public class EnemyShip extends Group {
         STAY
     }
 
+    public boolean isHit(){
+        if (bodyd.getUserData() == "Hit"){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
+    public void takeDamage(int damage){
+        if(health > 0){
+            health -=damage;
+        }
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+
     public String getState() {
         return currentState.toString();
+    }
+
+    public void dispose() {
+        this.setPosition(-100,-100);
+        gameWorld.destroyBody(bodyd);
+        if (!bullets.isEmpty()) {
+            for (Bullet bullet : bullets) {
+                bullet.dispose();
+            }
+        }
     }
 }

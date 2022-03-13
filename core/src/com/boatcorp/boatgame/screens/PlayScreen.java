@@ -208,6 +208,7 @@ public class PlayScreen implements Screen {
     private void combat(float delta) {
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>();
+        ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
         for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
@@ -225,16 +226,8 @@ public class PlayScreen implements Screen {
             }
         }
 
-        for (EnemyShip ship: enemyShips){
-            ship.shoot(delta);
-        }
-
-        state.collegeNames.removeAll(toRemoveName);
-        colleges.removeAll(toRemoveCollage);
-
-
         ArrayList<Bullet> bulletsP;
-        bulletsP = player.combat(colleges);
+        bulletsP = player.combat(colleges,enemyShips);
         if (!bulletsP.isEmpty()){
             batch.begin();
             for (Bullet bullet: bulletsP) {
@@ -246,10 +239,34 @@ public class PlayScreen implements Screen {
         }
 
 
+        for (EnemyShip ship: enemyShips){
+            if (ship.isAlive()){
+                ship.shoot(delta);
+            } else{
+                ship.dispose();
+                toRemoveShip.add(ship);
+            }
+        }
+
+        for (Actor actor: gameStage.getActors()){
+            if (actor.getX() < 0 && actor.getY() < 0){
+                actor.remove();
+            }
+        }
+
+        state.collegeNames.removeAll(toRemoveName);
+        colleges.removeAll(toRemoveCollage);
+        enemyShips.removeAll(toRemoveShip);
+
+
+
+
+
         if (player.isDead()) {
             player.dispose();
             for (Actor actor: gameStage.getActors()){
                 actor.addAction(Actions.removeActor());
+
             }
             for(College college : colleges) {
                 college.dispose();
@@ -365,8 +382,8 @@ public class PlayScreen implements Screen {
         }
         //Place enemy ships at collages
         for (College college: colleges){
-            enemyShips.add(new EnemyShip(world,state,"1",
-                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,camera.combined));
+            enemyShips.add((new EnemyShip(world,state,"1",
+                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,camera.combined)));
             gameStage.addActor(enemyShips.get(enemyShips.size()-1));
         }
 

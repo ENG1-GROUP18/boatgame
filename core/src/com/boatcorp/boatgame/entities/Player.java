@@ -229,7 +229,7 @@ public class Player extends Group {
      * Logic for calculating bullet position
      * @return a list of bullets
      */
-    public ArrayList<Bullet> combat(ArrayList<College> colleges) {
+    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips) {
 
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
@@ -283,6 +283,13 @@ public class Player extends Group {
                         bullet.dispose();
                         toRemove.add(bullet);
                         college.takeDamage(5);
+                    }
+                }
+                for (EnemyShip ship : enemyShips){
+                    if (ship.isHit() && bullet.hit()){
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                        ship.takeDamage(5);
                     }
                 }
             }

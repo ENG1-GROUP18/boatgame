@@ -29,7 +29,11 @@ public class WorldContactListener implements ContactListener {
             }
 
             if (fa.getUserData().toString().equals("Player") && fb.getUserData().toString().equals("EnemyShipBullet")){
-                System.out.println("here");
+                fa.getBody().setUserData("Hit");
+                fb.getBody().setUserData("Hit");
+            }
+
+            if (fa.getUserData().toString().equals("EnemyShip") && fb.getUserData().toString().equals("PlayerBullet")){
                 fa.getBody().setUserData("Hit");
                 fb.getBody().setUserData("Hit");
             }
