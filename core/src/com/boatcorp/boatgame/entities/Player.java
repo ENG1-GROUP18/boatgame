@@ -310,10 +310,15 @@ public class Player extends Group {
         }
     }
 
+    public void scaleDamage(float scale){
+        damageScaler *= scale;
+
+    }
+
     public void upgrade(int type){
         switch(type){
             case 0:
-                damageScaler = 0.8f;
+                scaleDamage(0.8f);
                 break;
             case 1:
                 currentHealth = maxHealth;
