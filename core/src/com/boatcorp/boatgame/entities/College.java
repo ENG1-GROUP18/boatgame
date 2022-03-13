@@ -139,7 +139,7 @@ public class College {
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
                 for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College"));
+                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College", "bullet"));
                 }
             }
             for (Bullet bullet: bullets) {
@@ -269,5 +269,6 @@ public class College {
     }
 
 }
+
 
 
