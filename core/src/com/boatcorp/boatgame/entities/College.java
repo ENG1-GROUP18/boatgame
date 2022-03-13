@@ -254,6 +254,7 @@ public class College {
     public float getCurrentHealth(){
         return currentHealth;
     }
+    public Body getBody(){return bodyd;}
     /**
      * Updates the game state with the college's properties
      */

@@ -3,6 +3,8 @@ package com.boatcorp.boatgame.tools;
 import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
 
+
+//TODO Remove if not needed at end of development
 public class EntityLocation implements Location<Vector2> {
 
     Vector2 position;

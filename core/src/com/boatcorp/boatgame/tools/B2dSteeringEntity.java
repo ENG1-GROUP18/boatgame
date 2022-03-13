@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import org.graalvm.compiler.asm.aarch64.AArch64Assembler;
 
 public class B2dSteeringEntity implements Steerable<Vector2> {
 
@@ -70,7 +71,6 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
         }
 
         if (steeringOutput.angular !=0){
-            System.out.println("ehre");
             body.applyTorque(steeringOutput.angular * (1/delta), true);
             anyAcceleration = true;
         }else{
@@ -88,6 +88,7 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
             float speed = vel.len2();
             if (speed > Math.pow(maxLinearVelocity,2)){
                 //sets current speed to max linear speed
+                System.out.println("here");
                 body.setLinearVelocity(vel.scl(maxLinearVelocity/ (float) Math.sqrt(speed)));
             }
 

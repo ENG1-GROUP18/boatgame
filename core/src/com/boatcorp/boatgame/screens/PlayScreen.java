@@ -49,6 +49,7 @@ public class PlayScreen implements Screen {
     private final BitmapFont font;
     private final Player player;
     private final ArrayList<College> colleges;
+    private ArrayList<EnemyShip> enemyShips;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
@@ -88,8 +89,6 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-        EnemyShip enemyBoat = new EnemyShip(world,state,"1",new Vector2(140,100),player);
-        gameStage.addActor(enemyBoat);
 
         addWorldBorder();
 
@@ -352,7 +351,7 @@ public class PlayScreen implements Screen {
 
     public void addColleges(ArrayList<College> colleges){
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size();
+        int xUnit = 1200 / state.collegeNames.size(); //TODO change back to 1200
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
@@ -360,7 +359,11 @@ public class PlayScreen implements Screen {
             }
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
-
+        //Place enemy ships at collages
+        for (College college: colleges){
+            gameStage.addActor(new EnemyShip(world,state,"1",
+                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,college));
+        }
 
     }
     
