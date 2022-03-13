@@ -211,7 +211,7 @@ public class PlayScreen implements Screen {
                 college.combat(camera.combined, player,delta);
             }
             else {
-                player.upgrade(3 - colleges.size());
+                player.upgrade(6 - colleges.size());
                 toRemoveName.add(college.getUserData().toString());
                 state.collegeHealths.remove(college.getUserData().toString());
                 state.collegePositions.remove(college.getUserData().toString());
