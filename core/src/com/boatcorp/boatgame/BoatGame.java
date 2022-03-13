@@ -20,6 +20,7 @@ public class BoatGame extends Game {
 	public final boolean ENABLE_SHADERS = true;
 	public final boolean ENABLE_BOX2D_WIREFRAME = false;
 	public final boolean ENABLE_TABLE_DEBUG = false;
+	public int difficulty;
 	//---------------
 
 
@@ -39,6 +40,7 @@ public class BoatGame extends Game {
 	private ShopScreen shopScreen;
 	private EndScreen endScreen;
 	private SaveScreen saveScreen;
+	private ModeScreen modeScreen;
 
 
 	public enum screenType {
@@ -48,7 +50,8 @@ public class BoatGame extends Game {
 		PAUSE_MENU,
 		SHOP,
 		END_MENU,
-		SAVE
+		SAVE,
+		MODE
 	}
 
 	@Override
@@ -77,6 +80,8 @@ public class BoatGame extends Game {
 
 			case PLAY:
 				if (playScreen == null) {
+					GameState g = new GameState();
+					g.difficulty = difficulty;
 					playScreen = new PlayScreen(this, new GameState());
 				}
 				setScreen(playScreen);
@@ -108,6 +113,12 @@ public class BoatGame extends Game {
 					saveScreen = new SaveScreen(this);
 				}
 				setScreen(saveScreen);
+				break;
+			case MODE:
+				if (modeScreen == null) {
+					modeScreen = new ModeScreen(this);
+				}
+				setScreen(modeScreen);
 				break;
 		}
 	}
