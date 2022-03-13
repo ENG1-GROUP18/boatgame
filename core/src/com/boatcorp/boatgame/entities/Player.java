@@ -32,6 +32,9 @@ public class Player extends Group {
     private int immuneSeconds;
     private float timeSeconds;
     private float period;
+    private String bulletColor;
+    private boolean hasBoughtRed;
+    private boolean hasBoughtGreen;
     private float damageScaler;
     private final ArrayList<Bullet> bullets;
     private final Viewport viewport;
@@ -69,6 +72,9 @@ public class Player extends Group {
         period = 1f;
         damageScaler = state.damageScaler;
         this.state = state;
+        hasBoughtGreen = state.hasBoughtGreen;
+        hasBoughtRed = state.hasBoughtRed;
+        bulletColor = "bullet";
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -127,6 +133,7 @@ public class Player extends Group {
             this.setRotation(velocity.angleDeg() - 90);
             bodyd.setTransform(bodyd.getPosition(),velocity.angleRad() - ((float) Math.PI/2));
         }
+        //counts down immunity
         if (immuneSeconds > 0){
             timeSeconds += Gdx.graphics.getDeltaTime();
             if(timeSeconds > period){
@@ -135,6 +142,26 @@ public class Player extends Group {
                 //TODO: display to screen
             }
         }
+        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
+        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
+        if (red && hasBoughtRed){
+            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
+                bulletColor = "redbullet";
+            }
+            else{
+                bulletColor = "bullet";
+            }
+        }
+        if (green && hasBoughtGreen){
+            if (bulletColor == "bullet" || bulletColor == "redbullet"){
+                bulletColor = "greenbullet";
+            }
+            else{
+                bulletColor = "bullet";
+            }
+
+        }
+
 
     }
 
@@ -273,7 +300,7 @@ public class Player extends Group {
                 Vector2 bulletVelocity = new Vector2(velX, velY);
 
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player"));
+                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player", bulletColor));
             }
         }
         ArrayList<Bullet> toRemove = new ArrayList<>();
@@ -340,8 +367,11 @@ public class Player extends Group {
         state.plunder = PlunderSystem.getPlunder();
         state.immuneSeconds = immuneSeconds;
         state.damageScaler = damageScaler;
+        state.hasBoughtGreen = hasBoughtGreen;
+        state.hasBoughtRed = hasBoughtRed;
     }
 
 
 
 }
+
