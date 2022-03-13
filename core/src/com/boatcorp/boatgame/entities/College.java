@@ -42,6 +42,7 @@ public class College {
     private World gameWorld;
     private GameState state;
     private Object college;
+    private float damageScaler;
 
     /**
      * Constructor class to create and initialise a new college
@@ -59,6 +60,7 @@ public class College {
         health = new HealthBar();
         maxHealth = state.collegeHealths.get(college)[1];
         currentHealth = state.collegeHealths.get(college)[0];
+        damageScaler = 1f;
         gameWorld = world;
         this.state = state;
         this.college = college;
@@ -137,7 +139,7 @@ public class College {
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
                 for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College"));
+                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College", "bullet"));
                 }
             }
             for (Bullet bullet: bullets) {
@@ -216,7 +218,7 @@ public class College {
      */
     public void takeDamage(int damage) {
         if (this.getHealth() > 0) {
-            currentHealth -= damage;
+            currentHealth -= damage*damageScaler;
         }
     }
 
@@ -263,6 +265,11 @@ public class College {
         state.collegeHealths.put(college, healths);
         state.collegePositions.put(college, this.getPosition());
     }
+    public void scaleDamage(float scale){
+        damageScaler *= scale;
+    }
 
 }
+
+
 

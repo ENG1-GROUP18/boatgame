@@ -11,10 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 
-public class StartMenuScreen extends BasicMenuScreen{
+public class ModeScreen extends BasicMenuScreen{
 
 
-    public StartMenuScreen(final BoatGame game) {
+    public ModeScreen(final BoatGame game) {
         super(game);
 
         // Create table
@@ -24,37 +24,28 @@ public class StartMenuScreen extends BasicMenuScreen{
         stage.addActor(table);
 
         // Add labels to table
-        Label label1 = new Label("[NORMAL]move with [HIGHLIGHTED]WASD", style);
+        Label label1 = new Label("[NORMAL]play on easy with [HIGHLIGHTED]E", style);
         label1.setAlignment(Align.center);
         label1.setFontScale(1f);
 
-        Label label2 = new Label("[NORMAL]aim and fire with [HIGHLIGHTED]ARROW KEYS", style);
+        Label label2 = new Label("[NORMAL]play on normal with [HIGHLIGHTED]N", style);
         label2.setAlignment(Align.center);
         label2.setFontScale(1f);
 
-        Label label3 = new Label("[NORMAL]save to the 4 memory slots \n with [HIGHLIGHTED]1, 2, 3 or 4", style);
+        Label label3 = new Label("[NORMAL]play on hard with [HIGHLIGHTED]H", style);
         label3.setAlignment(Align.center);
         label3.setFontScale(1f);
 
-        Label label4 = new Label("[NORMAL]press [HIGHLIGHTED]SPACE [NORMAL]to start", style);
-        label4.setAlignment(Align.center);
-        label4.setFontScale(1f);
-
-        Label label5 = new Label("[NORMAL]press [HIGHLIGHTED]ENTER [NORMAL]to browse saved games", style);
-        label4.setAlignment(Align.center);
-        label4.setFontScale(1f);
 
         table.add(label1).fillX().uniformX().pad(20).row();
         table.add(label2).fillX().uniformX().pad(20).row();
-        table.add(label3).fillX().uniformX().pad(20).row();
-        table.add(label4).fillX().uniformX().pad(20).row();
-        table.add(label5).fillX().uniformX().pad(20);
+        table.add(label3).fillX().uniformX().pad(20);
 
-        // Listener to detect input to progress past menu screen
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
-                if (keycode == Input.Keys.SPACE) {
-                    game.changeScreen(BoatGame.screenType.MODE);
+                if (keycode == Input.Keys.E) {
+                    game.difficulty = 0;
+                    game.changeScreen(BoatGame.screenType.PLAY);
                 }
                 return true;
             }
@@ -62,8 +53,19 @@ public class StartMenuScreen extends BasicMenuScreen{
 
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
-                if (keycode == Input.Keys.ENTER) {
-                    game.changeScreen(BoatGame.screenType.SAVE);
+                if (keycode == Input.Keys.N) {
+                    game.difficulty = 1;
+                    game.changeScreen(BoatGame.screenType.PLAY);
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.H) {
+                    game.difficulty = 2;
+                    game.changeScreen(BoatGame.screenType.PLAY);
                 }
                 return true;
             }
@@ -76,4 +78,3 @@ public class StartMenuScreen extends BasicMenuScreen{
         super.update();
     }
 }
-

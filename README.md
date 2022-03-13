@@ -1,3 +1,4 @@
+[![Java CI with Gradle](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/gradle.yml)
 ```
        ~
     _ )_) _

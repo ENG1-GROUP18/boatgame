@@ -31,8 +31,8 @@ public class Bullet extends Group {
      * @param world The world object which box2D objects are stored in
      */
 
-    public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom) {
-        final Texture texture = new Texture(Gdx.files.internal(BULLET_PATH));
+    public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color) {
+        final Texture texture = new Texture("Entities/" + color + ".png");
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
         startPos = position;
@@ -134,3 +134,4 @@ public class Bullet extends Group {
         batch.dispose();
     }
 }
+
