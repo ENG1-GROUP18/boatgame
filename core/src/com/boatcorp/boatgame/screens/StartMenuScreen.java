@@ -54,7 +54,7 @@ public class StartMenuScreen extends BasicMenuScreen{
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
                 if (keycode == Input.Keys.SPACE) {
-                    game.changeScreen(BoatGame.screenType.PLAY);
+                    game.changeScreen(BoatGame.screenType.MODE);
                 }
                 return true;
             }
