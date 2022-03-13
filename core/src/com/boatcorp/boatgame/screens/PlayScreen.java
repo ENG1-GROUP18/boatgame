@@ -80,6 +80,7 @@ public class PlayScreen implements Screen {
         mapLoader = new MapLoader();
         player = new Player(world,state);
         colleges = new ArrayList<>();
+        enemyShips = new ArrayList<>();
         addColleges(colleges);
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
@@ -154,8 +155,6 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
-//        Gdx.gl.glClearColor(0,0,0,1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
@@ -192,6 +191,7 @@ public class PlayScreen implements Screen {
             debugRenderer.render(world, viewport.getCamera().combined);
         }
 
+        combat(delta);
         vfxManager.endInputCapture();
 
         if (boatGame.ENABLE_SHADERS) {
@@ -201,7 +201,7 @@ public class PlayScreen implements Screen {
         vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
                 (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
                 viewport.getScreenWidth(), viewport.getScreenHeight());
-        combat(delta);
+
     }
 
     //TODO rename this, maybe implement directly into act/render method
@@ -225,21 +225,26 @@ public class PlayScreen implements Screen {
             }
         }
 
+        for (EnemyShip ship: enemyShips){
+            ship.shoot(delta);
+        }
+
         state.collegeNames.removeAll(toRemoveName);
         colleges.removeAll(toRemoveCollage);
 
 
-        ArrayList<Bullet> bullets;
-        bullets = player.combat(colleges);
-        if (!bullets.isEmpty()){
+        ArrayList<Bullet> bulletsP;
+        bulletsP = player.combat(colleges);
+        if (!bulletsP.isEmpty()){
             batch.begin();
-            for (Bullet bullet: bullets) {
+            for (Bullet bullet: bulletsP) {
                 // Draw and move bullets
                 bullet.draw(batch,1);
                 bullet.move(delta);
             }
             batch.end();
         }
+
 
         if (player.isDead()) {
             player.dispose();
@@ -299,7 +304,6 @@ public class PlayScreen implements Screen {
 
         world.step(delta, 6,2);
 
-        //player.update(delta);
 
 
     }
@@ -361,34 +365,12 @@ public class PlayScreen implements Screen {
         }
         //Place enemy ships at collages
         for (College college: colleges){
-            gameStage.addActor(new EnemyShip(world,state,"1",
-                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,college));
+            enemyShips.add(new EnemyShip(world,state,"1",
+                    new Vector2(college.getPosition().x-40,college.getPosition().y-40),player,camera.combined));
+            gameStage.addActor(enemyShips.get(enemyShips.size()-1));
         }
 
     }
-    
-    // following code splits colleges into slices for even numbers of colleges
-    /*
-    public void addColleges(ArrayList colleges){
-        Random rand = new Random();
-        int divider = state.collegeNames.size() / 2;
-        int xUnit = 1200 / divider;
-        for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn){
-                state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                if( i < divider){
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
-
-                }
-                else{
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
-            }}
-            colleges.add(new College(state.collegeNames.get(i), world,state));
-        }
-
-
-    }
-    */
 
     
     public GameState getState(){
