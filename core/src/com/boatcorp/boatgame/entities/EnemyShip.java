@@ -36,6 +36,7 @@ public class EnemyShip extends Group {
         sprite = new Sprite(texture);
         gameWorld = world;
         gameState = state;
+        this.player = player;
         this.camera = camera;
 
         this.position = position;
@@ -101,7 +102,6 @@ public class EnemyShip extends Group {
             entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
             currentState = FiniteState.FOLLOW;
             entity.update(delta);
-//            shoot(delta);
         } else if (!entity.getBody().getPosition().equals(targetC.getBody().getPosition())){
             currentState = FiniteState.RETURN;
             entity.setBehavior(arriveToStartPos);
@@ -147,6 +147,11 @@ public class EnemyShip extends Group {
                 if (bullet.outOfRange(300)) {
                     bullet.dispose();
                     toRemove.add(bullet);
+                }
+                if (player.isHit() && bullet.hit()) {
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                    player.takeDamage(10);
                 }
             }
 
