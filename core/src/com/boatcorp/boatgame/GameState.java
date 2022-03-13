@@ -17,6 +17,8 @@ public class GameState{
     public float damageScaler = 1f;
     public float[] collegeHealth = {100,100};
     public int difficulty = 1;
+    public boolean hasBoughtGreen = true;
+    public boolean hasBoughtRed = true;
     public ArrayList<String> collegeNames = new ArrayList<>( Arrays.asList("langwith","james","goodricke","alcuin","derwent","halifax"));
     public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
     public Map<Object, Vector2> collegePositions = new HashMap<Object,Vector2>();
