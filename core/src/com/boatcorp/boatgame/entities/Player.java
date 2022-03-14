@@ -368,6 +368,24 @@ public class Player extends Group {
                 
         }
     }
+    /**
+     * Gives the player a useful macro when purchased in the shop
+     * @param macro Picks which macro to apply
+     */
+    public void purchase(String macro){
+        switch(macro){
+            case "R":
+                hasBoughtRed = true;
+                break;    
+            case "G":
+                hasBoughtGreen = true;
+                break;
+            case "H":
+                //TODO: trade plunder for health by pressing H
+                break;
+                
+        }
+    }
 
     /**
      * Gets the body of the player
