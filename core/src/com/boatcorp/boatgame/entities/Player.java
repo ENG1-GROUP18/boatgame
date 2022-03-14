@@ -351,14 +351,21 @@ public class Player extends Group {
     public void upgrade(int type){
         switch(type){
             case 0:
+                //TODO: Unlock the shop
+                break;    
+            case 1:
                 scaleDamage(0.8f);
                 break;
-            case 1:
-                currentHealth = maxHealth;
-                break;
             case 2:
+                //TODO: one shot kill OR freeze enemies
+                break;
+            case 3:
                 immuneSeconds = 20;
                 break;
+            case 4:
+                currentHealth = maxHealth;
+                break;
+                
         }
     }
 
