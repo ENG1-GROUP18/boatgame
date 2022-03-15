@@ -18,10 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
-import com.boatcorp.boatgame.entities.Bullet;
-import com.boatcorp.boatgame.entities.College;
-import com.boatcorp.boatgame.entities.EnemyShip;
-import com.boatcorp.boatgame.entities.Player;
+import com.boatcorp.boatgame.entities.*;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PlunderSystem;
 import com.boatcorp.boatgame.frameworks.PointSystem;
@@ -92,6 +89,8 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
+
+        gameStage.addActor(new SeaMonster(new Vector2(100,150),world,player));
 
         addWorldBorder();
 

@@ -101,6 +101,7 @@ public class EnemyShip extends Group {
         float dist = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
                 targetP.getBody().getPosition().x-entity.getBody().getPosition().x);
 
+        //Logic on what current state the enemy ship is in
         if (dist < 150){
             entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
             currentState = FiniteState.FOLLOW;
