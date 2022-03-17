@@ -386,7 +386,7 @@ public class PlayScreen implements Screen {
     public void addColleges(ArrayList<College> colleges) {
 
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size(); //TODO change back to 1200
+        int xUnit = 1200 / state.collegeNames.size(); 
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn) {
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
