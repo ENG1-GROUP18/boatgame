@@ -435,6 +435,7 @@ public class PlayScreen implements Screen {
             case 1:
                 player.scaleDamage(0.8f);
                 hud.setUpdateAlert("Powerup! \nYour armour just improved 25%");
+                timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
             case 2:
@@ -442,12 +443,14 @@ public class PlayScreen implements Screen {
                 break;
             case 3:
                 player.setImmuneSeconds(20);
-                hud.setUpdateAlert("Powerup! You just won 20 seconds immunity");
+                hud.setUpdateAlert("Powerup! \nYou just won 20 seconds immunity");
+                timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
             case 4:
                 player.setHealth(player.getMaxHealth());
-                hud.setUpdateAlert("Powerup! Your just won a health refill");
+                hud.setUpdateAlert("Powerup! \nYour just won a health refill");
+                timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
 
