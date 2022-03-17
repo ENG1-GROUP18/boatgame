@@ -14,6 +14,10 @@ public class PlunderSystem {
     public static void incrementPlunder(float amount) {
         plunder += amount;
     }
+    
+    public static void decrementPlunder(float amount) {
+        plunder -= amount;
+    }
 
     public static void update(final float delta) {
     }
