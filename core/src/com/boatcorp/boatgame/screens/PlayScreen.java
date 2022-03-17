@@ -331,8 +331,7 @@ public class PlayScreen implements Screen {
         if(save4){boatGame.saveGame("4");}
         if(pause){pause();}
         if(shop && shopUnlocked){
-            boatGame.saveGame("shop");
-            boatGame.setScreen(new ShopScreen(boatGame, state));
+            boatGame.setScreen(new ShopScreen(boatGame, getState()));
         }
 
         if(hudUpdateNeeded && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 4000)){
