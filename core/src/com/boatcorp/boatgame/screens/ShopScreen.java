@@ -92,7 +92,8 @@ public class ShopScreen extends BasicMenuScreen{
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
                 if (keycode == Input.Keys.SPACE) {
-                    game.loadGame("shop");
+                    PlayScreen playScreen = new PlayScreen(game,state);
+                    game.setScreen(playScreen);
                 }
                 return true;
             }
