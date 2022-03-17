@@ -428,14 +428,14 @@ public class PlayScreen implements Screen {
     public void upgradePlayer(int type){
         switch(type){
             case 0:
-                hud.setUpdateAlert("Powerup! \nYou just unlocked the shop");
+                hud.setUpdateAlert("Powerup! \nYou just unlocked\nthe shop");
                 hud.setShopLabel("press M for the shop");
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
             case 1:
                 player.scaleDamage(0.8f);
-                hud.setUpdateAlert("Powerup! \nYour armour just improved 25%");
+                hud.setUpdateAlert("Powerup! \nYour armour just\nimproved 25%");
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
@@ -444,13 +444,13 @@ public class PlayScreen implements Screen {
                 break;
             case 3:
                 player.setImmuneSeconds(20);
-                hud.setUpdateAlert("Powerup! \nYou just won 20 seconds immunity");
+                hud.setUpdateAlert("Powerup! \nYou just won 20\nseconds immunity");
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
             case 4:
                 player.setHealth(player.getMaxHealth());
-                hud.setUpdateAlert("Powerup! \nYour just won a health refill");
+                hud.setUpdateAlert("Powerup! \nYour just won a\nhealth refill");
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
