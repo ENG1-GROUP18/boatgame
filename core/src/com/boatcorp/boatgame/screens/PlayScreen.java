@@ -429,6 +429,7 @@ public class PlayScreen implements Screen {
         switch(type){
             case 0:
                 hud.setUpdateAlert("Powerup! \nYou just unlocked the shop");
+                hud.setShopLabel("press M for the shop");
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
