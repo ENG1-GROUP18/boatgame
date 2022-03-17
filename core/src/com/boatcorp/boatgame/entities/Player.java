@@ -120,6 +120,9 @@ public class Player extends Group {
      */
     public void update (float delta) {
 
+        //process macro utilities
+        handleMacros();
+
         // Process player movement
         movement(delta);
 
@@ -137,6 +140,11 @@ public class Player extends Group {
                 //TODO: display to screen
             }
         }
+
+
+    }
+
+    public void handleMacros(){
         boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
         boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
         if (red && hasBoughtRed){
@@ -209,6 +217,18 @@ public class Player extends Group {
     public float getHealth() {
         return currentHealth;
     }
+
+    public void setHealth(float newHealth){currentHealth = newHealth;}
+
+    public void setRedMacro(){hasBoughtRed = true;}
+
+    public void setGreenMacro(){hasBoughtGreen = true;}
+
+    public void setHealthMacro(){}
+
+    public int getImmuneSeconds(){return immuneSeconds;}
+
+    public void setImmuneSeconds(int newTime){immuneSeconds = newTime;}
 
     /**
      * Returns the width and height of the player sprite
@@ -342,49 +362,6 @@ public class Player extends Group {
     public void scaleDamage(float scale){
         damageScaler *= scale;
 
-    }
-
-    /**
-     * Gives the player a power-up, like immunity or increased health
-     * @param type Picks which power-up to apply: 0. Damage Increase, 1.Full health, 2. Immunity
-     */
-    public void upgrade(int type){
-        switch(type){
-            case 0:
-                //TODO: Unlock the shop
-                break;    
-            case 1:
-                scaleDamage(0.8f);
-                break;
-            case 2:
-                //TODO: one shot kill OR freeze enemies
-                break;
-            case 3:
-                immuneSeconds = 20;
-                break;
-            case 4:
-                currentHealth = maxHealth;
-                break;
-                
-        }
-    }
-    /**
-     * Gives the player a useful macro when purchased in the shop
-     * @param macro Picks which macro to apply
-     */
-    public void purchase(String macro){
-        switch(macro){
-            case "R":
-                hasBoughtRed = true;
-                break;    
-            case "G":
-                hasBoughtGreen = true;
-                break;
-            case "H":
-                //TODO: trade plunder for health by pressing H
-                break;
-                
-        }
     }
 
     /**
