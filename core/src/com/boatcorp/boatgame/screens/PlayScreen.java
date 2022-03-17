@@ -55,6 +55,7 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
     private GameState state;
+    private ArrayList<ArrayList<Bullet>> bulletsC = new ArrayList<>();
 
 
     // For Shader
@@ -245,15 +246,39 @@ public class PlayScreen implements Screen {
             batch.end();
         }
 
-
+        int monoid = 0;
         for (EnemyShip ship: enemyShips){
             if (ship.isAlive()){
-                ship.shoot(delta);
+                if (monoid == 0){
+                    bulletsC = new ArrayList<>();
+                    monoid = 1;
+                }
+                bulletsC.add(ship.shoot(delta));
+
             } else{
                 ship.dispose();
                 toRemoveShip.add(ship);
             }
         }
+        ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+        if (!bulletsC.isEmpty()) {
+            batch.begin();
+        for (ArrayList<Bullet> temp: bulletsC){
+            for (Bullet bullet : temp) {
+                // Draw and move bullets
+                if (!bullet.outOfRange(300)) {
+
+                    bullet.draw(batch, 1);
+                    bullet.move(delta);
+                } else {
+                    toRemoveBullet.add(bullet);
+                }
+
+            }
+        }
+            batch.end();
+        }
+        bulletsC.removeAll(toRemoveBullet);
 
         for (Actor actor: gameStage.getActors()){
             if (actor.getX() < 0 && actor.getY() < 0){

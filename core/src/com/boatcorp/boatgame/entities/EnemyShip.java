@@ -126,7 +126,7 @@ public class EnemyShip extends Group {
     }
 
     //TODO change so it renders using stage2D
-    public void shoot(float delta){
+    public ArrayList<Bullet> shoot(float delta){
 
         ArrayList<Bullet> toRemove = new ArrayList<>();
         if (currentState == FiniteState.FOLLOW){
@@ -142,10 +142,7 @@ public class EnemyShip extends Group {
 
             }
             for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera);
-                bullet.draws();
-                bullet.move(delta);
+                // Move bullets and check for collisions
                 if (bullet.outOfRange(300)) {
                     bullet.dispose();
                     toRemove.add(bullet);
@@ -157,26 +154,9 @@ public class EnemyShip extends Group {
                 }
             }
 
-        } else {
-            if (!bullets.isEmpty()) {
-                for (Bullet bullet: bullets) {
-                    bullet.setMatrix(camera);
-                    bullet.draws();
-                    bullet.move(delta);
-                    if (bullet.outOfRange(300)) {
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-                for (Bullet bullet : bullets) {
-                    if (bullet.outOfRange(300)) {
-                        //bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-            }
         }
         bullets.removeAll(toRemove);
+        return bullets;
     }
 
     public enum FiniteState {
