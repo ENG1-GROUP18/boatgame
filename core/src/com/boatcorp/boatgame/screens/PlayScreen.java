@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
@@ -63,6 +64,10 @@ public class PlayScreen implements Screen {
     private RadialDistortionEffect effectDistortion;
     private VignettingEffect effectVignetting;
     private FxaaEffect effectFxaa;
+
+    //For hud updates
+    private boolean hudUpdateNeeded;
+    private long timeSinceUpdate;
 
 
     public PlayScreen(BoatGame game, GameState state) {
@@ -216,7 +221,7 @@ public class PlayScreen implements Screen {
                 college.combat(camera.combined, player,delta);
             }
             else {
-                player.upgrade(6 - colleges.size());
+                upgradePlayer(6 - colleges.size());
                 toRemoveName.add(college.getUserData().toString());
                 state.collegeHealths.remove(college.getUserData().toString());
                 state.collegePositions.remove(college.getUserData().toString());
@@ -295,6 +300,11 @@ public class PlayScreen implements Screen {
         if(save3){boatGame.saveGame("3");}
         if(save4){boatGame.saveGame("4");}
         if(pause){pause();}
+
+        if(hudUpdateNeeded && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 4000)){
+            hud.setUpdateAlert("");
+            hudUpdateNeeded = false;
+        }
         
         camera.zoom = DEFAULT_ZOOM;
 
@@ -411,6 +421,60 @@ public class PlayScreen implements Screen {
                 break;
         }
     }
+    /**
+     * Gives the player a power-up, like immunity or increased health
+     * @param type Picks which power-up to apply: 0. Damage Increase, 1.Full health, 2. Immunity
+     */
+    public void upgradePlayer(int type){
+        switch(type){
+            case 0:
+                hud.setUpdateAlert("Powerup! \nYou just unlocked the shop");
+                timeSinceUpdate = TimeUtils.millis();
+                hudUpdateNeeded = true;
+                break;
+            case 1:
+                player.scaleDamage(0.8f);
+                hud.setUpdateAlert("Powerup! \nYour armour just improved 25%");
+                hudUpdateNeeded = true;
+                break;
+            case 2:
+                //TODO: one shot kill OR freeze enemies
+                break;
+            case 3:
+                player.setImmuneSeconds(20);
+                hud.setUpdateAlert("Powerup! You just won 20 seconds immunity");
+                hudUpdateNeeded = true;
+                break;
+            case 4:
+                player.setHealth(player.getMaxHealth());
+                hud.setUpdateAlert("Powerup! Your just won a health refill");
+                hudUpdateNeeded = true;
+                break;
+
+        }
+    }
+
+    /**
+     * Gives the player a useful macro when purchased in the shop
+     * @param macro Picks which macro to apply
+     */
+    public void purchaseMacro(String macro){
+        switch(macro){
+            case "R":
+                player.setRedMacro();
+                break;
+            case "G":
+                player.setGreenMacro();
+                break;
+            case "H":
+                player.setHealthMacro();
+                break;
+
+        }
+    }
+
+
+
     
     public GameState getState(){
         player.updateState();
@@ -421,6 +485,7 @@ public class PlayScreen implements Screen {
         return state;
     }
 }
+
 
 
 
