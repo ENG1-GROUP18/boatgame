@@ -30,6 +30,7 @@ public class Player extends Group {
     private String bulletColor;
     private boolean hasBoughtRed;
     private boolean hasBoughtGreen;
+    private boolean hasBoughtHealth;
 
     private float damageScaler;
     private final ArrayList<Bullet> bullets;
@@ -68,6 +69,7 @@ public class Player extends Group {
         this.state = state;
         hasBoughtGreen = state.hasBoughtGreen;
         hasBoughtRed = state.hasBoughtRed;
+        hasBoughtHealth = state.hasBoughtHealth;
         bulletColor = "bullet";
 
         //Creates body definition
@@ -147,6 +149,7 @@ public class Player extends Group {
     public void handleMacros(){
         boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
         boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
+        boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
         if (red && hasBoughtRed){
             if (bulletColor == "bullet" || bulletColor == "greenbullet"){
                 bulletColor = "redbullet";
@@ -161,6 +164,14 @@ public class Player extends Group {
             }
             else{
                 bulletColor = "bullet";
+            }
+
+        }
+        if (health && hasBoughtHealth){
+            if (PlunderSystem.getPlunder() > 50){
+                PlunderSystem.decrementPlunder(50);
+                currentHealth = maxHealth;
+
             }
 
         }
