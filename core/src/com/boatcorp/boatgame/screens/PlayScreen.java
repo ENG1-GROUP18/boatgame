@@ -485,7 +485,7 @@ public class PlayScreen implements Screen {
                 hudUpdateNeeded = true;
                 break;
             case 2:
-                //TODO: one shot kill OR freeze enemies
+                //freeze enemies
                 break;
             case 3:
                 player.setImmuneSeconds(20);
