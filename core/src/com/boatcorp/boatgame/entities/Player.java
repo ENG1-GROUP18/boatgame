@@ -28,9 +28,6 @@ public class Player extends Group {
     private float timeSeconds;
     private float period;
     private String bulletColor;
-    private boolean hasBoughtRed;
-    private boolean hasBoughtGreen;
-    private boolean hasBoughtHealth;
 
     private float damageScaler;
     private final ArrayList<Bullet> bullets;
@@ -67,10 +64,7 @@ public class Player extends Group {
         period = 1f;
         damageScaler = state.damageScaler;
         this.state = state;
-        hasBoughtGreen = state.hasBoughtGreen;
-        hasBoughtRed = state.hasBoughtRed;
-        hasBoughtHealth = state.hasBoughtHealth;
-        bulletColor = "bullet";
+        bulletColor = state.bulletColor;
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -122,9 +116,6 @@ public class Player extends Group {
      */
     public void update (float delta) {
 
-        //process macro utilities
-        handleMacros();
-
         // Process player movement
         movement(delta);
 
@@ -146,38 +137,9 @@ public class Player extends Group {
 
     }
 
-    public void handleMacros(){
-        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
-        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
-        boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
-        if (red && hasBoughtRed){
-            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
-                bulletColor = "redbullet";
-            }
-            else{
-                bulletColor = "bullet";
-            }
-        }
-        if (green && hasBoughtGreen){
-            if (bulletColor == "bullet" || bulletColor == "redbullet"){
-                bulletColor = "greenbullet";
-            }
-            else{
-                bulletColor = "bullet";
-            }
+    public void setBulletColor(String color){bulletColor = color;}
 
-        }
-        if (health && hasBoughtHealth){
-            if (PlunderSystem.getPlunder() > 50){
-                PlunderSystem.decrementPlunder(50);
-                currentHealth = maxHealth;
-
-            }
-
-        }
-
-
-    }
+    public String getBulletColor(){ return bulletColor;}
 
     /**
      * Updates the velocity of the player dependent on user directional inputs
@@ -231,11 +193,6 @@ public class Player extends Group {
 
     public void setHealth(float newHealth){currentHealth = newHealth;}
 
-    public void setRedMacro(){hasBoughtRed = true;}
-
-    public void setGreenMacro(){hasBoughtGreen = true;}
-
-    public void setHealthMacro(){}
 
     public int getImmuneSeconds(){return immuneSeconds;}
 
@@ -394,8 +351,7 @@ public class Player extends Group {
         state.plunder = PlunderSystem.getPlunder();
         state.immuneSeconds = immuneSeconds;
         state.damageScaler = damageScaler;
-        state.hasBoughtGreen = hasBoughtGreen;
-        state.hasBoughtRed = hasBoughtRed;
+        state.bulletColor = bulletColor;
     }
 
 }
