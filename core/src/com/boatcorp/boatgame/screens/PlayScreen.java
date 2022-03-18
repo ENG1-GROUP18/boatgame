@@ -430,11 +430,11 @@ public class PlayScreen implements Screen {
             if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
                 if( i < divider){
-                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + 10 + rand.nextInt(xUnit - 20), 10 + rand.nextInt(600 - 20)));
 
                 }
                 else{
-                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + 10 + rand.nextInt(xUnit - 20), 610 + rand.nextInt(600 - 20)));
                 }}
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
