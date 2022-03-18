@@ -521,7 +521,7 @@ public class PlayScreen implements Screen {
             }
             else{
                 player.setBulletColor("bullet");
-                scaleShips(1);
+                scaleShips(1/2);
             }
         }
         if (green && hasBoughtGreen){
