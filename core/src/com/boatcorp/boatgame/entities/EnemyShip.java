@@ -191,6 +191,10 @@ public class EnemyShip extends Group {
         damageScaler *= scale;
 
     }
+    
+    public float getDamageScaler() {
+        return damageScaler;
+    }
 
     public boolean isAlive() {
         return health > 0;
