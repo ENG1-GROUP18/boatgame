@@ -49,7 +49,14 @@ public class PauseScreen extends BasicMenuScreen{
             }
         });
         
-
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.E) {
+                    Gdx.app.exit();
+                }
+                return true;
+            }
+        });
     }
 
     @Override
