@@ -386,7 +386,7 @@ public class PlayScreen implements Screen {
     }
 
     public void pause() {
-        boatGame.setScreen(new PauseScreen(boatGame));
+        boatGame.setScreen(new PauseScreen(boatGame, getState()));
     }
 
     @Override
