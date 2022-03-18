@@ -55,7 +55,8 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
     private GameState state;
-    private ArrayList<ArrayList<Bullet>> bulletsC = new ArrayList<>();
+    private ArrayList<ArrayList<Bullet>> bulletsS = new ArrayList<>();
+
 
 
     // For Shader
@@ -217,9 +218,16 @@ public class PlayScreen implements Screen {
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>();
         ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
+        int reset = 0;
+        //Logic for collage combat and capture
         for (College college : colleges) {
             if (college.isAlive()) {
-                college.combat(camera.combined, player,delta);
+                if (reset == 0){
+                    bulletsS = new ArrayList<>();
+                    reset = 1;
+                }
+
+                bulletsS.add(college.combat(camera.combined, player,delta));
             }
             else {
                 upgradePlayer(6 - colleges.size());
@@ -234,51 +242,41 @@ public class PlayScreen implements Screen {
             }
         }
 
-        ArrayList<Bullet> bulletsP;
-        bulletsP = player.combat(colleges,enemyShips);
-        if (!bulletsP.isEmpty()){
-            batch.begin();
-            for (Bullet bullet: bulletsP) {
-                // Draw and move bullets
-                bullet.draw(batch,1);
-                bullet.move(delta);
-            }
-            batch.end();
-        }
-
-        int monoid = 0;
+        //Logic for enemy ship combat and death
         for (EnemyShip ship: enemyShips){
             if (ship.isAlive()){
-                if (monoid == 0){
-                    bulletsC = new ArrayList<>();
-                    monoid = 1;
+                if (reset == 0){
+                    bulletsS = new ArrayList<>();
+                    reset = 1;
                 }
-                bulletsC.add(ship.shoot(delta));
-
+                bulletsS.add(ship.shoot());
             } else{
                 ship.dispose();
                 toRemoveShip.add(ship);
             }
         }
+
+        //Adds player bullets to array
+        bulletsS.add(player.combat(colleges,enemyShips));
+
         ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
-        if (!bulletsC.isEmpty()) {
+        //Renders all the bullets in a single sprite batch
+        if (!bulletsS.isEmpty()) {
             batch.begin();
-        for (ArrayList<Bullet> temp: bulletsC){
-            for (Bullet bullet : temp) {
-                // Draw and move bullets
-                if (!bullet.outOfRange(300)) {
-
-                    bullet.draw(batch, 1);
-                    bullet.move(delta);
-                } else {
-                    toRemoveBullet.add(bullet);
+            for (ArrayList<Bullet> temp: bulletsS){
+                for (Bullet bullet : temp) {
+                    if (!bullet.outOfRange(300)) {
+                        bullet.draw(batch, 1);
+                        bullet.move(delta);
+                    } else {
+                        toRemoveBullet.add(bullet);
+                    }
                 }
-
             }
-        }
             batch.end();
         }
-        bulletsC.removeAll(toRemoveBullet);
+
+        bulletsS.removeAll(toRemoveBullet);
 
         for (Actor actor: gameStage.getActors()){
             if (actor.getX() < 0 && actor.getY() < 0){
@@ -290,10 +288,7 @@ public class PlayScreen implements Screen {
         colleges.removeAll(toRemoveCollage);
         enemyShips.removeAll(toRemoveShip);
 
-
-
-
-
+        //Lose state if player dies
         if (player.isDead()) {
             player.dispose();
             for (Actor actor: gameStage.getActors()){
@@ -305,6 +300,7 @@ public class PlayScreen implements Screen {
             }
             boatGame.setScreen(new ResultScreen(false, boatGame));
         }
+        //Win state if all collages are captured
         if (colleges.isEmpty()) {
             boatGame.setScreen(new ResultScreen(true, boatGame));
         }

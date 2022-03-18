@@ -126,7 +126,7 @@ public class EnemyShip extends Group {
     }
 
     //TODO change so it renders using stage2D
-    public ArrayList<Bullet> shoot(float delta){
+    public ArrayList<Bullet> shoot(){
 
         ArrayList<Bullet> toRemove = new ArrayList<>();
         if (currentState == FiniteState.FOLLOW){
@@ -143,10 +143,6 @@ public class EnemyShip extends Group {
             }
             for (Bullet bullet: bullets) {
                 // Move bullets and check for collisions
-                if (bullet.outOfRange(300)) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                }
                 if (player.isHit() && bullet.hit()) {
                     bullet.dispose();
                     toRemove.add(bullet);
@@ -154,6 +150,15 @@ public class EnemyShip extends Group {
                 }
             }
 
+        }else{
+            if (!bullets.isEmpty()) {
+                for (Bullet bullet: bullets){
+                    if (bullet.outOfRange(300)) {
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                    }
+                }
+            }
         }
         bullets.removeAll(toRemove);
         return bullets;
@@ -190,10 +195,6 @@ public class EnemyShip extends Group {
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(bodyd);
-        if (!bullets.isEmpty()) {
-            for (Bullet bullet : bullets) {
-                bullet.dispose();
-            }
-        }
+
     }
 }
