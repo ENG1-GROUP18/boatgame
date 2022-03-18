@@ -419,13 +419,19 @@ public class PlayScreen implements Screen {
     public void addColleges(ArrayList<College> colleges) {
 
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size(); 
+        int divider = state.collegeNames.size() / 2;
+        int xUnit = 1200 / divider;
         for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn) {
+            if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit * i) + rand.nextInt(xUnit), rand.nextInt(1200)));
-            }
-            colleges.add(new College(state.collegeNames.get(i), world, state));
+                if( i < divider){
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
+
+                }
+                else{
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
+                }}
+            colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
         //Place enemy ships at collages
