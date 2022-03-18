@@ -96,7 +96,7 @@ public class BoatGame extends Game {
 
 			case SHOP:
 				if (shopScreen == null) {
-					shopScreen = new ShopScreen(this);
+					shopScreen = new ShopScreen(this, new GameState());
 				}
 				setScreen(shopScreen);
 				break;

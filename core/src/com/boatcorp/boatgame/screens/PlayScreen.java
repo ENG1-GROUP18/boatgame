@@ -71,6 +71,8 @@ public class PlayScreen implements Screen {
     private boolean hudUpdateNeeded;
     private long timeSinceUpdate;
 
+    //For shop
+    private boolean shopUnlocked;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
@@ -83,6 +85,7 @@ public class PlayScreen implements Screen {
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
         gameStage = new Stage(viewport);
         this.state = state;
+        shopUnlocked = state.shopUnlocked;
 
         mapLoader = new MapLoader();
         player = new Player(world,state);
@@ -95,6 +98,7 @@ public class PlayScreen implements Screen {
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
         PlunderSystem.setPlunder(state.plunder);
+        if (shopUnlocked) {hud.setShopLabel("press M for the shop");}
         
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
@@ -315,12 +319,16 @@ public class PlayScreen implements Screen {
         boolean save3 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_3);
         boolean save4 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_4);
         boolean pause = Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE);
+        boolean shop = Gdx.input.isKeyJustPressed(Input.Keys.M);
 
         if(save1){boatGame.saveGame("1");}
         if(save2){boatGame.saveGame("2");}
         if(save3){boatGame.saveGame("3");}
         if(save4){boatGame.saveGame("4");}
         if(pause){pause();}
+        if(shop && shopUnlocked){
+            boatGame.setScreen(new ShopScreen(boatGame, getState()));
+        }
 
         if(hudUpdateNeeded && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 4000)){
             hud.setUpdateAlert("");
@@ -407,13 +415,19 @@ public class PlayScreen implements Screen {
     public void addColleges(ArrayList<College> colleges) {
 
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size(); 
+        int divider = state.collegeNames.size() / 2;
+        int xUnit = 1200 / divider;
         for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn) {
+            if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit * i) + rand.nextInt(xUnit), rand.nextInt(1200)));
-            }
-            colleges.add(new College(state.collegeNames.get(i), world, state));
+                if( i < divider){
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + rand.nextInt(xUnit), rand.nextInt(600)));
+
+                }
+                else{
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + rand.nextInt(xUnit), 600 + rand.nextInt(600)));
+                }}
+            colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
         //Place enemy ships at collages
@@ -451,6 +465,7 @@ public class PlayScreen implements Screen {
             case 0:
                 hud.setUpdateAlert("Powerup! \nYou just unlocked\nthe shop");
                 hud.setShopLabel("press M for the shop");
+                shopUnlocked = true;
                 timeSinceUpdate = TimeUtils.millis();
                 hudUpdateNeeded = true;
                 break;
@@ -507,9 +522,11 @@ public class PlayScreen implements Screen {
             college.updateState();
         }
         state.isSpawn = false;
+        state.shopUnlocked = shopUnlocked;
         return state;
     }
 }
+
 
 
 

@@ -10,13 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
+import com.boatcorp.boatgame.GameState;
 
 public class ShopScreen extends BasicMenuScreen{
 
+    private GameState state;
 
-    public ShopScreen(final BoatGame game) {
+    public ShopScreen(final BoatGame game, final GameState state) {
         super(game);
-
+        this.state = state;
         // Create table
         Table table = new Table();
         table.setFillParent(true);
@@ -40,11 +42,62 @@ public class ShopScreen extends BasicMenuScreen{
         label4.setAlignment(Align.center);
         label4.setFontScale(1f);
 
+        Label label5 = new Label("[NORMAL]return with [HIGHLIGHTED]SPACE", style);
+        label4.setAlignment(Align.center);
+        label4.setFontScale(1f);
+
 
         table.add(label1).fillX().uniformX().pad(20).row();
         table.add(label2).fillX().uniformX().pad(20).row();
         table.add(label3).fillX().uniformX().pad(20).row();
-        table.add(label4).fillX().uniformX().pad(20);
+        table.add(label4).fillX().uniformX().pad(20).row();
+        table.add(label5).fillX().uniformX().pad(20);
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.R) {
+                    if (state.plunder > 50 && !state.hasBoughtRed){
+                        state.plunder -= 50;
+                        state.hasBoughtRed = true;
+                    }
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.G) {
+                    if (state.plunder > 50 && !state.hasBoughtGreen){
+                        state.plunder -= 50;
+                        state.hasBoughtGreen = true;
+                    }
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.H) {
+                    if (state.plunder > 50 && !state.hasBoughtRed){
+                        state.plunder -= 50;
+                        state.hasBoughtHealth = true;
+                    }
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.SPACE) {
+                    PlayScreen playScreen = new PlayScreen(game,state);
+                    game.setScreen(playScreen);
+                }
+                return true;
+            }
+        });
         
 
     }
@@ -54,3 +107,4 @@ public class ShopScreen extends BasicMenuScreen{
         super.update();
     }
 }
+
