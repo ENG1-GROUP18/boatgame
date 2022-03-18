@@ -89,7 +89,7 @@ public class BoatGame extends Game {
 
 			case PAUSE_MENU:
 				if (pauseScreen == null) {
-					pauseScreen = new PauseScreen(this);
+					pauseScreen = new PauseScreen(this, new GameState());
 				}
 				setScreen(pauseScreen);
 				break;

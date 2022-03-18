@@ -262,6 +262,9 @@ public class PlayScreen implements Screen {
                 bulletsS.add(ship.shoot());
             } else{
                 ship.dispose();
+                PointSystem.incrementPoint(100);
+                float doubleRandomNumber = (float) Math.random() * 10;
+                PlunderSystem.incrementPlunder(doubleRandomNumber + 10);
                 toRemoveShip.add(ship);
             }
         }
@@ -386,7 +389,7 @@ public class PlayScreen implements Screen {
     }
 
     public void pause() {
-        boatGame.setScreen(new PauseScreen(boatGame));
+        boatGame.setScreen(new PauseScreen(boatGame, getState()));
     }
 
     @Override
