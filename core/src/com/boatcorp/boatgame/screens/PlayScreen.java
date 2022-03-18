@@ -557,6 +557,7 @@ public class PlayScreen implements Screen {
         state.hasBoughtRed = hasBoughtRed;
         state.hasBoughtHealth = hasBoughtHealth;
         state.hasBoughtGreen = hasBoughtGreen;
+        state.shipDamageScaler = enemyShips.get(0).getDamageScaler();
         return state;
     }
 }
