@@ -31,6 +31,8 @@ public class EnemyShip extends Group {
     private GameState gameState;
     private FiniteState currentState;
     private long timeSinceLastShot;
+    private float damageScaler;
+
 
     //TODO simplify/cleanup so not so many objects are passed in
     public EnemyShip(World world, GameState state, String ID, Vector2 position,Player player,Matrix4 camera){
@@ -41,6 +43,7 @@ public class EnemyShip extends Group {
         this.player = player;
         this.camera = camera;
         timeSinceLastShot = TimeUtils.millis();
+        damageScaler = state.shipDamageScaler;
 
         this.position = position;
         bullets = new ArrayList<>();
@@ -180,8 +183,13 @@ public class EnemyShip extends Group {
 
     public void takeDamage(int damage){
         if(health > 0){
-            health -=damage;
+            health -= (damage*damageScaler);
         }
+    }
+
+    public void scaleDamage(float scale){
+        damageScaler *= scale;
+
     }
 
     public boolean isAlive() {
