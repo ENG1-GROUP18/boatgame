@@ -234,6 +234,10 @@ public class College {
         batch.dispose();
         health.dispose();
         gameWorld.destroyBody(bodyd);
+        for (Bullet bullet: bullets){
+            bullet.dispose();
+        }
+
 
     }
     /**

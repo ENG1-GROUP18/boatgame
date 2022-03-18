@@ -33,7 +33,7 @@ public class Bullet extends Group {
     public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color) {
         final Texture texture = new Texture("Entities/" + color + ".png");
         sprite = new Sprite(texture);
-        startPos = position;
+        startPos = position.cpy();
         this.velocity = velocity;
         gameWorld = world;
 

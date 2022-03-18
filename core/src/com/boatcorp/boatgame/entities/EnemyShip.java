@@ -45,7 +45,7 @@ public class EnemyShip extends Group {
         timeSinceLastShot = TimeUtils.millis();
         damageScaler = state.shipDamageScaler;
 
-        this.position = position;
+        this.position = position.cpy();
         bullets = new ArrayList<>();
 
         //Creates body definition
@@ -207,6 +207,9 @@ public class EnemyShip extends Group {
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(bodyd);
+        for (Bullet bullet: bullets){
+            bullet.dispose();
+        }
 
     }
 }
