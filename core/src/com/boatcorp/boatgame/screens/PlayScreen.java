@@ -73,6 +73,9 @@ public class PlayScreen implements Screen {
 
     //For shop
     private boolean shopUnlocked;
+    private boolean hasBoughtGreen;
+    private boolean hasBoughtRed;
+    private boolean hasBoughtHealth;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
@@ -86,6 +89,9 @@ public class PlayScreen implements Screen {
         gameStage = new Stage(viewport);
         this.state = state;
         shopUnlocked = state.shopUnlocked;
+        hasBoughtGreen = state.hasBoughtGreen;
+        hasBoughtRed = state.hasBoughtRed;
+        hasBoughtHealth = state.hasBoughtHealth;
 
         mapLoader = new MapLoader();
         player = new Player(world,state);
@@ -314,6 +320,8 @@ public class PlayScreen implements Screen {
 
     private void update(final float delta) {
 
+        handleMacros();
+
         boolean save1 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_1);
         boolean save2 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_2);
         boolean save3 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_3);
@@ -359,6 +367,7 @@ public class PlayScreen implements Screen {
         camera.position.y = MathUtils.clamp(camera.position.y, vh / 2f, mapHeight * PPM / 2f);
 
         camera.update();
+
 
         world.step(delta, 6,2);
 
@@ -494,25 +503,47 @@ public class PlayScreen implements Screen {
         }
     }
 
-    /**
-     * Gives the player a useful macro when purchased in the shop
-     * @param macro Picks which macro to apply
-     */
-    public void purchaseMacro(String macro){
-        switch(macro){
-            case "R":
-                player.setRedMacro();
-                break;
-            case "G":
-                player.setGreenMacro();
-                break;
-            case "H":
-                player.setHealthMacro();
-                break;
+    public void handleMacros(){
+        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
+        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
+        boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
+        String bulletColor = player.getBulletColor();
+        if (red && hasBoughtRed){
+            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
+                player.setBulletColor("redbullet");
+                scaleShips(2);
+            }
+            else{
+                player.setBulletColor("bullet");
+                scaleShips(1);
+            }
+        }
+        if (green && hasBoughtGreen){
+            if (bulletColor == "bullet" || bulletColor == "redbullet"){
+                player.setBulletColor("greenbullet");
+            }
+            else{
+                player.setBulletColor("bullet");
+            }
 
         }
+        if (health && hasBoughtHealth){
+            if (PlunderSystem.getPlunder() > 50){
+                PlunderSystem.decrementPlunder(50);
+                player.setHealth(player.getMaxHealth());
+
+            }
+
+        }
+
+
     }
 
+    private void scaleShips(float scaler){
+        for (EnemyShip ship : enemyShips){
+            ship.scaleDamage(scaler);
+        }
+    }
 
 
     
@@ -523,6 +554,9 @@ public class PlayScreen implements Screen {
         }
         state.isSpawn = false;
         state.shopUnlocked = shopUnlocked;
+        state.hasBoughtRed = hasBoughtRed;
+        state.hasBoughtHealth = hasBoughtHealth;
+        state.hasBoughtGreen = hasBoughtGreen;
         return state;
     }
 }
