@@ -22,6 +22,7 @@ public class EnemyShip extends Group {
     private final Vector2 position;
     private float health = 20;
     private final Body bodyd;
+    private final Body startBody;
     private final World gameWorld;
     private B2dSteeringEntity entity,targetP,targetC;
     private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
@@ -59,12 +60,12 @@ public class EnemyShip extends Group {
 
         bodyd.createFixture(fixtureDef).setUserData("EnemyShip");
         bodyd.setUserData("");
-        bodyd.setLinearDamping(5);
+        bodyd.setLinearDamping(3);
 
         BodyDef bodyDef1 = new BodyDef();
         bodyDef1.type = BodyDef.BodyType.StaticBody;
         bodyDef1.position.set(position);
-        Body startBody = gameWorld.createBody(bodyDef1);
+        startBody = gameWorld.createBody(bodyDef1);
         FixtureDef fixtureDef1 = new FixtureDef();
         fixtureDef1.shape = shape;
         fixtureDef1.isSensor = true;
@@ -101,8 +102,11 @@ public class EnemyShip extends Group {
         float dist = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
                 targetP.getBody().getPosition().x-entity.getBody().getPosition().x);
 
+        float distanceFromHome = (float) Math.hypot(startBody.getPosition().y-entity.getBody().getPosition().y,
+                startBody.getPosition().x-entity.getBody().getPosition().x);
+
         //Logic on what current state the enemy ship is in
-        if (dist < 150){
+        if (dist < 150 && distanceFromHome < 300){
             entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
             currentState = FiniteState.FOLLOW;
             entity.update(delta);

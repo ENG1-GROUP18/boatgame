@@ -14,11 +14,12 @@ import com.boatcorp.boatgame.tools.B2dSteeringEntity;
 public class SeaMonster extends Group {
     Sprite sprite;
     private final Body body;
+    private final Body startBody;
     private B2dSteeringEntity entity,targetP,targetC;
     private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
 
     public SeaMonster(Vector2 position, World gameWorld,Player player){
-        Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png"));
+        Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
         sprite = new Sprite(texture);
 
         //Creates body definition
@@ -35,12 +36,12 @@ public class SeaMonster extends Group {
 
         body.createFixture(fixtureDef).setUserData("EnemyShip");
         body.setUserData("");
-        body.setLinearDamping(3);
+        body.setLinearDamping(1);
 
         BodyDef bodyDef1 = new BodyDef();
         bodyDef1.type = BodyDef.BodyType.StaticBody;
         bodyDef1.position.set(position);
-        Body startBody = gameWorld.createBody(bodyDef1);
+        startBody = gameWorld.createBody(bodyDef1);
         FixtureDef fixtureDef1 = new FixtureDef();
         fixtureDef1.shape = shape;
         fixtureDef1.isSensor = true;
@@ -76,12 +77,15 @@ public class SeaMonster extends Group {
     public void act(float delta){
         super.act(delta);
 
-        float dist = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
+        float distanceFromPlayer = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
                 targetP.getBody().getPosition().x-entity.getBody().getPosition().x);
 
+        float distanceFromHome = (float) Math.hypot(startBody.getPosition().y-entity.getBody().getPosition().y,
+                startBody.getPosition().x-entity.getBody().getPosition().x);
+
         //Logic on what current state the enemy ship is in
-        if (dist < 150){
-            entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
+        if (distanceFromPlayer < 150 && distanceFromHome < 300){
+            entity.setBehavior(arriveToPlayer);
             entity.update(delta);
         } else if (!entity.getBody().getPosition().equals(targetC.getBody().getPosition())){
             entity.setBehavior(arriveToStartPos);

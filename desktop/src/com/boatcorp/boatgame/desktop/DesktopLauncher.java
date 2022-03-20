@@ -17,6 +17,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		System.setProperty("org.lwjgl.opengl.Display.enableOSXFullscreenModeAPI", "true");
 		config.setTitle("Boat Game 2: Uncharted Waters");
+		config.setForegroundFPS(60); //Fixed FPS to 60
 		//config.setWindowIcon("images/appIcon.png");
 
 		if(FULLSCREEN) {

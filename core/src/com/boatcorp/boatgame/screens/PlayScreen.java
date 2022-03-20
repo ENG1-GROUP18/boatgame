@@ -27,10 +27,8 @@ import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.boatcorp.boatgame.GameState;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
@@ -156,6 +154,8 @@ public class PlayScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0,0,0,1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         vfxManager.cleanUpBuffers();
         vfxManager.beginInputCapture();
 
@@ -185,7 +185,7 @@ public class PlayScreen implements Screen {
 
         hud.getStage().draw();
 
-        hud.getStage().act(delta);
+        //hud.getStage().act(delta); //Don't think this line is needed as well as the draw function
 
         //Draws box2D hitboxes for debug
         if (boatGame.ENABLE_BOX2D_WIREFRAME) {
