@@ -6,7 +6,6 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import org.graalvm.compiler.asm.aarch64.AArch64Assembler;
 
 public class B2dSteeringEntity implements Steerable<Vector2> {
 

@@ -45,23 +45,23 @@ public class PlayScreen implements Screen {
     private final BitmapFont font;
     private final Player player;
     private final ArrayList<College> colleges;
-    private ArrayList<EnemyShip> enemyShips;
-    private ArrayList<SeaMonster> seaMonsters;
+    private final ArrayList<EnemyShip> enemyShips;
+    private final ArrayList<SeaMonster> seaMonsters;
     private final Hud hud;
-    private Box2DDebugRenderer debugRenderer;
-    private Stage gameStage;
-    private GameState state;
+    private final Box2DDebugRenderer debugRenderer;
+    private final Stage gameStage;
+    private final GameState state;
     private ArrayList<ArrayList<Bullet>> bulletsS = new ArrayList<>();
 
 
 
     // For Shader
-    private VfxManager vfxManager;
-    private BloomEffect effectBloom;
-    private OldTvEffect effectTv;
-    private RadialDistortionEffect effectDistortion;
-    private VignettingEffect effectVignetting;
-    private FxaaEffect effectFxaa;
+    private final VfxManager vfxManager;
+    private final BloomEffect effectBloom;
+    private final OldTvEffect effectTv;
+    private final RadialDistortionEffect effectDistortion;
+    private final VignettingEffect effectVignetting;
+    private final FxaaEffect effectFxaa;
 
     //For hud updates
     private boolean hudUpdateNeeded;
@@ -69,9 +69,9 @@ public class PlayScreen implements Screen {
 
     //For shop
     private boolean shopUnlocked;
-    private boolean hasBoughtGreen;
-    private boolean hasBoughtRed;
-    private boolean hasBoughtHealth;
+    private final boolean hasBoughtGreen;
+    private final boolean hasBoughtRed;
+    private final boolean hasBoughtHealth;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
@@ -106,7 +106,8 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(100,150),world,player);
+        //TODO make the semesters spawn in different locations
+        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player);
         gameStage.addActor(tempSeaMonster);
         seaMonsters.add(tempSeaMonster);
 
@@ -240,7 +241,7 @@ public class PlayScreen implements Screen {
                     reset = 1;
                 }
 
-                bulletsS.add(college.combat(camera.combined, player,delta));
+                bulletsS.add(college.combat(player));
             }
             else {
                 upgradePlayer(6 - colleges.size());
@@ -275,24 +276,24 @@ public class PlayScreen implements Screen {
         //Adds player bullets to array
         bulletsS.add(player.combat(colleges,enemyShips,seaMonsters));
 
-        ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+
         //Renders all the bullets in a single sprite batch
-        if (!bulletsS.isEmpty()) {
-            batch.begin();
-            for (ArrayList<Bullet> temp: bulletsS){
-                for (Bullet bullet : temp) {
-                    if (!bullet.outOfRange(300)) {
-                        bullet.draw(batch, 1);
-                        bullet.move(delta);
-                    } else {
-                        toRemoveBullet.add(bullet);
-                    }
+        batch.begin();
+        for (ArrayList<Bullet> temp: bulletsS){
+            ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+            for (Bullet bullet : temp) {
+                if (!bullet.outOfRange(300)) {
+                    bullet.draw(batch, 1);
+                    bullet.move(delta);
+                } else {
+                    toRemoveBullet.add(bullet);
                 }
             }
-            batch.end();
+            temp.removeAll(toRemoveBullet);
         }
+        batch.end();
 
-        bulletsS.removeAll(toRemoveBullet);
+
 
         for (SeaMonster monster: seaMonsters){
             if (!monster.isAlive()){
@@ -369,7 +370,6 @@ public class PlayScreen implements Screen {
         // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
         float lerp = 10f;
         Vector2 playerPos = player.getPosition();
-        Vector2 playerSprite = player.getSpriteDimensions();
         camera.position.x += ((playerPos.x) - camera.position.x) * lerp * delta;
         camera.position.y += ((playerPos.y) - camera.position.y) * lerp * delta;
 
@@ -457,8 +457,8 @@ public class PlayScreen implements Screen {
 
         //Place enemy ships at collages
         for (College college : colleges) {
-            enemyShips.add((new EnemyShip(world, state, "1",
-                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player, camera.combined)));
+            enemyShips.add((new EnemyShip(world, state,
+                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player)));
             gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
 
         }
@@ -525,17 +525,17 @@ public class PlayScreen implements Screen {
         boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
         String bulletColor = player.getBulletColor();
         if (red && hasBoughtRed){
-            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
+            if (bulletColor.equals("bullet") || bulletColor.equals("greenbullet")){
                 player.setBulletColor("redbullet");
                 scaleShips(2);
             }
             else{
                 player.setBulletColor("bullet");
-                scaleShips(1/2);
+                scaleShips(1/2f);
             }
         }
         if (green && hasBoughtGreen){
-            if (bulletColor == "bullet" || bulletColor == "redbullet"){
+            if (bulletColor.equals("bullet") || bulletColor.equals("redbullet") ){
                 player.setBulletColor("greenbullet");
             }
             else{

@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.boatcorp.boatgame.tools.B2dSteeringEntity;
-import jdk.internal.vm.compiler.collections.EconomicMap;
 
 public class SeaMonster extends Group {
     Sprite sprite;
@@ -20,8 +19,8 @@ public class SeaMonster extends Group {
     private float health = 40;
     private final World gameWorld;
     private FiniteState currentState;
-    private B2dSteeringEntity entity,targetPlayer,targetHome;
-    private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
+    private final B2dSteeringEntity entity,targetPlayer,targetHome;
+    private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
 
     public SeaMonster(Vector2 position, World world,Player player){
         Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
@@ -125,11 +124,7 @@ public class SeaMonster extends Group {
         STAY
     }
     public boolean isHit(){
-        if (body.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return body.getUserData() == "Hit";
     }
     public void takeDamage(int damage){
         if(health > 0){

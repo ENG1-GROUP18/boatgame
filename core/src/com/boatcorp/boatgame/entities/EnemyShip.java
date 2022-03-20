@@ -1,12 +1,10 @@
 package com.boatcorp.boatgame.entities;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.steer.behaviors.Arrive;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -19,34 +17,30 @@ import java.util.ArrayList;
 
 public class EnemyShip extends Group {
     private final Sprite sprite;
-    private final Vector2 position;
     private float health = 20;
     private final Body body;
     private final Body startBody;
     private final World gameWorld;
-    private B2dSteeringEntity entity,targetPlayer,targetHome;
-    private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
-    private ArrayList<Bullet> bullets;
-    private Matrix4 camera;
-    private Player player;
-    private GameState gameState;
+    private final B2dSteeringEntity entity,targetPlayer,targetHome;
+    private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
+    private final ArrayList<Bullet> bullets;
+    private final Player player;
+    private final GameState gameState;
     private FiniteState currentState;
     private long timeSinceLastShot;
     private float damageScaler;
 
 
-    //TODO simplify/cleanup so not so many objects are passed in
-    public EnemyShip(World world, GameState state, String ID, Vector2 position,Player player,Matrix4 camera){
+    public EnemyShip(World world, GameState state, Vector2 position, Player player){
         Texture texture = new Texture(Gdx.files.internal("Entities/boat2.png"));
         sprite = new Sprite(texture);
         gameWorld = world;
         gameState = state;
         this.player = player;
-        this.camera = camera;
         timeSinceLastShot = TimeUtils.millis();
         damageScaler = state.shipDamageScaler;
 
-        this.position = position.cpy();
+        Vector2 position1 = position.cpy();
         bullets = new ArrayList<>();
 
         //Creates body definition
@@ -179,11 +173,7 @@ public class EnemyShip extends Group {
     }
 
     public boolean isHit(){
-        if (body.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return body.getUserData() == "Hit";
     }
 
     public void takeDamage(int damage){
@@ -203,10 +193,6 @@ public class EnemyShip extends Group {
 
     public boolean isAlive() {
         return health > 0;
-    }
-
-    public String getState() {
-        return currentState.toString();
     }
 
     public void dispose() {

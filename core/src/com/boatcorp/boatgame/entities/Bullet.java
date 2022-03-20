@@ -1,17 +1,12 @@
 package com.boatcorp.boatgame.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-
-import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
 
 /**
  * Creates a Bullet object
@@ -20,8 +15,8 @@ public class Bullet extends Group {
     private final Sprite sprite;
     private final Vector2 startPos;
     private final Vector2 velocity;
-    private Body bodyd;
-    private World gameWorld;
+    private final Body bodyd;
+    private final World gameWorld;
 
     /**
      * Initialises a bullet with a texture at the required position

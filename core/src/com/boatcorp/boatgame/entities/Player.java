@@ -26,7 +26,7 @@ public class Player extends Group {
     private float currentHealth;
     private int immuneSeconds;
     private float timeSeconds;
-    private float period;
+    private final float period;
     private String bulletColor;
 
     private float damageScaler;
@@ -199,12 +199,6 @@ public class Player extends Group {
     public void setImmuneSeconds(int newTime){immuneSeconds = newTime;}
 
     /**
-     * Returns the width and height of the player sprite
-     * @return a Vector2 of the dimensions of the sprite
-     */
-    public Vector2 getSpriteDimensions(){return new Vector2((sprite.getHeight()),(sprite.getWidth()));}
-
-    /**
      * Returns the players maximum health
      * @return a float of max health
      */
@@ -234,11 +228,7 @@ public class Player extends Group {
      * @return a boolean if the player has been hit
      */
     public boolean isHit(){
-        if (bodyd.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return bodyd.getUserData() == "Hit";
     }
 
     /**
@@ -313,7 +303,7 @@ public class Player extends Group {
                         bullet.dispose();
                         toRemove.add(bullet);
                         //If green upgrade has been bought then it increases damage to sea monster
-                        if (bulletColor == "greenbullet"){
+                        if (bulletColor.equals("greenbullet")){
                             monster.takeDamage(10);
                         }else{
                             monster.takeDamage(5);
