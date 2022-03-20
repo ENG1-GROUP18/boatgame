@@ -17,7 +17,6 @@ import static com.boatcorp.boatgame.screens.Constants.BULLET_PATH;
  * Creates a Bullet object
  */
 public class Bullet extends Group {
-    private final SpriteBatch batch;
     private final Sprite sprite;
     private final Vector2 startPos;
     private final Vector2 velocity;
@@ -33,9 +32,8 @@ public class Bullet extends Group {
 
     public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color) {
         final Texture texture = new Texture("Entities/" + color + ".png");
-        batch = new SpriteBatch();
         sprite = new Sprite(texture);
-        startPos = position;
+        startPos = position.cpy();
         this.velocity = velocity;
         gameWorld = world;
 
@@ -64,15 +62,6 @@ public class Bullet extends Group {
 
     }
 
-    /**
-     * Draws the updated position of the bullet
-     */
-    public void draws() {
-        sprite.setPosition(bodyd.getPosition().x - sprite.getWidth()/2,bodyd.getPosition().y-(sprite.getHeight())/2);
-        batch.begin();
-        sprite.draw(batch);
-        batch.end();
-    }
 
     @Override
     public void act(float delta) {
@@ -118,20 +107,12 @@ public class Bullet extends Group {
         bodyd.setLinearVelocity(velocity.x / delta, velocity.y / delta);
     }
 
-    /**
-     * Sets the correct batch projecting matrix
-     * @param combined used to set the projection matrix to the correct amount inside the batch renderer
-     */
-    public void setMatrix(Matrix4 combined) {
-        batch.setProjectionMatrix(combined);
-    }
 
     /**
      * Disposes of unwanted objects
      */
     public void dispose() {
         gameWorld.destroyBody(bodyd);
-        batch.dispose();
     }
 }
 

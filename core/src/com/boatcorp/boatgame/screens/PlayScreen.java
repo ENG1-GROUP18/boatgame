@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
@@ -50,6 +51,8 @@ public class PlayScreen implements Screen {
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
     private GameState state;
+    private ArrayList<ArrayList<Bullet>> bulletsS = new ArrayList<>();
+
 
 
     // For Shader
@@ -60,6 +63,15 @@ public class PlayScreen implements Screen {
     private VignettingEffect effectVignetting;
     private FxaaEffect effectFxaa;
 
+    //For hud updates
+    private boolean hudUpdateNeeded;
+    private long timeSinceUpdate;
+
+    //For shop
+    private boolean shopUnlocked;
+    private boolean hasBoughtGreen;
+    private boolean hasBoughtRed;
+    private boolean hasBoughtHealth;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
@@ -72,6 +84,10 @@ public class PlayScreen implements Screen {
         vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
         gameStage = new Stage(viewport);
         this.state = state;
+        shopUnlocked = state.shopUnlocked;
+        hasBoughtGreen = state.hasBoughtGreen;
+        hasBoughtRed = state.hasBoughtRed;
+        hasBoughtHealth = state.hasBoughtHealth;
 
         mapLoader = new MapLoader();
         player = new Player(world,state);
@@ -85,7 +101,8 @@ public class PlayScreen implements Screen {
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
         PlunderSystem.setPlunder(state.plunder);
-        
+        if (shopUnlocked) {hud.setShopLabel("press M for the shop");}
+
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
@@ -214,12 +231,19 @@ public class PlayScreen implements Screen {
         ArrayList<College> toRemoveCollage = new ArrayList<>();
         ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
         ArrayList<SeaMonster> toRemoveMonster = new ArrayList<>();
+        int reset = 0;
+        //Logic for collage combat and capture
         for (College college : colleges) {
             if (college.isAlive()) {
-                college.combat(camera.combined, player,delta);
+                if (reset == 0){
+                    bulletsS = new ArrayList<>();
+                    reset = 1;
+                }
+
+                bulletsS.add(college.combat(camera.combined, player,delta));
             }
             else {
-                player.upgrade(6 - colleges.size());
+                upgradePlayer(6 - colleges.size());
                 toRemoveName.add(college.getUserData().toString());
                 state.collegeHealths.remove(college.getUserData().toString());
                 state.collegePositions.remove(college.getUserData().toString());
@@ -231,26 +255,44 @@ public class PlayScreen implements Screen {
             }
         }
 
-        ArrayList<Bullet> bulletsP;
-        bulletsP = player.combat(colleges,enemyShips,seaMonsters);
-        if (!bulletsP.isEmpty()){
+        //Logic for enemy ship combat and death
+        for (EnemyShip ship: enemyShips){
+            if (ship.isAlive()){
+                if (reset == 0){
+                    bulletsS = new ArrayList<>();
+                    reset = 1;
+                }
+                bulletsS.add(ship.shoot());
+            } else{
+                ship.dispose();
+                PointSystem.incrementPoint(100);
+                float doubleRandomNumber = (float) Math.random() * 10;
+                PlunderSystem.incrementPlunder(doubleRandomNumber + 10);
+                toRemoveShip.add(ship);
+            }
+        }
+
+        //Adds player bullets to array
+        bulletsS.add(player.combat(colleges,enemyShips,seaMonsters));
+
+        ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+        //Renders all the bullets in a single sprite batch
+        if (!bulletsS.isEmpty()) {
             batch.begin();
-            for (Bullet bullet: bulletsP) {
-                // Draw and move bullets
-                bullet.draw(batch,1);
-                bullet.move(delta);
+            for (ArrayList<Bullet> temp: bulletsS){
+                for (Bullet bullet : temp) {
+                    if (!bullet.outOfRange(300)) {
+                        bullet.draw(batch, 1);
+                        bullet.move(delta);
+                    } else {
+                        toRemoveBullet.add(bullet);
+                    }
+                }
             }
             batch.end();
         }
 
-        for (EnemyShip ship: enemyShips){
-            if (ship.isAlive()){
-                ship.shoot(delta);
-            } else{
-                ship.dispose();
-                toRemoveShip.add(ship);
-            }
-        }
+        bulletsS.removeAll(toRemoveBullet);
 
         for (SeaMonster monster: seaMonsters){
             if (!monster.isAlive()){
@@ -271,10 +313,7 @@ public class PlayScreen implements Screen {
         enemyShips.removeAll(toRemoveShip);
         seaMonsters.removeAll(toRemoveMonster);
 
-
-
-
-
+        //Lose state if player dies
         if (player.isDead()) {
             player.dispose();
             for (Actor actor: gameStage.getActors()){
@@ -286,6 +325,7 @@ public class PlayScreen implements Screen {
             }
             boatGame.setScreen(new ResultScreen(false, boatGame));
         }
+        //Win state if all collages are captured
         if (colleges.isEmpty()) {
             boatGame.setScreen(new ResultScreen(true, boatGame));
         }
@@ -295,18 +335,29 @@ public class PlayScreen implements Screen {
 
     private void update(final float delta) {
 
+        handleMacros();
+
         boolean save1 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_1);
         boolean save2 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_2);
         boolean save3 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_3);
         boolean save4 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_4);
         boolean pause = Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE);
+        boolean shop = Gdx.input.isKeyJustPressed(Input.Keys.M);
 
         if(save1){boatGame.saveGame("1");}
         if(save2){boatGame.saveGame("2");}
         if(save3){boatGame.saveGame("3");}
         if(save4){boatGame.saveGame("4");}
         if(pause){pause();}
-        
+        if(shop && shopUnlocked){
+            boatGame.setScreen(new ShopScreen(boatGame, getState()));
+        }
+
+        if(hudUpdateNeeded && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 4000)){
+            hud.setUpdateAlert("");
+            hudUpdateNeeded = false;
+        }
+
         camera.zoom = DEFAULT_ZOOM;
 
         // TODO this really shouldn't be here, no need to get this every update
@@ -332,6 +383,7 @@ public class PlayScreen implements Screen {
 
         camera.update();
 
+
         world.step(delta, 6,2);
 
 
@@ -349,7 +401,7 @@ public class PlayScreen implements Screen {
     }
 
     public void pause() {
-        boatGame.setScreen(new PauseScreen(boatGame));
+        boatGame.setScreen(new PauseScreen(boatGame, getState()));
     }
 
     @Override
@@ -387,13 +439,20 @@ public class PlayScreen implements Screen {
     public void addColleges(ArrayList<College> colleges) {
 
         Random rand = new Random();
-        int xUnit = 1200 / state.collegeNames.size(); //TODO change back to 1200
+        int divider = state.collegeNames.size() / 2;
+        int xUnit = 1200 / divider;
+        int buffer = 20;
         for (int i = 0; i < state.collegeNames.size(); i++) {
-            if (state.isSpawn) {
+            if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit * i) + rand.nextInt(xUnit), rand.nextInt(1200)));
-            }
-            colleges.add(new College(state.collegeNames.get(i), world, state));
+                if( i < divider){
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + buffer + rand.nextInt(xUnit - (2*buffer)), buffer + rand.nextInt(600 - (2*buffer))));
+
+                }
+                else{
+                    state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + buffer + rand.nextInt(xUnit - (2*buffer)), 600 + buffer + rand.nextInt(600 - (2*buffer))));
+                }}
+            colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
         //Place enemy ships at collages
@@ -422,13 +481,99 @@ public class PlayScreen implements Screen {
                 break;
         }
     }
-    
+    /**
+     * Gives the player a power-up, like immunity or increased health
+     * @param type Picks which power-up to apply: 0. Damage Increase, 1.Full health, 2. Immunity
+     */
+    public void upgradePlayer(int type){
+        switch(type){
+            case 0:
+                hud.setUpdateAlert("Powerup! \nYou just unlocked\nthe shop");
+                hud.setShopLabel("press M for the shop");
+                shopUnlocked = true;
+                timeSinceUpdate = TimeUtils.millis();
+                hudUpdateNeeded = true;
+                break;
+            case 1:
+                player.scaleDamage(0.8f);
+                hud.setUpdateAlert("Powerup! \nYour armour just\nimproved 25%");
+                timeSinceUpdate = TimeUtils.millis();
+                hudUpdateNeeded = true;
+                break;
+            case 2:
+                //freeze enemies
+                break;
+            case 3:
+                player.setImmuneSeconds(20);
+                hud.setUpdateAlert("Powerup! \nYou just won 20\nseconds immunity");
+                timeSinceUpdate = TimeUtils.millis();
+                hudUpdateNeeded = true;
+                break;
+            case 4:
+                player.setHealth(player.getMaxHealth());
+                hud.setUpdateAlert("Powerup! \nYour just won a\nhealth refill");
+                timeSinceUpdate = TimeUtils.millis();
+                hudUpdateNeeded = true;
+                break;
+
+        }
+    }
+
+    public void handleMacros(){
+        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
+        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
+        boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
+        String bulletColor = player.getBulletColor();
+        if (red && hasBoughtRed){
+            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
+                player.setBulletColor("redbullet");
+                scaleShips(2);
+            }
+            else{
+                player.setBulletColor("bullet");
+                scaleShips(1/2);
+            }
+        }
+        if (green && hasBoughtGreen){
+            if (bulletColor == "bullet" || bulletColor == "redbullet"){
+                player.setBulletColor("greenbullet");
+            }
+            else{
+                player.setBulletColor("bullet");
+            }
+
+        }
+        if (health && hasBoughtHealth){
+            if (PlunderSystem.getPlunder() > 50){
+                PlunderSystem.decrementPlunder(50);
+                player.setHealth(player.getMaxHealth());
+
+            }
+
+        }
+
+
+    }
+
+    private void scaleShips(float scaler){
+        for (EnemyShip ship : enemyShips){
+            ship.scaleDamage(scaler);
+        }
+    }
+
+
+
     public GameState getState(){
         player.updateState();
         for (College college : colleges) {
             college.updateState();
         }
         state.isSpawn = false;
+        state.shopUnlocked = shopUnlocked;
+        state.hasBoughtRed = hasBoughtRed;
+        state.hasBoughtHealth = hasBoughtHealth;
+        state.hasBoughtGreen = hasBoughtGreen;
+        state.shipDamageScaler = enemyShips.get(0).getDamageScaler();
         return state;
     }
 }

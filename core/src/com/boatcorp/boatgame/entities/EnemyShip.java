@@ -32,6 +32,8 @@ public class EnemyShip extends Group {
     private GameState gameState;
     private FiniteState currentState;
     private long timeSinceLastShot;
+    private float damageScaler;
+
 
     //TODO simplify/cleanup so not so many objects are passed in
     public EnemyShip(World world, GameState state, String ID, Vector2 position,Player player,Matrix4 camera){
@@ -42,8 +44,9 @@ public class EnemyShip extends Group {
         this.player = player;
         this.camera = camera;
         timeSinceLastShot = TimeUtils.millis();
+        damageScaler = state.shipDamageScaler;
 
-        this.position = position;
+        this.position = position.cpy();
         bullets = new ArrayList<>();
 
         //Creates body definition
@@ -131,7 +134,7 @@ public class EnemyShip extends Group {
     }
 
     //TODO change so it renders using stage2D
-    public void shoot(float delta){
+    public ArrayList<Bullet> shoot(){
 
         ArrayList<Bullet> toRemove = new ArrayList<>();
         if (currentState == FiniteState.FOLLOW){
@@ -147,14 +150,7 @@ public class EnemyShip extends Group {
 
             }
             for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera);
-                bullet.draws();
-                bullet.move(delta);
-                if (bullet.outOfRange(300)) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                }
+                // Move bullets and check for collisions
                 if (player.isHit() && bullet.hit()) {
                     bullet.dispose();
                     toRemove.add(bullet);
@@ -162,26 +158,18 @@ public class EnemyShip extends Group {
                 }
             }
 
-        } else {
+        }else{
             if (!bullets.isEmpty()) {
-                for (Bullet bullet: bullets) {
-                    bullet.setMatrix(camera);
-                    bullet.draws();
-                    bullet.move(delta);
+                for (Bullet bullet: bullets){
                     if (bullet.outOfRange(300)) {
                         bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-                for (Bullet bullet : bullets) {
-                    if (bullet.outOfRange(300)) {
-                        //bullet.dispose();
                         toRemove.add(bullet);
                     }
                 }
             }
         }
         bullets.removeAll(toRemove);
+        return bullets;
     }
 
     private enum FiniteState {
@@ -200,8 +188,17 @@ public class EnemyShip extends Group {
 
     public void takeDamage(int damage){
         if(health > 0){
-            health -=damage;
+            health -= (damage*damageScaler);
         }
+    }
+
+    public void scaleDamage(float scale){
+        damageScaler *= scale;
+
+    }
+
+    public float getDamageScaler() {
+        return damageScaler;
     }
 
     public boolean isAlive() {

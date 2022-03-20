@@ -28,8 +28,6 @@ public class Player extends Group {
     private float timeSeconds;
     private float period;
     private String bulletColor;
-    private boolean hasBoughtRed;
-    private boolean hasBoughtGreen;
 
     private float damageScaler;
     private final ArrayList<Bullet> bullets;
@@ -66,9 +64,7 @@ public class Player extends Group {
         period = 1f;
         damageScaler = state.damageScaler;
         this.state = state;
-        hasBoughtGreen = state.hasBoughtGreen;
-        hasBoughtRed = state.hasBoughtRed;
-        bulletColor = "bullet";
+        bulletColor = state.bulletColor;
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -137,28 +133,13 @@ public class Player extends Group {
                 //TODO: display to screen
             }
         }
-        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
-        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
-        if (red && hasBoughtRed){
-            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
-                bulletColor = "redbullet";
-            }
-            else{
-                bulletColor = "bullet";
-            }
-        }
-        if (green && hasBoughtGreen){
-            if (bulletColor == "bullet" || bulletColor == "redbullet"){
-                bulletColor = "greenbullet";
-            }
-            else{
-                bulletColor = "bullet";
-            }
-
-        }
 
 
     }
+
+    public void setBulletColor(String color){bulletColor = color;}
+
+    public String getBulletColor(){ return bulletColor;}
 
     /**
      * Updates the velocity of the player dependent on user directional inputs
@@ -209,6 +190,13 @@ public class Player extends Group {
     public float getHealth() {
         return currentHealth;
     }
+
+    public void setHealth(float newHealth){currentHealth = newHealth;}
+
+
+    public int getImmuneSeconds(){return immuneSeconds;}
+
+    public void setImmuneSeconds(int newTime){immuneSeconds = newTime;}
 
     /**
      * Returns the width and height of the player sprite
@@ -358,49 +346,6 @@ public class Player extends Group {
     }
 
     /**
-     * Gives the player a power-up, like immunity or increased health
-     * @param type Picks which power-up to apply: 0. Damage Increase, 1.Full health, 2. Immunity
-     */
-    public void upgrade(int type){
-        switch(type){
-            case 0:
-                //TODO: Unlock the shop
-                break;    
-            case 1:
-                scaleDamage(0.8f);
-                break;
-            case 2:
-                //TODO: one shot kill OR freeze enemies
-                break;
-            case 3:
-                immuneSeconds = 20;
-                break;
-            case 4:
-                currentHealth = maxHealth;
-                break;
-                
-        }
-    }
-    /**
-     * Gives the player a useful macro when purchased in the shop
-     * @param macro Picks which macro to apply
-     */
-    public void purchase(String macro){
-        switch(macro){
-            case "R":
-                hasBoughtRed = true;
-                break;    
-            case "G":
-                hasBoughtGreen = true;
-                break;
-            case "H":
-                //TODO: trade plunder for health by pressing H
-                break;
-                
-        }
-    }
-
-    /**
      * Gets the body of the player
      * @return a box2D object of the player
      */
@@ -419,8 +364,7 @@ public class Player extends Group {
         state.plunder = PlunderSystem.getPlunder();
         state.immuneSeconds = immuneSeconds;
         state.damageScaler = damageScaler;
-        state.hasBoughtGreen = hasBoughtGreen;
-        state.hasBoughtRed = hasBoughtRed;
+        state.bulletColor = bulletColor;
     }
 
 }

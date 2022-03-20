@@ -27,6 +27,8 @@ public class Hud {
     private final ProgressBar.ProgressBarStyle healthBarStyle;
     private final ProgressBar healthBar;
     private final Label plunderScore;
+    private final Label updateAlert;
+    private final Label shopLabel;
 
     private Drawable getColouredDrawable(float width, float height, Color color) {
         Pixmap pixmap = new Pixmap((int)width, (int)height, Pixmap.Format.RGBA8888);
@@ -57,6 +59,18 @@ public class Hud {
         plunderScore.setPosition(8, 430);
         plunderScore.setText("Plunder: "+ PlunderSystem.getPlunder());
 
+        updateAlert = new Label("" + PlunderSystem.getPlunder(), new Label.LabelStyle(font, Color.WHITE));
+        updateAlert.setWrap(true);
+        updateAlert.setFontScale(0.5f);
+        updateAlert.setPosition(350, 430);
+        updateAlert.setText("");
+
+        shopLabel = new Label("", new Label.LabelStyle(font, Color.WHITE));
+        shopLabel.setWrap(true);
+        shopLabel.setFontScale(0.5f);
+        shopLabel.setPosition(300, 40);
+        shopLabel.setText("");
+
         healthBarStyle = new ProgressBar.ProgressBarStyle();
 
         healthBar = new ProgressBar(0, player.getMaxHealth(), 1f, false, healthBarStyle);
@@ -74,6 +88,8 @@ public class Hud {
         stage.addActor(pointScore);
         stage.addActor(healthBar);
         stage.addActor(plunderScore);
+        stage.addActor(updateAlert);
+        stage.addActor(shopLabel);
     }
 
     public Stage getStage() { return stage; }
@@ -94,6 +110,10 @@ public class Hud {
         plunderScore.setText(newText);
     }
 
+    public void setUpdateAlert(String newUpdate){updateAlert.setText(newUpdate);}
+
+    public void setShopLabel(String text){shopLabel.setText(text);}
+
     public void dispose() {
         font.dispose();
         player.dispose();
@@ -101,3 +121,5 @@ public class Hud {
     }
 
 }
+
+

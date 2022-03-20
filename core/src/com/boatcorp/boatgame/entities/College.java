@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.frameworks.HealthBar;
 
@@ -43,6 +44,7 @@ public class College {
     private GameState state;
     private Object college;
     private float damageScaler;
+    private long timeSinceLastShot;
 
     /**
      * Constructor class to create and initialise a new college
@@ -64,6 +66,7 @@ public class College {
         gameWorld = world;
         this.state = state;
         this.college = college;
+        timeSinceLastShot = TimeUtils.millis();
 
         cardinalDirections = new ArrayList<>();
         cardinalDirections.add(new Vector2(5,0));
@@ -125,7 +128,7 @@ public class College {
      * @param player The player object
      * @param delta Time since last function call
      */
-    public void combat(Matrix4 camera, Player player, float delta) {
+    public ArrayList<Bullet> combat(Matrix4 camera, Player player, float delta) {
         Vector2 playerPos = player.getPosition();
         double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
@@ -134,7 +137,8 @@ public class College {
         ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
         // Only begins combat when the player is close enough and the college isn't defeated
         if (distance < 200) {
-            if (bullets.isEmpty()) {
+            if ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 1000) {
+                timeSinceLastShot = TimeUtils.millis();
                 // Randomly choose from set attack patterns
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
@@ -144,20 +148,12 @@ public class College {
             }
             for (Bullet bullet: bullets) {
                 // Draw and move bullets and check for collisions
-                bullet.setMatrix(camera);
-                bullet.draws();
-                bullet.move(delta);
-                if (bullet.outOfRange(300)) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                }
                 if (player.isHit() && bullet.hit()) {
                     bullet.dispose();
                     toRemove.add(bullet);
                     player.takeDamage(10);
                 }
             }
-            bullets.removeAll(toRemove);
 
         } else{
             if (!bullets.isEmpty()) {
@@ -168,9 +164,9 @@ public class College {
                     }
                 }
             }
-            bullets.removeAll(toRemove);
         }
-
+        bullets.removeAll(toRemove);
+        return bullets;
     }
 
     /**
@@ -238,11 +234,11 @@ public class College {
         batch.dispose();
         health.dispose();
         gameWorld.destroyBody(bodyd);
-        if (!bullets.isEmpty()) {
-            for (Bullet bullet : bullets) {
-                bullet.dispose();
-            }
+        for (Bullet bullet: bullets){
+            bullet.dispose();
         }
+
+
     }
     /**
      * Gets the name of the college
