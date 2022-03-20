@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.boatcorp.boatgame.entities.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Creates a Hud Object

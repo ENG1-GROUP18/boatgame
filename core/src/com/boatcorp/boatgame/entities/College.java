@@ -10,10 +10,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.frameworks.HealthBar;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 /**
@@ -23,9 +20,9 @@ public class College {
     private final SpriteBatch batch;
     private final Sprite sprite;
     /**Relative position of the player*/
-    private Vector2 position;
+    private final Vector2 position;
     /**list of bullets which are currently on screen*/
-    private ArrayList<Bullet> bullets;
+    private final ArrayList<Bullet> bullets;
     /**Holds the vectors to fire the bullets diagonally*/
     private final ArrayList<Vector2> diagonalDirections;
     /**Holds the vectors to fire the bullets in cardinal directions*/
@@ -39,10 +36,10 @@ public class College {
     private final float maxHealth;
     /**The collages current health*/
     private float currentHealth;
-    private Body bodyd;
-    private World gameWorld;
-    private GameState state;
-    private Object college;
+    private final Body bodyd;
+    private final World gameWorld;
+    private final GameState state;
+    private final Object college;
     private float damageScaler;
     private long timeSinceLastShot;
 
@@ -57,7 +54,6 @@ public class College {
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
         bullets = new ArrayList<>();
-        Random rand = new Random();
         position = state.collegePositions.get(college);
         health = new HealthBar();
         maxHealth = state.collegeHealths.get(college)[1];
@@ -124,17 +120,15 @@ public class College {
 
     /**
      * Logic for calculating collisions and rendering bullets
-     * @param camera The current camera being used render the bullets
      * @param player The player object
-     * @param delta Time since last function call
      */
-    public ArrayList<Bullet> combat(Matrix4 camera, Player player, float delta) {
+    public ArrayList<Bullet> combat(Player player) {
         Vector2 playerPos = player.getPosition();
         double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
         ArrayList<Vector2> randDir;
 
-        ArrayList<Bullet> toRemove = new ArrayList<Bullet>();
+        ArrayList<Bullet> toRemove = new ArrayList<>();
         // Only begins combat when the player is close enough and the college isn't defeated
         if (distance < 200) {
             if ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 1000) {
@@ -201,11 +195,7 @@ public class College {
      * @return a boolean if the college has been hit
      */
     public boolean isHit(){
-        if (bodyd.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return bodyd.getUserData() == "Hit";
     }
 
     /**
@@ -246,13 +236,7 @@ public class College {
     public Object getUserData(){
         return college;
     }
-    public float getMaxHealth(){
-        return maxHealth;
-    }
-    public float getCurrentHealth(){
-        return currentHealth;
-    }
-    public Body getBody(){return bodyd;}
+
     /**
      * Updates the game state with the college's properties
      */

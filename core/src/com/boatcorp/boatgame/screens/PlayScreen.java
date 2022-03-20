@@ -19,10 +19,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
-import com.boatcorp.boatgame.entities.Bullet;
-import com.boatcorp.boatgame.entities.College;
-import com.boatcorp.boatgame.entities.EnemyShip;
-import com.boatcorp.boatgame.entities.Player;
+import com.boatcorp.boatgame.entities.*;
 import com.boatcorp.boatgame.frameworks.Hud;
 import com.boatcorp.boatgame.frameworks.PlunderSystem;
 import com.boatcorp.boatgame.frameworks.PointSystem;
@@ -31,10 +28,8 @@ import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.boatcorp.boatgame.GameState;
-
 import java.util.ArrayList;
 import java.util.Random;
-
 import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
@@ -50,22 +45,23 @@ public class PlayScreen implements Screen {
     private final BitmapFont font;
     private final Player player;
     private final ArrayList<College> colleges;
-    private ArrayList<EnemyShip> enemyShips;
+    private final ArrayList<EnemyShip> enemyShips;
+    private final ArrayList<SeaMonster> seaMonsters;
     private final Hud hud;
-    private Box2DDebugRenderer debugRenderer;
-    private Stage gameStage;
-    private GameState state;
+    private final Box2DDebugRenderer debugRenderer;
+    private final Stage gameStage;
+    private final GameState state;
     private ArrayList<ArrayList<Bullet>> bulletsS = new ArrayList<>();
 
 
 
     // For Shader
-    private VfxManager vfxManager;
-    private BloomEffect effectBloom;
-    private OldTvEffect effectTv;
-    private RadialDistortionEffect effectDistortion;
-    private VignettingEffect effectVignetting;
-    private FxaaEffect effectFxaa;
+    private final VfxManager vfxManager;
+    private final BloomEffect effectBloom;
+    private final OldTvEffect effectTv;
+    private final RadialDistortionEffect effectDistortion;
+    private final VignettingEffect effectVignetting;
+    private final FxaaEffect effectFxaa;
 
     //For hud updates
     private boolean hudUpdateNeeded;
@@ -73,9 +69,9 @@ public class PlayScreen implements Screen {
 
     //For shop
     private boolean shopUnlocked;
-    private boolean hasBoughtGreen;
-    private boolean hasBoughtRed;
-    private boolean hasBoughtHealth;
+    private final boolean hasBoughtGreen;
+    private final boolean hasBoughtRed;
+    private final boolean hasBoughtHealth;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
@@ -97,6 +93,7 @@ public class PlayScreen implements Screen {
         player = new Player(world,state);
         colleges = new ArrayList<>();
         enemyShips = new ArrayList<>();
+        seaMonsters = new ArrayList<>();
 
         if (state.isSpawn){setMode(state.difficulty);}
         addColleges(colleges);
@@ -105,10 +102,14 @@ public class PlayScreen implements Screen {
         PointSystem.setPoints(state.points);
         PlunderSystem.setPlunder(state.plunder);
         if (shopUnlocked) {hud.setShopLabel("press M for the shop");}
-        
+
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
+        //TODO make the semesters spawn in different locations
+        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player);
+        gameStage.addActor(tempSeaMonster);
+        seaMonsters.add(tempSeaMonster);
 
         addWorldBorder();
 
@@ -205,7 +206,7 @@ public class PlayScreen implements Screen {
 
         hud.getStage().draw();
 
-        hud.getStage().act(delta);
+        //hud.getStage().act(delta); //Don't think this line is needed as well as the draw function
 
         //Draws box2D hitboxes for debug
         if (boatGame.ENABLE_BOX2D_WIREFRAME) {
@@ -230,6 +231,7 @@ public class PlayScreen implements Screen {
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>();
         ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
+        ArrayList<SeaMonster> toRemoveMonster = new ArrayList<>();
         int reset = 0;
         //Logic for collage combat and capture
         for (College college : colleges) {
@@ -239,7 +241,7 @@ public class PlayScreen implements Screen {
                     reset = 1;
                 }
 
-                bulletsS.add(college.combat(camera.combined, player,delta));
+                bulletsS.add(college.combat(player));
             }
             else {
                 upgradePlayer(6 - colleges.size());
@@ -272,27 +274,35 @@ public class PlayScreen implements Screen {
         }
 
         //Adds player bullets to array
-        bulletsS.add(player.combat(colleges,enemyShips));
+        bulletsS.add(player.combat(colleges,enemyShips,seaMonsters));
 
-        ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+
         //Renders all the bullets in a single sprite batch
-        if (!bulletsS.isEmpty()) {
-            batch.begin();
-            for (ArrayList<Bullet> temp: bulletsS){
-                for (Bullet bullet : temp) {
-                    if (!bullet.outOfRange(300)) {
-                        bullet.draw(batch, 1);
-                        bullet.move(delta);
-                    } else {
-                        toRemoveBullet.add(bullet);
-                    }
+        batch.begin();
+        for (ArrayList<Bullet> temp: bulletsS){
+            ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+            for (Bullet bullet : temp) {
+                if (!bullet.outOfRange(300)) {
+                    bullet.draw(batch, 1);
+                    bullet.move(delta);
+                } else {
+                    toRemoveBullet.add(bullet);
                 }
             }
-            batch.end();
+            temp.removeAll(toRemoveBullet);
+        }
+        batch.end();
+
+
+
+        for (SeaMonster monster: seaMonsters){
+            if (!monster.isAlive()){
+                monster.dispose();
+                toRemoveMonster.add(monster);
+            }
         }
 
-        bulletsS.removeAll(toRemoveBullet);
-
+        //Removes actors which have been moved out of the game space
         for (Actor actor: gameStage.getActors()){
             if (actor.getX() < 0 && actor.getY() < 0){
                 actor.remove();
@@ -302,6 +312,7 @@ public class PlayScreen implements Screen {
         state.collegeNames.removeAll(toRemoveName);
         colleges.removeAll(toRemoveCollage);
         enemyShips.removeAll(toRemoveShip);
+        seaMonsters.removeAll(toRemoveMonster);
 
         //Lose state if player dies
         if (player.isDead()) {
@@ -347,7 +358,7 @@ public class PlayScreen implements Screen {
             hud.setUpdateAlert("");
             hudUpdateNeeded = false;
         }
-        
+
         camera.zoom = DEFAULT_ZOOM;
 
         // TODO this really shouldn't be here, no need to get this every update
@@ -359,7 +370,6 @@ public class PlayScreen implements Screen {
         // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
         float lerp = 10f;
         Vector2 playerPos = player.getPosition();
-        Vector2 playerSprite = player.getSpriteDimensions();
         camera.position.x += ((playerPos.x) - camera.position.x) * lerp * delta;
         camera.position.y += ((playerPos.y) - camera.position.y) * lerp * delta;
 
@@ -447,8 +457,8 @@ public class PlayScreen implements Screen {
 
         //Place enemy ships at collages
         for (College college : colleges) {
-            enemyShips.add((new EnemyShip(world, state, "1",
-                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player, camera.combined)));
+            enemyShips.add((new EnemyShip(world, state,
+                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player)));
             gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
 
         }
@@ -515,17 +525,17 @@ public class PlayScreen implements Screen {
         boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
         String bulletColor = player.getBulletColor();
         if (red && hasBoughtRed){
-            if (bulletColor == "bullet" || bulletColor == "greenbullet"){
+            if (bulletColor.equals("bullet") || bulletColor.equals("greenbullet")){
                 player.setBulletColor("redbullet");
                 scaleShips(2);
             }
             else{
                 player.setBulletColor("bullet");
-                scaleShips(1/2);
+                scaleShips(1/2f);
             }
         }
         if (green && hasBoughtGreen){
-            if (bulletColor == "bullet" || bulletColor == "redbullet"){
+            if (bulletColor.equals("bullet") || bulletColor.equals("redbullet") ){
                 player.setBulletColor("greenbullet");
             }
             else{
@@ -552,7 +562,7 @@ public class PlayScreen implements Screen {
     }
 
 
-    
+
     public GameState getState(){
         player.updateState();
         for (College college : colleges) {
@@ -567,8 +577,6 @@ public class PlayScreen implements Screen {
         return state;
     }
 }
-
-
 
 
 

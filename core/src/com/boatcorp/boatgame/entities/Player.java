@@ -26,7 +26,7 @@ public class Player extends Group {
     private float currentHealth;
     private int immuneSeconds;
     private float timeSeconds;
-    private float period;
+    private final float period;
     private String bulletColor;
 
     private float damageScaler;
@@ -199,12 +199,6 @@ public class Player extends Group {
     public void setImmuneSeconds(int newTime){immuneSeconds = newTime;}
 
     /**
-     * Returns the width and height of the player sprite
-     * @return a Vector2 of the dimensions of the sprite
-     */
-    public Vector2 getSpriteDimensions(){return new Vector2((sprite.getHeight()),(sprite.getWidth()));}
-
-    /**
      * Returns the players maximum health
      * @return a float of max health
      */
@@ -234,18 +228,14 @@ public class Player extends Group {
      * @return a boolean if the player has been hit
      */
     public boolean isHit(){
-        if (bodyd.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return bodyd.getUserData() == "Hit";
     }
 
     /**
      * Logic for calculating bullet position
      * @return a list of bullets
      */
-    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips) {
+    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips,ArrayList<SeaMonster> seaMonsters) {
 
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
@@ -306,6 +296,19 @@ public class Player extends Group {
                         bullet.dispose();
                         toRemove.add(bullet);
                         ship.takeDamage(5);
+                    }
+                }
+                for (SeaMonster monster : seaMonsters){
+                    if (monster.isHit() && bullet.hit()){
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                        //If green upgrade has been bought then it increases damage to sea monster
+                        if (bulletColor.equals("greenbullet")){
+                            monster.takeDamage(10);
+                        }else{
+                            monster.takeDamage(5);
+                        }
+
                     }
                 }
             }

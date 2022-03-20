@@ -48,7 +48,7 @@ public class ResultScreen implements Screen {
         GlyphLayout enterGlyph = new GlyphLayout(font, "Press Enter");
 
         font.draw(fontBatch, this.victory, viewport.getScreenWidth() / 2f - victoryGlyph.width / 2, viewport.getScreenHeight() / (4f/3f));
-        font.draw(fontBatch, "Press Enter", viewport.getScreenWidth() / 2f - enterGlyph.width / 2, viewport.getScreenHeight() / 4f);
+        font.draw(fontBatch, "Press Enter to play again", viewport.getScreenWidth() / 2f - enterGlyph.width / 2, viewport.getScreenHeight() / 4f);
         fontBatch.end();
         checkInputs();
     }
