@@ -21,10 +21,10 @@ public class EnemyShip extends Group {
     private final Sprite sprite;
     private final Vector2 position;
     private float health = 20;
-    private final Body bodyd;
+    private final Body body;
     private final Body startBody;
     private final World gameWorld;
-    private B2dSteeringEntity entity,targetP,targetC;
+    private B2dSteeringEntity entity,targetPlayer,targetHome;
     private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
     private ArrayList<Bullet> bullets;
     private Matrix4 camera;
@@ -51,16 +51,16 @@ public class EnemyShip extends Group {
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(position);
         bodyDef.fixedRotation = true;
-        bodyd = gameWorld.createBody(bodyDef);
+        body = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(sprite.getWidth()/4, sprite.getHeight()/2);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
 
-        bodyd.createFixture(fixtureDef).setUserData("EnemyShip");
-        bodyd.setUserData("");
-        bodyd.setLinearDamping(3);
+        body.createFixture(fixtureDef).setUserData("EnemyShip");
+        body.setUserData("");
+        body.setLinearDamping(3);
 
         BodyDef bodyDef1 = new BodyDef();
         bodyDef1.type = BodyDef.BodyType.StaticBody;
@@ -73,19 +73,19 @@ public class EnemyShip extends Group {
 
 
         //Ship AI behaviour
-        entity = new B2dSteeringEntity(bodyd,10);
-        targetP = new B2dSteeringEntity(player.getBody(),10);
-        targetC = new B2dSteeringEntity(startBody,10);
+        entity = new B2dSteeringEntity(body,10);
+        targetPlayer = new B2dSteeringEntity(player.getBody(),10);
+        targetHome = new B2dSteeringEntity(startBody,10);
 
-        currentState = FiniteState.FOLLOW;
-        arriveToPlayer = new Arrive<>(entity,targetP)
+        currentState = FiniteState.STAY;
+        arriveToPlayer = new Arrive<>(entity,targetPlayer)
                 .setTimeToTarget(0.1f)
                 .setArrivalTolerance(50)
                 .setDecelerationRadius(10);
 
         entity.setBehavior(arriveToPlayer);
 
-        arriveToStartPos = new Arrive<>(entity,targetC)
+        arriveToStartPos = new Arrive<>(entity,targetHome)
                 .setTimeToTarget(0.1f)
                 .setArrivalTolerance(0)
                 .setDecelerationRadius(10);
@@ -99,18 +99,18 @@ public class EnemyShip extends Group {
     @Override
     public void act(float delta) {
         super.act(delta);
-        float dist = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
-                targetP.getBody().getPosition().x-entity.getBody().getPosition().x);
+        float dist = (float) Math.hypot(targetPlayer.getBody().getPosition().y-entity.getBody().getPosition().y,
+                targetPlayer.getBody().getPosition().x-entity.getBody().getPosition().x);
 
         float distanceFromHome = (float) Math.hypot(startBody.getPosition().y-entity.getBody().getPosition().y,
                 startBody.getPosition().x-entity.getBody().getPosition().x);
 
         //Logic on what current state the enemy ship is in
-        if (dist < 150 && distanceFromHome < 300){
+        if (dist < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN){
             entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
             currentState = FiniteState.FOLLOW;
             entity.update(delta);
-        } else if (!entity.getBody().getPosition().equals(targetC.getBody().getPosition())){
+        } else if (!(entity.getLinearVelocity().isZero(0.01f))){
             currentState = FiniteState.RETURN;
             entity.setBehavior(arriveToStartPos);
             entity.update(delta);
@@ -125,8 +125,8 @@ public class EnemyShip extends Group {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        this.setPosition(bodyd.getPosition().x-(sprite.getWidth()/2), bodyd.getPosition().y-(sprite.getHeight()/2));
-        this.setRotation((float)Math.toDegrees(bodyd.getAngle()));
+        this.setPosition(body.getPosition().x-(sprite.getWidth()/2), body.getPosition().y-(sprite.getHeight()/2));
+        this.setRotation((float)Math.toDegrees(body.getAngle()));
         super.draw(batch, parentAlpha);
     }
 
@@ -143,7 +143,7 @@ public class EnemyShip extends Group {
                 Vector2 velocity = new Vector2();
                 velocity.x =(float) -Math.sin(entity.getOrientation());
                 velocity.y =(float) Math.cos(entity.getOrientation());
-                bullets.add(new Bullet(bodyd.getPosition(), velocity, gameWorld, "EnemyShip","bullet"));
+                bullets.add(new Bullet(body.getPosition(), velocity, gameWorld, "EnemyShip","bullet"));
 
             }
             for (Bullet bullet: bullets) {
@@ -184,14 +184,14 @@ public class EnemyShip extends Group {
         bullets.removeAll(toRemove);
     }
 
-    public enum FiniteState {
+    private enum FiniteState {
         FOLLOW,
         RETURN,
         STAY
     }
 
     public boolean isHit(){
-        if (bodyd.getUserData() == "Hit"){
+        if (body.getUserData() == "Hit"){
             return true;
         } else{
             return false;
@@ -214,7 +214,7 @@ public class EnemyShip extends Group {
 
     public void dispose() {
         this.setPosition(-100,-100);
-        gameWorld.destroyBody(bodyd);
+        gameWorld.destroyBody(body);
         if (!bullets.isEmpty()) {
             for (Bullet bullet : bullets) {
                 bullet.dispose();

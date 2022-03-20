@@ -10,18 +10,25 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.boatcorp.boatgame.tools.B2dSteeringEntity;
+import jdk.internal.vm.compiler.collections.EconomicMap;
 
 public class SeaMonster extends Group {
     Sprite sprite;
+    private final Player player;
     private final Body body;
     private final Body startBody;
-    private B2dSteeringEntity entity,targetP,targetC;
+    private float health = 40;
+    private final World gameWorld;
+    private FiniteState currentState;
+    private B2dSteeringEntity entity,targetPlayer,targetHome;
     private Arrive<Vector2> arriveToPlayer,arriveToStartPos;
 
-    public SeaMonster(Vector2 position, World gameWorld,Player player){
+    public SeaMonster(Vector2 position, World world,Player player){
         Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
+        gameWorld = world;
         sprite = new Sprite(texture);
-
+        currentState = FiniteState.STAY;
+        this.player = player;
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -34,7 +41,7 @@ public class SeaMonster extends Group {
         fixtureDef.shape = shape;
         fixtureDef.density = 0.5f;
 
-        body.createFixture(fixtureDef).setUserData("EnemyShip");
+        body.createFixture(fixtureDef).setUserData("SeaMonster");
         body.setUserData("");
         body.setLinearDamping(1);
 
@@ -49,17 +56,17 @@ public class SeaMonster extends Group {
 
         //SeaMonster AI behaviour
         entity = new B2dSteeringEntity(body,10);
-        targetP = new B2dSteeringEntity(player.getBody(),10);
-        targetC = new B2dSteeringEntity(startBody,10);
+        targetPlayer = new B2dSteeringEntity(player.getBody(),10);
+        targetHome = new B2dSteeringEntity(startBody,10);
 
-        arriveToPlayer = new Arrive<>(entity,targetP)
+        arriveToPlayer = new Arrive<>(entity,targetPlayer)
                 .setTimeToTarget(0.1f)
                 .setArrivalTolerance(10)
                 .setDecelerationRadius(10);
 
         entity.setBehavior(arriveToPlayer);
 
-        arriveToStartPos = new Arrive<>(entity,targetC)
+        arriveToStartPos = new Arrive<>(entity,targetHome)
                 .setTimeToTarget(0.1f)
                 .setArrivalTolerance(0)
                 .setDecelerationRadius(10);
@@ -77,23 +84,31 @@ public class SeaMonster extends Group {
     public void act(float delta){
         super.act(delta);
 
-        float distanceFromPlayer = (float) Math.hypot(targetP.getBody().getPosition().y-entity.getBody().getPosition().y,
-                targetP.getBody().getPosition().x-entity.getBody().getPosition().x);
+        float distanceFromPlayer = (float) Math.hypot(targetPlayer.getBody().getPosition().y-entity.getBody().getPosition().y,
+                targetPlayer.getBody().getPosition().x-entity.getBody().getPosition().x);
 
         float distanceFromHome = (float) Math.hypot(startBody.getPosition().y-entity.getBody().getPosition().y,
                 startBody.getPosition().x-entity.getBody().getPosition().x);
 
         //Logic on what current state the enemy ship is in
-        if (distanceFromPlayer < 150 && distanceFromHome < 300){
+        if (distanceFromPlayer < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN){
+            currentState = FiniteState.FOLLOW;
             entity.setBehavior(arriveToPlayer);
             entity.update(delta);
-        } else if (!entity.getBody().getPosition().equals(targetC.getBody().getPosition())){
+        } else if (!(entity.getLinearVelocity().isZero(0.01f))){
+            currentState = FiniteState.RETURN;
             entity.setBehavior(arriveToStartPos);
             entity.update(delta);
 
         } else{
+            currentState = FiniteState.STAY;
             entity.getBody().setLinearVelocity(0,0);
             entity.getBody().setAngularVelocity(0);
+        }
+
+        //Player takes damage if hit
+        if (player.isHit() && this.isHit()){
+            player.takeDamage(10);
         }
     }
 
@@ -102,5 +117,31 @@ public class SeaMonster extends Group {
         this.setPosition(body.getPosition().x-(sprite.getWidth()/2), body.getPosition().y-(sprite.getHeight()/2));
         this.setRotation((float)Math.toDegrees(body.getAngle()));
         super.draw(batch, parentAlpha);
+    }
+
+    private enum FiniteState {
+        FOLLOW,
+        RETURN,
+        STAY
+    }
+    public boolean isHit(){
+        if (body.getUserData() == "Hit"){
+            return true;
+        } else{
+            return false;
+        }
+    }
+    public void takeDamage(int damage){
+        if(health > 0){
+            health -=damage;
+        }
+    }
+
+    public boolean isAlive() {
+        return health > 0;
+    }
+    public void dispose() {
+        this.setPosition(-100,-100);
+        gameWorld.destroyBody(body);
     }
 }

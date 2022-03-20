@@ -257,7 +257,7 @@ public class Player extends Group {
      * Logic for calculating bullet position
      * @return a list of bullets
      */
-    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips) {
+    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips,ArrayList<SeaMonster> seaMonsters) {
 
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
@@ -318,6 +318,19 @@ public class Player extends Group {
                         bullet.dispose();
                         toRemove.add(bullet);
                         ship.takeDamage(5);
+                    }
+                }
+                for (SeaMonster monster : seaMonsters){
+                    if (monster.isHit() && bullet.hit()){
+                        bullet.dispose();
+                        toRemove.add(bullet);
+                        //If green upgrade has been bought then it increases damage to sea monster
+                        if (bulletColor == "greenbullet"){
+                            monster.takeDamage(10);
+                        }else{
+                            monster.takeDamage(5);
+                        }
+
                     }
                 }
             }

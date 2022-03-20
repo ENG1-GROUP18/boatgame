@@ -88,7 +88,6 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
             float speed = vel.len2();
             if (speed > Math.pow(maxLinearVelocity,2)){
                 //sets current speed to max linear speed
-                System.out.println(vel);
                 body.setLinearVelocity(vel.scl(maxLinearVelocity/ (float) Math.sqrt(speed)));
             }
 
@@ -110,7 +109,6 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
 
     @Override
     public float getBoundingRadius() {
-        System.out.println("bound");
         return boundingRadius;
     }
 

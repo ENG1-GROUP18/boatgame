@@ -45,6 +45,7 @@ public class PlayScreen implements Screen {
     private final Player player;
     private final ArrayList<College> colleges;
     private ArrayList<EnemyShip> enemyShips;
+    private ArrayList<SeaMonster> seaMonsters;
     private final Hud hud;
     private Box2DDebugRenderer debugRenderer;
     private Stage gameStage;
@@ -76,6 +77,7 @@ public class PlayScreen implements Screen {
         player = new Player(world,state);
         colleges = new ArrayList<>();
         enemyShips = new ArrayList<>();
+        seaMonsters = new ArrayList<>();
 
         if (state.isSpawn){setMode(state.difficulty);}
         addColleges(colleges);
@@ -87,8 +89,9 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-
-        gameStage.addActor(new SeaMonster(new Vector2(100,150),world,player));
+        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(100,150),world,player);
+        gameStage.addActor(tempSeaMonster);
+        seaMonsters.add(tempSeaMonster);
 
         addWorldBorder();
 
@@ -210,6 +213,7 @@ public class PlayScreen implements Screen {
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>();
         ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
+        ArrayList<SeaMonster> toRemoveMonster = new ArrayList<>();
         for (College college : colleges) {
             if (college.isAlive()) {
                 college.combat(camera.combined, player,delta);
@@ -228,7 +232,7 @@ public class PlayScreen implements Screen {
         }
 
         ArrayList<Bullet> bulletsP;
-        bulletsP = player.combat(colleges,enemyShips);
+        bulletsP = player.combat(colleges,enemyShips,seaMonsters);
         if (!bulletsP.isEmpty()){
             batch.begin();
             for (Bullet bullet: bulletsP) {
@@ -239,7 +243,6 @@ public class PlayScreen implements Screen {
             batch.end();
         }
 
-
         for (EnemyShip ship: enemyShips){
             if (ship.isAlive()){
                 ship.shoot(delta);
@@ -249,6 +252,14 @@ public class PlayScreen implements Screen {
             }
         }
 
+        for (SeaMonster monster: seaMonsters){
+            if (!monster.isAlive()){
+                monster.dispose();
+                toRemoveMonster.add(monster);
+            }
+        }
+
+        //Removes actors which have been moved out of the game space
         for (Actor actor: gameStage.getActors()){
             if (actor.getX() < 0 && actor.getY() < 0){
                 actor.remove();
@@ -258,6 +269,7 @@ public class PlayScreen implements Screen {
         state.collegeNames.removeAll(toRemoveName);
         colleges.removeAll(toRemoveCollage);
         enemyShips.removeAll(toRemoveShip);
+        seaMonsters.removeAll(toRemoveMonster);
 
 
 
