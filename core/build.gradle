@@ -2,9 +2,11 @@ sourceCompatibility = 1.7
 dependencies {
     implementation 'org.jetbrains:annotations-java5:20.1.0'
     implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'junit:junit:4.13.1'
 }
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
-sourceSets.main.java.srcDirs = [ "src/" ]
+sourceSets.main.java.srcDirs = [ "src/main/java" ]
+sourceSets.test.java.srcDirs = [ "src/test/java" ]
 
 eclipse.project.name = appName + "-core"

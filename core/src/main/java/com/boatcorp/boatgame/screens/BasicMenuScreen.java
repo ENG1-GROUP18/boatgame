@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.BoatGame;
 import com.crashinvaders.vfx.VfxManager;
+import org.mockito.Mockito;
 
 
 public class BasicMenuScreen implements Screen {
@@ -36,7 +37,9 @@ public class BasicMenuScreen implements Screen {
         this.boatGame = game;
         camera = new OrthographicCamera();
         viewport = new FitViewport(640, 480, camera);
-        stage = new Stage(viewport);
+        SpriteBatch view;
+        if (boatGame.HEADLESS){ view = Mockito.mock(SpriteBatch.class);}  else { view = new SpriteBatch();}
+        stage = new Stage(viewport,view);
         vfxManager = game.getVfxManager();
 
         // Style to be applied to labels
@@ -53,7 +56,9 @@ public class BasicMenuScreen implements Screen {
         pixmap.setColor(new Color(10/255f, 10/255f, 10/255f, 1));
         pixmap.fill();
         texture = new Texture(pixmap);
-        batch = new SpriteBatch();
+        if (boatGame.HEADLESS){ view = Mockito.mock(SpriteBatch.class);}  else { view = new SpriteBatch();}
+        batch = view;
+
        }
 
 
@@ -94,7 +99,10 @@ public class BasicMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height, true);
-        vfxManager.resize(viewport.getScreenWidth(), viewport.getScreenHeight());
+        if (vfxManager != null){
+            vfxManager.resize(viewport.getScreenWidth(), viewport.getScreenHeight());
+        }
+
     }
 
     @Override
@@ -120,7 +128,7 @@ public class BasicMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-        vfxManager.dispose();
+        if (!boatGame.HEADLESS){vfxManager.dispose();}
         stage.dispose();
         pixmap.dispose();
         texture.dispose();
