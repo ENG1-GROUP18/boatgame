@@ -27,11 +27,9 @@ jobs:
         distribution: 'adopt'
 
 
+    - name: getCurrentDir
+      run: |
+        ls -R
+
     - name: Build with Gradle
       run: gradle build
-    - name: Tests
-      run: gradle test
-
-
-
-
