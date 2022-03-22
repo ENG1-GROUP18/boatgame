@@ -60,6 +60,11 @@ project(":desktop") {
     }
 }
 
+tasks.withType(Test) {
+    scanForTestClasses = false
+    include "**/*Test.class"
+}
+
 project(":core") {
     apply plugin: "java-library"
 
@@ -81,9 +86,9 @@ project(":core") {
         testImplementation "junit:junit:$junitVersion"
         testImplementation "com.badlogicgames.gdx:gdx-ai:1.8.1"
         testImplementation 'org.mockito:mockito-core:4.4.0'
-        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
-        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        testCompile"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        testCompile"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testImplementation "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testImplementation"com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        testImplementation"com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     }
 }

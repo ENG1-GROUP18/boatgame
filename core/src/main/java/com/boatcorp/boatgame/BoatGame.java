@@ -8,8 +8,6 @@ import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
-import org.graalvm.compiler.virtual.phases.ea.EffectList;
-
 
 /**
  *  Main class which initialises the Game.

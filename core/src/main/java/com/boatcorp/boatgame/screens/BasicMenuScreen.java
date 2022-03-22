@@ -100,6 +100,7 @@ public class BasicMenuScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width, height, true);
         if (vfxManager != null){
+            //TODO fix error which occurs here sometimes
             vfxManager.resize(viewport.getScreenWidth(), viewport.getScreenHeight());
         }
 
