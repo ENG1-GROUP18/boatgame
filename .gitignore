@@ -36,7 +36,10 @@ atlassian-ide-plugin.xml
 /.teamcity/target
 /gradle.ipr
 /gradle.iws
-
+/core/assets/classes
+/core/assets/generated
+/core/assets/reports
+core/assets/test-results
 # Log file
 *.log
 
