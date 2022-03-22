@@ -19,7 +19,8 @@ local.properties           <- IntelliJ only file, defines Android SDK location
 
 core/
     build.gradle           <- Gradle build file for core project*
-    src/                   <- Source folder for all your game's code
+    src/main/java/         <- Source folder for all your game's code
+    src/test/java/         <- Source folder for all tests
 
 desktop/
     build.gradle           <- Gradle build file for desktop project*
@@ -30,7 +31,7 @@ desktop/
 Core Folder Architecture
 
 ```
-src/...
+src/main/java/...
   entities/
   frameworks/
   screens/

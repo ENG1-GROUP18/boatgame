@@ -88,11 +88,7 @@ public class Bullet extends Group {
      * @return True if hit, false if not hit
      */
     public boolean hit(){
-        if (bodyd.getUserData() == "Hit"){
-            return true;
-        } else{
-            return false;
-        }
+        return bodyd.getUserData() == "Hit";
     }
 
     /**

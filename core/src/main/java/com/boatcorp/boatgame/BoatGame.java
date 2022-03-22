@@ -8,8 +8,6 @@ import com.boatcorp.boatgame.screens.*;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
-import org.graalvm.compiler.virtual.phases.ea.EffectList;
-
 
 /**
  *  Main class which initialises the Game.
@@ -20,6 +18,7 @@ public class BoatGame extends Game {
 	public final boolean ENABLE_SHADERS = true;
 	public final boolean ENABLE_BOX2D_WIREFRAME = true;
 	public final boolean ENABLE_TABLE_DEBUG = false;
+	public boolean HEADLESS = false;
 	public int difficulty;
 	//---------------
 
@@ -56,7 +55,10 @@ public class BoatGame extends Game {
 
 	@Override
 	public void create () {
-		setUpShaders();
+		if (!HEADLESS){ //Shaders don't work in headless mode for testing due to implementation
+			setUpShaders();
+		}
+
 		splashScreen = new SplashScreen(this);
 		changeScreen(screenType.SPLASH);
 	}
@@ -187,4 +189,7 @@ public class BoatGame extends Game {
 			this.setScreen(playScreen);}
 	}
 
+	public void setHeadless(){
+		HEADLESS = true;
+	}
 }
