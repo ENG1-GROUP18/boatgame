@@ -441,7 +441,7 @@ public class PlayScreen implements Screen {
         Random rand = new Random();
         int divider = state.collegeNames.size() / 2;
         int xUnit = 1200 / divider;
-        int buffer = 20;
+        int buffer = 120;
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
