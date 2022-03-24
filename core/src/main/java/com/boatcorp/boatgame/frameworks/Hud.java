@@ -60,7 +60,7 @@ public class Hud {
         plunderScore.setPosition(8, 430);
         plunderScore.setText("Plunder: "+ PlunderSystem.getPlunder());
 
-        updateAlert = new Label("" + PlunderSystem.getPlunder(), new Label.LabelStyle(font, Color.WHITE));
+        updateAlert = new Label("", new Label.LabelStyle(font, Color.WHITE));
         updateAlert.setWrap(true);
         updateAlert.setFontScale(0.5f);
         updateAlert.setPosition(350, 430);
