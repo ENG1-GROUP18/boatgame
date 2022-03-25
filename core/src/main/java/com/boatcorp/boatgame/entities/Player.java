@@ -124,7 +124,7 @@ public class Player extends Group {
             this.setRotation(velocity.angleDeg() - 90);
             bodyd.setTransform(bodyd.getPosition(),velocity.angleRad() - ((float) Math.PI/2));
         }
-        //counts down immunity
+        //counts down player's immunity
         if (immuneSeconds > 0){
             timeSeconds += Gdx.graphics.getDeltaTime();
             if(timeSeconds > period){
