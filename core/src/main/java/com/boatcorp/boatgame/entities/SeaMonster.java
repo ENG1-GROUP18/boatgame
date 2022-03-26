@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.tools.B2dSteeringEntity;
 
 public class SeaMonster extends Group {
@@ -21,8 +22,9 @@ public class SeaMonster extends Group {
     private FiniteState currentState;
     private final B2dSteeringEntity entity,targetPlayer,targetHome;
     private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
+    private boolean isFrozen;
 
-    public SeaMonster(Vector2 position, World world,Player player){
+    public SeaMonster(Vector2 position, World world,Player player, GameState state){
         Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
         gameWorld = world;
         sprite = new Sprite(texture);
@@ -76,6 +78,7 @@ public class SeaMonster extends Group {
         this.addActor(new Image(sprite));
         this.setPosition(position.x-(sprite.getWidth()/2),position.y-(sprite.getHeight()/2));
         this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
+        isFrozen = state.isFrozen;
 
     }
 
@@ -139,4 +142,11 @@ public class SeaMonster extends Group {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(body);
     }
+
+    public void freeze(){isFrozen = true;}
+
+    public void unfreeze(){isFrozen = false;}
+
+
 }
+
