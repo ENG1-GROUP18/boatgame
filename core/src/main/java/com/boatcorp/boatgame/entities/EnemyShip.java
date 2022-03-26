@@ -29,6 +29,8 @@ public class EnemyShip extends Group {
     private FiniteState currentState;
     private long timeSinceLastShot;
     private float damageScaler;
+    private boolean isFrozen;
+    private float timeSinceFreeze;
 
 
     public EnemyShip(World world, GameState state, Vector2 position, Player player){
@@ -39,6 +41,8 @@ public class EnemyShip extends Group {
         this.player = player;
         timeSinceLastShot = TimeUtils.millis();
         damageScaler = state.shipDamageScaler;
+        isFrozen = state.isFrozen;
+        timeSinceFreeze = state.timeSinceFreeze;
 
         Vector2 position1 = position.cpy();
         bullets = new ArrayList<>();
@@ -171,6 +175,9 @@ public class EnemyShip extends Group {
         RETURN,
         STAY
     }
+    public void freeze(){isFrozen = true;}
+
+    public void unfreeze(){isFrozen = false;}
 
     public boolean isHit(){
         return body.getUserData() == "Hit";
@@ -205,3 +212,4 @@ public class EnemyShip extends Group {
         }
     }
 }
+
