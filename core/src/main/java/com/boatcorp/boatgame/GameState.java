@@ -27,5 +27,6 @@ public class GameState{
     public Map<Object, Vector2> collegePositions = new HashMap<Object,Vector2>();
     public boolean isSpawn = true;
     public boolean shopUnlocked = false;
+    public boolean isFrozen = true;
+    public float timeSinceFreeze = 0;
     }
-
