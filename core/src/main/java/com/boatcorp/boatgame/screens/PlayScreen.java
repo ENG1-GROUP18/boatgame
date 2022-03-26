@@ -63,6 +63,10 @@ public class PlayScreen implements Screen {
     private final VignettingEffect effectVignetting;
     private final FxaaEffect effectFxaa;
 
+    // for freeze
+    private float timeSinceFreeze;
+    private boolean isFrozen;
+
     //For hud updates
     private boolean hudUpdateNeeded;
     private long timeSinceUpdate;
@@ -88,6 +92,8 @@ public class PlayScreen implements Screen {
         hasBoughtGreen = state.hasBoughtGreen;
         hasBoughtRed = state.hasBoughtRed;
         hasBoughtHealth = state.hasBoughtHealth;
+        if (state.isSpawn){timeSinceFreeze = TimeUtils.millis() - state.timeSinceFreeze;}
+        isFrozen = state.isFrozen;
 
         mapLoader = new MapLoader();
         player = new Player(world,state);
@@ -107,7 +113,7 @@ public class PlayScreen implements Screen {
         gameStage.addActor(player);
 
         //TODO make the semesters spawn in different locations
-        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player);
+        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player,state);
         gameStage.addActor(tempSeaMonster);
         seaMonsters.add(tempSeaMonster);
 
@@ -336,6 +342,10 @@ public class PlayScreen implements Screen {
 
     private void update(final float delta) {
 
+        if (isFrozen && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 20000)){
+            unfreeze();
+        }
+
         handleMacros();
 
         boolean save1 = Gdx.input.isKeyJustPressed(Input.Keys.NUM_1);
@@ -501,7 +511,9 @@ public class PlayScreen implements Screen {
                 hudUpdateNeeded = true;
                 break;
             case 2:
-                //freeze enemies
+                freeze();
+                timeSinceFreeze = TimeUtils.millis();
+                hud.setUpdateAlert("Powerup! \nYour enemies just\nfroze!");
                 break;
             case 3:
                 player.setImmuneSeconds(20);
@@ -562,6 +574,25 @@ public class PlayScreen implements Screen {
     }
 
 
+    public void freeze(){
+        for (SeaMonster seaMonster : seaMonsters){
+            seaMonster.freeze();
+        }
+        for (EnemyShip enemyShip : enemyShips){
+            enemyShip.freeze();
+        }
+        isFrozen = true;
+    }
+    public void unfreeze(){
+        for (SeaMonster seaMonster : seaMonsters){
+            seaMonster.unfreeze();
+        }
+        for (EnemyShip enemyShip : enemyShips){
+            enemyShip.unfreeze();
+        }
+        isFrozen = false;
+    }
+
 
     public GameState getState(){
         player.updateState();
@@ -574,9 +605,9 @@ public class PlayScreen implements Screen {
         state.hasBoughtHealth = hasBoughtHealth;
         state.hasBoughtGreen = hasBoughtGreen;
         state.shipDamageScaler = enemyShips.get(0).getDamageScaler();
+        state.isFrozen =  isFrozen;
+        state.timeSinceFreeze = TimeUtils.timeSinceMillis(timeSinceUpdate);
         return state;
     }
 }
-
-
 
