@@ -39,7 +39,11 @@ public class ShopScreen extends BasicMenuScreen{
         label4.setAlignment(Align.center);
         label4.setFontScale(1f);
 
-        Label label5 = new Label("[NORMAL]return with [HIGHLIGHTED]SPACE", style);
+        Label label5 = new Label("[HIGHLIGHTED]50 plunder [NORMAL]a piece", style);
+        label4.setAlignment(Align.center);
+        label4.setFontScale(1f);
+
+        Label label6 = new Label("[NORMAL]return with [HIGHLIGHTED]SPACE", style);
         label4.setAlignment(Align.center);
         label4.setFontScale(1f);
 
@@ -48,7 +52,8 @@ public class ShopScreen extends BasicMenuScreen{
         table.add(label2).fillX().uniformX().pad(20).row();
         table.add(label3).fillX().uniformX().pad(20).row();
         table.add(label4).fillX().uniformX().pad(20).row();
-        table.add(label5).fillX().uniformX().pad(20);
+        table.add(label5).fillX().uniformX().pad(20).row();
+        table.add(label6).fillX().uniformX().pad(20);
 
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
