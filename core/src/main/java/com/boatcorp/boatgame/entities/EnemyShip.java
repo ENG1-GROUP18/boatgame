@@ -23,7 +23,6 @@ public class EnemyShip extends Group {
     private final World gameWorld;
     private final B2dSteeringEntity entity,targetPlayer,targetHome;
     private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
-    private final ArrayList<Bullet> bullets;
     private final Player player;
     private final GameState gameState;
     private FiniteState currentState;
@@ -31,6 +30,7 @@ public class EnemyShip extends Group {
     private float damageScaler;
     private boolean isFrozen;
     private float timeSinceFreeze;
+    private GameState state;
 
 
     public EnemyShip(World world, GameState state, Vector2 position, Player player){
@@ -43,9 +43,9 @@ public class EnemyShip extends Group {
         damageScaler = state.shipDamageScaler;
         isFrozen = state.isFrozen;
         timeSinceFreeze = state.timeSinceFreeze;
+        this.state = state;
 
         Vector2 position1 = position.cpy();
-        bullets = new ArrayList<>();
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -132,41 +132,22 @@ public class EnemyShip extends Group {
     }
 
     //TODO change so it renders using stage2D
-    public ArrayList<Bullet> shoot(){
-
-        ArrayList<Bullet> toRemove = new ArrayList<>();
-        if (currentState == FiniteState.FOLLOW){
+    public ArrayList<Bullet> shoot() {
+        ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+        if (currentState == FiniteState.FOLLOW) {
             // Only begins combat when the player is close enough and the college isn't defeated
 
             if ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 1000) {
                 timeSinceLastShot = TimeUtils.millis();
 
                 Vector2 velocity = new Vector2();
-                velocity.x =(float) -Math.sin(entity.getOrientation());
-                velocity.y =(float) Math.cos(entity.getOrientation());
-                bullets.add(new Bullet(body.getPosition(), velocity, gameWorld, "EnemyShip","bullet"));
+                velocity.x = (float) -Math.sin(entity.getOrientation());
+                velocity.y = (float) Math.cos(entity.getOrientation());
+                bullets.add(new Bullet(body.getPosition(), velocity, gameWorld, "EnemyShip", "bullet", state));
 
             }
-            for (Bullet bullet: bullets) {
-                // Move bullets and check for collisions
-                if (player.isHit() && bullet.hit()) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                    player.takeDamage(10);
-                }
-            }
 
-        }else{
-            if (!bullets.isEmpty()) {
-                for (Bullet bullet: bullets){
-                    if (bullet.outOfRange(300)) {
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-            }
         }
-        bullets.removeAll(toRemove);
         return bullets;
     }
 
@@ -205,11 +186,6 @@ public class EnemyShip extends Group {
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(body);
-        if (!bullets.isEmpty()) {
-            for (Bullet bullet : bullets) {
-                bullet.dispose();
-            }
-        }
     }
 }
 
