@@ -29,7 +29,6 @@ public class EnemyShip extends Group {
     private long timeSinceLastShot;
     private float damageScaler;
     private boolean isFrozen;
-    private float timeSinceFreeze;
     private GameState state;
 
 
@@ -42,7 +41,6 @@ public class EnemyShip extends Group {
         timeSinceLastShot = TimeUtils.millis();
         damageScaler = state.shipDamageScaler;
         isFrozen = state.isFrozen;
-        timeSinceFreeze = state.timeSinceFreeze;
         this.state = state;
 
         Vector2 position1 = position.cpy();
