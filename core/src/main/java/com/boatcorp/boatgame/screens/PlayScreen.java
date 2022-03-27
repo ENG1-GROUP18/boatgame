@@ -51,7 +51,7 @@ public class PlayScreen implements Screen {
     private final Box2DDebugRenderer debugRenderer;
     private final Stage gameStage;
     private final GameState state;
-    private ArrayList<ArrayList<Bullet>> bulletsS = new ArrayList<>();
+    private ArrayList<Bullet> globalBullets = new ArrayList<>();
 
 
 
@@ -64,7 +64,7 @@ public class PlayScreen implements Screen {
     private final FxaaEffect effectFxaa;
 
     // for freeze
-    private float timeSinceFreeze;
+    private long timeSinceFreeze;
     private boolean isFrozen;
 
     //For hud updates
@@ -92,7 +92,7 @@ public class PlayScreen implements Screen {
         hasBoughtGreen = state.hasBoughtGreen;
         hasBoughtRed = state.hasBoughtRed;
         hasBoughtHealth = state.hasBoughtHealth;
-        if (!state.isSpawn){timeSinceFreeze = TimeUtils.millis() - state.timeSinceFreeze;}
+        if (!state.isSpawn){timeSinceFreeze = TimeUtils.millis() + state.timeSinceFreeze;}
         isFrozen = state.isFrozen;
 
         mapLoader = new MapLoader();
@@ -103,6 +103,7 @@ public class PlayScreen implements Screen {
 
         if (state.isSpawn){setMode(state.difficulty);}
         addColleges(colleges);
+        addBullets();
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
         PointSystem.setPoints(state.points);
@@ -238,16 +239,11 @@ public class PlayScreen implements Screen {
         ArrayList<College> toRemoveCollage = new ArrayList<>();
         ArrayList<EnemyShip> toRemoveShip = new ArrayList<>();
         ArrayList<SeaMonster> toRemoveMonster = new ArrayList<>();
-        int reset = 0;
         //Logic for collage combat and capture
         for (College college : colleges) {
             if (college.isAlive()) {
-                if (reset == 0){
-                    bulletsS = new ArrayList<>();
-                    reset = 1;
-                }
 
-                bulletsS.add(college.combat(player));
+                globalBullets.addAll(college.combat(player));
             }
             else {
                 upgradePlayer(6 - colleges.size());
@@ -265,11 +261,7 @@ public class PlayScreen implements Screen {
         //Logic for enemy ship combat and death
         for (EnemyShip ship: enemyShips){
             if (ship.isAlive()){
-                if (reset == 0){
-                    bulletsS = new ArrayList<>();
-                    reset = 1;
-                }
-                bulletsS.add(ship.shoot());
+                globalBullets.addAll(ship.shoot());
             } else{
                 ship.dispose();
                 PointSystem.incrementPoint(100);
@@ -280,23 +272,24 @@ public class PlayScreen implements Screen {
         }
 
         //Adds player bullets to array
-        bulletsS.add(player.combat(colleges,enemyShips,seaMonsters));
+        globalBullets.addAll(player.combat());
 
+        //handles bullets
+        handleBullets();
 
         //Renders all the bullets in a single sprite batch
         batch.begin();
-        for (ArrayList<Bullet> temp: bulletsS){
-            ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
-            for (Bullet bullet : temp) {
-                if (!bullet.outOfRange(300)) {
-                    bullet.draw(batch, 1);
-                    bullet.move(delta);
-                } else {
-                    toRemoveBullet.add(bullet);
-                }
-            }
-            temp.removeAll(toRemoveBullet);
+        ArrayList<Bullet> toRemoveBullet = new ArrayList<>();
+        for (Bullet bullet : globalBullets) {
+            if (!bullet.outOfRange(300)) {
+                bullet.draw(batch, 1);
+                bullet.move(delta);
+            } else {
+                toRemoveBullet.add(bullet);
+               }
         }
+        globalBullets.removeAll(toRemoveBullet);
+
         batch.end();
 
 
@@ -325,7 +318,6 @@ public class PlayScreen implements Screen {
             player.dispose();
             for (Actor actor: gameStage.getActors()){
                 actor.addAction(Actions.removeActor());
-
             }
             for(College college : colleges) {
                 college.dispose();
@@ -371,7 +363,6 @@ public class PlayScreen implements Screen {
 
         camera.zoom = DEFAULT_ZOOM;
 
-        // TODO this really shouldn't be here, no need to get this every update
         // Get properties of the map from the TileMap
         MapProperties prop = mapLoader.getMap().getProperties();
         int mapWidth = prop.get("width", Integer.class);
@@ -512,7 +503,7 @@ public class PlayScreen implements Screen {
                 break;
             case 2:
                 freeze();
-                timeSinceFreeze = TimeUtils.millis();
+                timeSinceFreeze = TimeUtils.timeSinceMillis(timeSinceFreeze);
                 hud.setUpdateAlert("Powerup! \nYour enemies just\nfroze!");
                 hudUpdateNeeded = true;
                 break;
@@ -594,11 +585,69 @@ public class PlayScreen implements Screen {
         isFrozen = false;
     }
 
+    public void loadBullets(){
+
+
+    }
+
+    public void handleBullets(){
+        ArrayList<Bullet> toRemove = new ArrayList<>();
+        for (Bullet bullet: globalBullets) {
+            // Move bullets and check for collisions
+            if (player.isHit() && bullet.hit()) {
+                bullet.dispose();
+                toRemove.add(bullet);
+                player.takeDamage(10);
+            }
+            if (bullet.outOfRange(300)) {
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                }
+            for (College college : colleges) {
+                if (college.isHit() && bullet.hit()) {
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                    college.takeDamage(5);
+            }
+            }
+            for (EnemyShip ship : enemyShips){
+                if (ship.isHit() && bullet.hit()){
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                    ship.takeDamage(5);
+            }
+        }
+            for (SeaMonster monster : seaMonsters){
+                if (monster.isHit() && bullet.hit()){
+                    bullet.dispose();
+                    toRemove.add(bullet);
+                //If green upgrade has been bought then it increases damage to sea monster
+                if (player.getBulletColor().equals("greenbullet")){
+                    monster.takeDamage(10);
+                }else{
+                    monster.takeDamage(5);
+                }
+
+            }
+        }
+        }
+        globalBullets.removeAll(toRemove);
+
+    }
+
+    public void addBullets(){
+        for (int i = 0; i < state.firedFroms.size(); i++){
+            globalBullets.add(new Bullet(state.positions.get(i), state.velocities.get(i), world, state.firedFroms.get(i), state.bulletColors.get(i), state));
+        }
+    }
 
     public GameState getState(){
         player.updateState();
         for (College college : colleges) {
             college.updateState();
+        }
+        for (Bullet bullet : globalBullets){
+            bullet.updateState();
         }
         state.isSpawn = false;
         state.shopUnlocked = shopUnlocked;
@@ -611,4 +660,5 @@ public class PlayScreen implements Screen {
         return state;
     }
 }
+
 
