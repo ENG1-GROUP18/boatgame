@@ -92,7 +92,7 @@ public class PlayScreen implements Screen {
         hasBoughtGreen = state.hasBoughtGreen;
         hasBoughtRed = state.hasBoughtRed;
         hasBoughtHealth = state.hasBoughtHealth;
-        if (state.isSpawn){timeSinceFreeze = TimeUtils.millis() - state.timeSinceFreeze;}
+        if (!state.isSpawn){timeSinceFreeze = TimeUtils.millis() - state.timeSinceFreeze;}
         isFrozen = state.isFrozen;
 
         mapLoader = new MapLoader();
