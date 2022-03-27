@@ -109,4 +109,3 @@ public class ShopScreen extends BasicMenuScreen{
         super.update();
     }
 }
-
