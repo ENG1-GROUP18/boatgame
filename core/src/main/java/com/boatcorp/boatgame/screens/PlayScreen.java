@@ -514,6 +514,7 @@ public class PlayScreen implements Screen {
                 freeze();
                 timeSinceFreeze = TimeUtils.millis();
                 hud.setUpdateAlert("Powerup! \nYour enemies just\nfroze!");
+                hudUpdateNeeded = true;
                 break;
             case 3:
                 player.setImmuneSeconds(20);
