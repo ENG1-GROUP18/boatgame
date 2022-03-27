@@ -441,7 +441,7 @@ public class PlayScreen implements Screen {
 
         Random rand = new Random();
         int divider = state.collegeNames.size() / 2;
-        int xUnit = 1200 / divider;
+        int xUnit = (divider > 0) ? (1200 / divider) : 1;
         int buffer = 120;
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
@@ -463,8 +463,12 @@ public class PlayScreen implements Screen {
             gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
 
         }
+   
     }
-
+    /**
+    * Sets the difficulty mode of the game
+    @param mode Picks which mode to play in: 0. Easy 1. Normal 2. Hard
+    */
 
     public void setMode(int mode){
         switch(mode){
