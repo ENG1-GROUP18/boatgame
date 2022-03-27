@@ -21,8 +21,6 @@ public class College {
     private final Sprite sprite;
     /**Relative position of the player*/
     private final Vector2 position;
-    /**list of bullets which are currently on screen*/
-    private final ArrayList<Bullet> bullets;
     /**Holds the vectors to fire the bullets diagonally*/
     private final ArrayList<Vector2> diagonalDirections;
     /**Holds the vectors to fire the bullets in cardinal directions*/
@@ -53,7 +51,6 @@ public class College {
         final Texture texture = new Texture(Gdx.files.internal(PATH_NAME));
         batch = new SpriteBatch();
         sprite = new Sprite(texture);
-        bullets = new ArrayList<>();
         position = state.collegePositions.get(college);
         health = new HealthBar();
         maxHealth = state.collegeHealths.get(college)[1];
@@ -63,6 +60,7 @@ public class College {
         this.state = state;
         this.college = college;
         timeSinceLastShot = TimeUtils.millis();
+        if (!state.isSpawn){timeSinceLastShot = TimeUtils.millis() + state.collegeTimes.get(college);}
 
         cardinalDirections = new ArrayList<>();
         cardinalDirections.add(new Vector2(5,0));
@@ -127,8 +125,7 @@ public class College {
         double distance = Math.hypot((position.x+ (sprite.getWidth()/2)) - playerPos.x, (position.y+ (sprite.getHeight()/2)) - playerPos.y);
         Random rand = new Random();
         ArrayList<Vector2> randDir;
-
-        ArrayList<Bullet> toRemove = new ArrayList<>();
+        ArrayList<Bullet> bullets = new ArrayList<>();
         // Only begins combat when the player is close enough and the college isn't defeated
         if (distance < 200) {
             if ((TimeUtils.timeSinceMillis(timeSinceLastShot)) > 1000) {
@@ -137,30 +134,10 @@ public class College {
                 int random_number = rand.nextInt(attackPatterns.size());
                 randDir = attackPatterns.get(random_number);
                 for (Vector2 direction : randDir) {
-                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College", "bullet"));
+                    bullets.add(new Bullet(this.getPosition(), direction, gameWorld, "College", "bullet", state));
                 }
-            }
-            for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                if (player.isHit() && bullet.hit()) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                    player.takeDamage(10);
-                }
-            }
-
-        } else{
-            if (!bullets.isEmpty()) {
-                for (Bullet bullet: bullets){
-                    if (bullet.outOfRange(300)) {
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                    }
-                }
-            }
-        }
-        bullets.removeAll(toRemove);
-        return bullets;
+            }}
+            return bullets;
     }
 
     /**
@@ -224,11 +201,6 @@ public class College {
         batch.dispose();
         health.dispose();
         gameWorld.destroyBody(bodyd);
-        for (Bullet bullet: bullets){
-            bullet.dispose();
-        }
-
-
     }
     /**
      * Gets the name of the college
@@ -244,12 +216,14 @@ public class College {
         float[] healths = {currentHealth,maxHealth};
         state.collegeHealths.put(college, healths);
         state.collegePositions.put(college, this.getPosition());
+        state.collegeTimes.put(college, TimeUtils.timeSinceMillis(timeSinceLastShot));
     }
     public void scaleDamage(float scale){
         damageScaler *= scale;
     }
 
 }
+
 
 
 
