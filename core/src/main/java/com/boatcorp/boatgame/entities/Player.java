@@ -30,7 +30,6 @@ public class Player extends Group {
     private String bulletColor;
 
     private float damageScaler;
-    private final ArrayList<Bullet> bullets;
     private long timeSinceLastShot;
     private final Body bodyd;
     private final GameState state;
@@ -54,7 +53,6 @@ public class Player extends Group {
         Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
         sprite = new Sprite(texture);
         health = new HealthBar();
-        bullets = new ArrayList<>();
         maxHealth = state.maxHealth;
         currentHealth = state.currentHealth;
         gameWorld = world;
@@ -235,8 +233,10 @@ public class Player extends Group {
      * Logic for calculating bullet position
      * @return a list of bullets
      */
-    public ArrayList<Bullet> combat(ArrayList<College> colleges,ArrayList<EnemyShip> enemyShips,ArrayList<SeaMonster> seaMonsters) {
+    public ArrayList<Bullet> combat() {
 
+
+        ArrayList<Bullet> bullets = new ArrayList<>();
         boolean up = Gdx.input.isKeyPressed(Input.Keys.UP);
         boolean down = Gdx.input.isKeyPressed(Input.Keys.DOWN);
         boolean right = Gdx.input.isKeyPressed(Input.Keys.RIGHT);
@@ -271,49 +271,11 @@ public class Player extends Group {
                 float velY = inputVector.y * BULLET_SPEED;
 
                 Vector2 bulletVelocity = new Vector2(velX, velY);
-
                 // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player", bulletColor));
+                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player", bulletColor,state));
             }
         }
-        ArrayList<Bullet> toRemove = new ArrayList<>();
-        if (!bullets.isEmpty()){
-            for (Bullet bullet: bullets) {
-                // Draw and move bullets and check for collisions
-                if (bullet.outOfRange(200)) {
-                    bullet.dispose();
-                    toRemove.add(bullet);
-                }
-                for (College college : colleges) {
-                    if (college.isHit() && bullet.hit()) {
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                        college.takeDamage(5);
-                    }
-                }
-                for (EnemyShip ship : enemyShips){
-                    if (ship.isHit() && bullet.hit()){
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                        ship.takeDamage(5);
-                    }
-                }
-                for (SeaMonster monster : seaMonsters){
-                    if (monster.isHit() && bullet.hit()){
-                        bullet.dispose();
-                        toRemove.add(bullet);
-                        //If green upgrade has been bought then it increases damage to sea monster
-                        if (bulletColor.equals("greenbullet")){
-                            monster.takeDamage(10);
-                        }else{
-                            monster.takeDamage(5);
-                        }
 
-                    }
-                }
-            }
-        }
-        bullets.removeAll(toRemove);
         return bullets;
     }
 
@@ -322,11 +284,6 @@ public class Player extends Group {
      */
     public void dispose() {
         health.dispose();
-        if (!bullets.isEmpty()) {
-            for (Bullet bullet : bullets) {
-                bullet.dispose();
-            }
-        }
     }
 
 
