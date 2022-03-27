@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.boatcorp.boatgame.GameState;
 
 /**
  * Creates a Bullet object
@@ -17,6 +18,9 @@ public class Bullet extends Group {
     private final Vector2 velocity;
     private final Body bodyd;
     private final World gameWorld;
+    private final String firedFrom;
+    private GameState state;
+    private String color;
 
     /**
      * Initialises a bullet with a texture at the required position
@@ -25,13 +29,15 @@ public class Bullet extends Group {
      * @param world The world object which box2D objects are stored in
      */
 
-    public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color) {
+    public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color, GameState state) {
         final Texture texture = new Texture("Entities/" + color + ".png");
         sprite = new Sprite(texture);
         startPos = position.cpy();
         this.velocity = velocity;
         gameWorld = world;
-
+        this.firedFrom = firedFrom;
+        this.state = state;
+        this.color = color;
 
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
@@ -72,6 +78,8 @@ public class Bullet extends Group {
 
     }
 
+    public String getFiredFrom(){return firedFrom;}
+
 
     /**
      * Returns true if bullet has travelled more than the max range (300 units)
@@ -105,5 +113,13 @@ public class Bullet extends Group {
     public void dispose() {
         gameWorld.destroyBody(bodyd);
     }
+
+    public void updateState(){
+        state.firedFroms.add(firedFrom);
+        state.velocities.add(velocity);
+        state.positions.add(bodyd.getPosition());
+        state.bulletColors.add(color);
+    }
 }
+
 
