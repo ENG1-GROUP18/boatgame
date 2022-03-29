@@ -45,10 +45,11 @@ public class ResultScreen implements Screen {
         fontBatch.begin();
         font.getData().setScale(0.5f);
         GlyphLayout victoryGlyph = new GlyphLayout(font, this.victory);
-        GlyphLayout enterGlyph = new GlyphLayout(font, "Press Enter");
-
-        font.draw(fontBatch, this.victory, viewport.getScreenWidth() / 2f - victoryGlyph.width / 2, viewport.getScreenHeight() / (4f/3f));
-        font.draw(fontBatch, "Press Enter to play again", viewport.getScreenWidth() / 2f - enterGlyph.width / 2, viewport.getScreenHeight() / 4f);
+        GlyphLayout enterGlyph = new GlyphLayout(font, "Press Enter to play again");
+        GlyphLayout mainMenuGlyph = new GlyphLayout(font, "Press Esc to return to main menu");
+        font.draw(fontBatch, victoryGlyph, viewport.getScreenWidth() / 2f - victoryGlyph.width / 2, viewport.getScreenHeight() / (4f/3f));
+        font.draw(fontBatch, enterGlyph, (viewport.getScreenWidth() - enterGlyph.width) / 2, viewport.getScreenHeight() / 3f);
+        font.draw(fontBatch, mainMenuGlyph, (viewport.getScreenWidth() - mainMenuGlyph.width) / 2, viewport.getScreenHeight() / 5f);
         fontBatch.end();
         checkInputs();
     }
@@ -57,6 +58,11 @@ public class ResultScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER) ) {
             PointSystem.setPoints(0);
             boatGame.setScreen(new PlayScreen(boatGame, new GameState()));
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) ) {
+            PointSystem.setPoints(0);
+            boatGame.setScreen(new StartMenuScreen(boatGame));
         }
 
     }
