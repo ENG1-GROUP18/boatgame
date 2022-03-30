@@ -141,6 +141,7 @@ public class SeaMonster extends Group {
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(body);
+        gameWorld.destroyBody(startBody);
     }
 
     public void freeze(){isFrozen = true;}

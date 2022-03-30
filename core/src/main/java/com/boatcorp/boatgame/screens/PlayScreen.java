@@ -102,7 +102,7 @@ public class PlayScreen implements Screen {
         seaMonsters = new ArrayList<>();
 
         if (state.isSpawn){setMode(state.difficulty);}
-        addColleges(colleges);
+        addColleges();
         addBullets();
         font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
         hud = new Hud(fontBatch, player);
@@ -113,7 +113,7 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-        //TODO make the semesters spawn in different locations
+        //TODO make the sea monsters spawn in different locations
         SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player,state);
         gameStage.addActor(tempSeaMonster);
         seaMonsters.add(tempSeaMonster);
@@ -437,8 +437,7 @@ public class PlayScreen implements Screen {
     }
 
 
-    public void addColleges(ArrayList<College> colleges) {
-
+    public void addColleges() {
         Random rand = new Random();
         int divider = state.collegeNames.size() / 2;
         int xUnit = (divider > 0) ? (1200 / divider) : 1;
@@ -446,24 +445,37 @@ public class PlayScreen implements Screen {
         for (int i = 0; i < state.collegeNames.size(); i++) {
             if (state.isSpawn){
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
-                if( i < divider){
+                if (i < divider){
                     state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + buffer + rand.nextInt(xUnit - (2*buffer)), buffer + rand.nextInt(600 - (2*buffer))));
 
                 }
                 else{
                     state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + buffer + rand.nextInt(xUnit - (2*buffer)), 600 + buffer + rand.nextInt(600 - (2*buffer))));
-                }}
+                }
+            }
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
         //Place enemy ships at collages
-        for (College college : colleges) {
-            enemyShips.add((new EnemyShip(world, state,
-                    new Vector2(college.getPosition().x - 40, college.getPosition().y - 40), player)));
-            gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
-
+        Vector2 tempEnemyShipPosition;
+        if (state.isSpawn){
+            for (int i = 0; i < state.collegeNames.size(); i++) {
+                tempEnemyShipPosition = new Vector2(colleges.get(i).getPosition().x - 40, colleges.get(i).getPosition().y - 40);
+                state.shipPositions.add(tempEnemyShipPosition);
+                state.shipStartPositions.add(tempEnemyShipPosition);
+                state.shipHealths.add(20f);
+                state.shipTimes.add(0l);
+                enemyShips.add(new EnemyShip(world,state,player,i));
+                gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
+            }
+        } else  {
+            for (int i = 0; i < state.shipPositions.size(); i++) {
+                enemyShips.add(new EnemyShip(world,state,player,i));
+                gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
+            }
         }
-   
+
+
     }
     /**
     * Sets the difficulty mode of the game
@@ -653,6 +665,11 @@ public class PlayScreen implements Screen {
         for (Bullet bullet : globalBullets){
             bullet.updateState();
         }
+
+        for (EnemyShip ship : enemyShips){
+            ship.updateState();
+        }
+
         state.isSpawn = false;
         state.shopUnlocked = shopUnlocked;
         state.hasBoughtRed = hasBoughtRed;

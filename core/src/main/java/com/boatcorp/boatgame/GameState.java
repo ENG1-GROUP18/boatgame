@@ -1,6 +1,6 @@
 package com.boatcorp.boatgame;
-import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.math.Vector2;
 import java.util.*;
 
 /**
@@ -28,15 +28,21 @@ public class GameState{
 
     //ship info
     public float shipDamageScaler = 1;
+    public ArrayList<Float> shipHealths = new ArrayList<>();
+    public ArrayList<Vector2> shipPositions = new ArrayList<>();
+    public ArrayList<Vector2> shipStartPositions = new ArrayList<>();
+    public ArrayList<Long> shipTimes = new ArrayList<>();
 
     //monster info
+    public Map<Object, float[]> monsterHealths = new HashMap<>();
+    public Map<Object, Vector2> monsterPositions = new HashMap<>();
 
     //college info
     public float[] collegeHealth = {100,100};
     public ArrayList<String> collegeNames = new ArrayList<>( Arrays.asList("langwith","james","goodricke","alcuin","derwent","halifax"));
-    public Map<Object, float[]> collegeHealths = new HashMap<Object,float[]>();
-    public Map<Object, Vector2> collegePositions = new HashMap<Object,Vector2>();
-    public Map<Object, Long> collegeTimes = new HashMap<Object,Long>();
+    public Map<Object, float[]> collegeHealths = new HashMap<>();
+    public Map<Object, Vector2> collegePositions = new HashMap<>();
+    public Map<Object, Long> collegeTimes = new HashMap<>();
 
     //bullet info
     public ArrayList<String> bulletColors = new ArrayList<>();

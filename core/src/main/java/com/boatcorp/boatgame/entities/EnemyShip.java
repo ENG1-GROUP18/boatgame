@@ -17,10 +17,11 @@ import java.util.ArrayList;
 
 public class EnemyShip extends Group {
     private final Sprite sprite;
-    private float health = 20;
+    private float health;
     private final Body body;
     private final Body startBody;
     private final World gameWorld;
+    private final int id;
     private final B2dSteeringEntity entity,targetPlayer,targetHome;
     private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
     private final Player player;
@@ -32,7 +33,7 @@ public class EnemyShip extends Group {
     private GameState state;
 
 
-    public EnemyShip(World world, GameState state, Vector2 position, Player player){
+    public EnemyShip(World world, GameState state, Player player, int id){
         Texture texture = new Texture(Gdx.files.internal("Entities/boat2.png"));
         sprite = new Sprite(texture);
         gameWorld = world;
@@ -42,13 +43,14 @@ public class EnemyShip extends Group {
         damageScaler = state.shipDamageScaler;
         isFrozen = state.isFrozen;
         this.state = state;
+        this.health = state.shipHealths.get(id);
+        this.id = id;
 
-        Vector2 position1 = position.cpy();
 
-        //Creates body definition
+        //Creates body definition for ship
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(position);
+        bodyDef.position.set(state.shipPositions.get(id));
         bodyDef.fixedRotation = true;
         body = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
@@ -61,9 +63,10 @@ public class EnemyShip extends Group {
         body.setUserData("");
         body.setLinearDamping(3);
 
+        //Creates body of return location
         BodyDef bodyDef1 = new BodyDef();
         bodyDef1.type = BodyDef.BodyType.StaticBody;
-        bodyDef1.position.set(position);
+        bodyDef1.position.set(state.shipStartPositions.get(id));
         startBody = gameWorld.createBody(bodyDef1);
         FixtureDef fixtureDef1 = new FixtureDef();
         fixtureDef1.shape = shape;
@@ -91,7 +94,7 @@ public class EnemyShip extends Group {
 
 
         this.addActor(new Image(sprite));
-        this.setPosition(position.x,position.y);
+        this.setPosition(body.getPosition().x,body.getPosition().y);
         this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
     }
 
@@ -105,11 +108,11 @@ public class EnemyShip extends Group {
                 startBody.getPosition().x-entity.getBody().getPosition().x);
 
         //Logic on what current state the enemy ship is in
-        if (dist < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN){
+        if (dist < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN && !isFrozen){
             entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
             currentState = FiniteState.FOLLOW;
             entity.update(delta);
-        } else if (!(entity.getLinearVelocity().isZero(0.01f))){
+        } else if (!(entity.getLinearVelocity().isZero(0.01f)) && !isFrozen){
             currentState = FiniteState.RETURN;
             entity.setBehavior(arriveToStartPos);
             entity.update(delta);
@@ -129,9 +132,8 @@ public class EnemyShip extends Group {
         super.draw(batch, parentAlpha);
     }
 
-    //TODO change so it renders using stage2D
     public ArrayList<Bullet> shoot() {
-        ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+        ArrayList<Bullet> bullets = new ArrayList<>();
         if (currentState == FiniteState.FOLLOW) {
             // Only begins combat when the player is close enough and the college isn't defeated
 
@@ -181,9 +183,18 @@ public class EnemyShip extends Group {
         return health > 0;
     }
 
+    public void updateState(){
+        state.shipDamageScaler = damageScaler;
+        state.shipHealths.set(id,health);
+        state.shipPositions.set(id,body.getPosition());
+        state.shipStartPositions.set(id,startBody.getPosition());
+        state.shipTimes.set(id,TimeUtils.timeSinceMillis(timeSinceLastShot));
+    }
+
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(body);
+        gameWorld.destroyBody(startBody);
     }
 }
 
