@@ -113,10 +113,25 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
-        //TODO make the sea monsters spawn in different locations
-        SeaMonster tempSeaMonster =  new SeaMonster(new Vector2(200,250),world,player,state);
-        gameStage.addActor(tempSeaMonster);
-        seaMonsters.add(tempSeaMonster);
+        //TODO make the sea monsters spawn in different locations - currently this is just lazily implemented
+        if (state.isSpawn){
+
+            state.monsterPositions.add(new Vector2(200,250));
+            state.monsterStartPositions.add(new Vector2(200,250));
+            state.monsterHealths.add(40f);
+            SeaMonster tempSeaMonster =  new SeaMonster(world,player,state,0);
+            gameStage.addActor(tempSeaMonster);
+            seaMonsters.add(tempSeaMonster);
+        } else {
+            if (!state.monsterStartPositions.isEmpty()){
+                System.out.println(state.monsterStartPositions);
+                SeaMonster tempSeaMonster =  new SeaMonster(world,player,state,0);
+                gameStage.addActor(tempSeaMonster);
+                seaMonsters.add(tempSeaMonster);
+            }
+        }
+
+
 
         addWorldBorder();
 
@@ -286,20 +301,28 @@ public class PlayScreen implements Screen {
                 bullet.move(delta);
             } else {
                 toRemoveBullet.add(bullet);
-               }
+            }
         }
         globalBullets.removeAll(toRemoveBullet);
 
         batch.end();
 
 
-
+        Integer ids = -1;
         for (SeaMonster monster: seaMonsters){
             if (!monster.isAlive()){
                 monster.dispose();
                 toRemoveMonster.add(monster);
+                ids = monster.getId();
             }
         }
+        if (ids != -1){
+            state.monsterPositions = new ArrayList<>();
+            state.monsterHealths= new ArrayList<>();
+            state.monsterStartPositions= new ArrayList<>();
+        }
+
+
 
         //Removes actors which have been moved out of the game space
         for (Actor actor: gameStage.getActors()){
@@ -668,6 +691,10 @@ public class PlayScreen implements Screen {
 
         for (EnemyShip ship : enemyShips){
             ship.updateState();
+        }
+
+        for (SeaMonster monster : seaMonsters){
+            monster.updateState();
         }
 
         state.isSpawn = false;

@@ -34,8 +34,9 @@ public class GameState{
     public ArrayList<Long> shipTimes = new ArrayList<>();
 
     //monster info
-    public Map<Object, float[]> monsterHealths = new HashMap<>();
-    public Map<Object, Vector2> monsterPositions = new HashMap<>();
+    public ArrayList<Float> monsterHealths = new ArrayList<>();
+    public ArrayList<Vector2> monsterPositions = new ArrayList<>();
+    public ArrayList<Vector2> monsterStartPositions = new ArrayList<>();
 
     //college info
     public float[] collegeHealth = {100,100};

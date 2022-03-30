@@ -25,7 +25,6 @@ public class EnemyShip extends Group {
     private final B2dSteeringEntity entity,targetPlayer,targetHome;
     private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
     private final Player player;
-    private final GameState gameState;
     private FiniteState currentState;
     private long timeSinceLastShot;
     private float damageScaler;
@@ -37,7 +36,6 @@ public class EnemyShip extends Group {
         Texture texture = new Texture(Gdx.files.internal("Entities/boat2.png"));
         sprite = new Sprite(texture);
         gameWorld = world;
-        gameState = state;
         this.player = player;
         timeSinceLastShot = TimeUtils.millis();
         damageScaler = state.shipDamageScaler;
