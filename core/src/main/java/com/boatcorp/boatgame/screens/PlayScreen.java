@@ -308,19 +308,13 @@ public class PlayScreen implements Screen {
         batch.end();
 
 
-        Integer ids = -1;
         for (SeaMonster monster: seaMonsters){
             if (!monster.isAlive()){
                 monster.dispose();
                 toRemoveMonster.add(monster);
-                ids = monster.getId();
             }
         }
-        if (ids != -1){
-            state.monsterPositions = new ArrayList<>();
-            state.monsterHealths= new ArrayList<>();
-            state.monsterStartPositions= new ArrayList<>();
-        }
+
 
 
 
@@ -476,6 +470,7 @@ public class PlayScreen implements Screen {
                     state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + buffer + rand.nextInt(xUnit - (2*buffer)), 600 + buffer + rand.nextInt(600 - (2*buffer))));
                 }
             }
+            System.out.println();
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
@@ -681,31 +676,34 @@ public class PlayScreen implements Screen {
     }
 
     public GameState getState(){
-        player.updateState();
+        //Create new state to overwrite the old one
+        GameState newState = new GameState();
+        newState.collegeNames = new ArrayList<>();
+        player.updateState(newState);
         for (College college : colleges) {
-            college.updateState();
+            college.updateState(newState);
         }
         for (Bullet bullet : globalBullets){
-            bullet.updateState();
+            bullet.updateState(newState);
         }
 
         for (EnemyShip ship : enemyShips){
-            ship.updateState();
+            ship.updateState(newState);
         }
 
         for (SeaMonster monster : seaMonsters){
-            monster.updateState();
+            monster.updateState(newState);
         }
 
-        state.isSpawn = false;
-        state.shopUnlocked = shopUnlocked;
-        state.hasBoughtRed = hasBoughtRed;
-        state.hasBoughtHealth = hasBoughtHealth;
-        state.hasBoughtGreen = hasBoughtGreen;
-        state.shipDamageScaler = enemyShips.get(0).getDamageScaler();
-        state.isFrozen =  isFrozen;
-        state.timeSinceFreeze = TimeUtils.timeSinceMillis(timeSinceUpdate);
-        return state;
+        newState.isSpawn = false;
+        newState.shopUnlocked = shopUnlocked;
+        newState.hasBoughtRed = hasBoughtRed;
+        newState.hasBoughtHealth = hasBoughtHealth;
+        newState.hasBoughtGreen = hasBoughtGreen;
+        newState.shipDamageScaler = enemyShips.get(0).getDamageScaler();
+        newState.isFrozen =  isFrozen;
+        newState.timeSinceFreeze = TimeUtils.timeSinceMillis(timeSinceUpdate);
+        return newState;
     }
 }
 

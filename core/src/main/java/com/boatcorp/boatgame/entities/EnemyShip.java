@@ -181,12 +181,12 @@ public class EnemyShip extends Group {
         return health > 0;
     }
 
-    public void updateState(){
-        state.shipDamageScaler = damageScaler;
-        state.shipHealths.set(id,health);
-        state.shipPositions.set(id,body.getPosition());
-        state.shipStartPositions.set(id,startBody.getPosition());
-        state.shipTimes.set(id,TimeUtils.timeSinceMillis(timeSinceLastShot));
+    public void updateState(GameState newState){
+        newState.shipDamageScaler = damageScaler;
+        newState.shipHealths.add(health);
+        newState.shipPositions.add(body.getPosition());
+        newState.shipStartPositions.add(startBody.getPosition());
+        newState.shipTimes.add(TimeUtils.timeSinceMillis(timeSinceLastShot));
     }
 
     public void dispose() {

@@ -114,11 +114,11 @@ public class Bullet extends Group {
         gameWorld.destroyBody(bodyd);
     }
 
-    public void updateState(){
-        state.firedFroms.add(firedFrom);
-        state.velocities.add(velocity);
-        state.positions.add(bodyd.getPosition());
-        state.bulletColors.add(color);
+    public void updateState(GameState newState){
+        newState.firedFroms.add(firedFrom);
+        newState.velocities.add(velocity);
+        newState.positions.add(bodyd.getPosition());
+        newState.bulletColors.add(color);
     }
 }
 

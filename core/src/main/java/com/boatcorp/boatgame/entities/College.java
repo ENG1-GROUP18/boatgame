@@ -211,12 +211,14 @@ public class College {
 
     /**
      * Updates the game state with the college's properties
+     * @param newState
      */
-    public void updateState(){
+    public void updateState(GameState newState){
         float[] healths = {currentHealth,maxHealth};
-        state.collegeHealths.put(college, healths);
-        state.collegePositions.put(college, this.getPosition());
-        state.collegeTimes.put(college, TimeUtils.timeSinceMillis(timeSinceLastShot));
+        newState.collegeNames.add(college.toString());
+        newState.collegeHealths.put(college, healths);
+        newState.collegePositions.put(college, this.getPosition());
+        newState.collegeTimes.put(college, TimeUtils.timeSinceMillis(timeSinceLastShot));
     }
     public void scaleDamage(float scale){
         damageScaler *= scale;

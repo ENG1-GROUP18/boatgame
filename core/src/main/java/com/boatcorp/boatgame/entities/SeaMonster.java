@@ -158,10 +158,10 @@ public class SeaMonster extends Group {
         return id;
     }
 
-    public void updateState(){
-        state.monsterHealths.set(id,health);
-        state.monsterPositions.set(id,body.getPosition());
-        state.monsterStartPositions.set(id,startBody.getPosition());
+    public void updateState(GameState newState){
+        newState.monsterHealths.add(health);
+        newState.monsterPositions.add(body.getPosition());
+        newState.monsterStartPositions.add(startBody.getPosition());
     }
 }
 
