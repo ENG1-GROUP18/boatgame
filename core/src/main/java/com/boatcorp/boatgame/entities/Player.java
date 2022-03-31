@@ -302,16 +302,17 @@ public class Player extends Group {
     
     /**
      * Updates the gamestate with the player's properties
+     * @param newState
      */
-    public void updateState(){
-        state.playerPosition = this.getPosition();
-        state.currentHealth = this.getHealth();
-        state.maxHealth = this.getMaxHealth();
-        state.points = PointSystem.getPoints();
-        state.plunder = PlunderSystem.getPlunder();
-        state.immuneSeconds = immuneSeconds;
-        state.damageScaler = damageScaler;
-        state.bulletColor = bulletColor;
+    public void updateState(GameState newState){
+        newState.playerPosition = this.getPosition();
+        newState.currentHealth = this.getHealth();
+        newState.maxHealth = this.getMaxHealth();
+        newState.points = PointSystem.getPoints();
+        newState.plunder = PlunderSystem.getPlunder();
+        newState.immuneSeconds = immuneSeconds;
+        newState.damageScaler = damageScaler;
+        newState.bulletColor = bulletColor;
     }
 
 }

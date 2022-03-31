@@ -17,23 +17,29 @@ public class SeaMonster extends Group {
     private final Player player;
     private final Body body;
     private final Body startBody;
-    private float health = 40;
+    private float health;
     private final World gameWorld;
     private FiniteState currentState;
     private final B2dSteeringEntity entity,targetPlayer,targetHome;
     private final Arrive<Vector2> arriveToPlayer,arriveToStartPos;
     private boolean isFrozen;
+    private GameState state;
+    private int id;
 
-    public SeaMonster(Vector2 position, World world,Player player, GameState state){
+    public SeaMonster(World world,Player player, GameState state, int Id){
         Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
         gameWorld = world;
         sprite = new Sprite(texture);
         currentState = FiniteState.STAY;
         this.player = player;
+        this.state = state;
+        this.id = Id;
+        health = state.monsterHealths.get(id);
+
         //Creates body definition
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(position);
+        bodyDef.position.set(state.monsterPositions.get(Id));
         bodyDef.fixedRotation = true;
         body = gameWorld.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
@@ -48,7 +54,7 @@ public class SeaMonster extends Group {
 
         BodyDef bodyDef1 = new BodyDef();
         bodyDef1.type = BodyDef.BodyType.StaticBody;
-        bodyDef1.position.set(position);
+        bodyDef1.position.set(state.monsterStartPositions.get(Id));
         startBody = gameWorld.createBody(bodyDef1);
         FixtureDef fixtureDef1 = new FixtureDef();
         fixtureDef1.shape = shape;
@@ -76,7 +82,7 @@ public class SeaMonster extends Group {
 
 
         this.addActor(new Image(sprite));
-        this.setPosition(position.x-(sprite.getWidth()/2),position.y-(sprite.getHeight()/2));
+        this.setPosition(body.getPosition().x-(sprite.getWidth()/2),body.getPosition().y-(sprite.getHeight()/2));
         this.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2);
         isFrozen = state.isFrozen;
 
@@ -141,12 +147,21 @@ public class SeaMonster extends Group {
     public void dispose() {
         this.setPosition(-100,-100);
         gameWorld.destroyBody(body);
+        gameWorld.destroyBody(startBody);
     }
 
     public void freeze(){isFrozen = true;}
 
     public void unfreeze(){isFrozen = false;}
 
+    public Integer getId(){
+        return id;
+    }
 
+    public void updateState(GameState newState){
+        newState.monsterHealths.add(health);
+        newState.monsterPositions.add(body.getPosition());
+        newState.monsterStartPositions.add(startBody.getPosition());
+    }
 }
 
