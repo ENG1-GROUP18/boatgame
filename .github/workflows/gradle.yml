@@ -15,7 +15,10 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-18.04
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ubuntu-latest,macos-latest,windows-latest]
 
     steps:
     - name: checkout
@@ -25,6 +28,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        cache: gradle
 
 
     - name: getCurrentDir
@@ -33,3 +37,8 @@ jobs:
 
     - name: Build with Gradle
       run: gradle build
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Package
+        path: build/libs
