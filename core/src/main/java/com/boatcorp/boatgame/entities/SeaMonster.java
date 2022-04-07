@@ -92,6 +92,7 @@ public class SeaMonster extends Group {
     public void act(float delta){
         super.act(delta);
 
+
         float distanceFromPlayer = (float) Math.hypot(targetPlayer.getBody().getPosition().y-entity.getBody().getPosition().y,
                 targetPlayer.getBody().getPosition().x-entity.getBody().getPosition().x);
 
@@ -99,11 +100,11 @@ public class SeaMonster extends Group {
                 startBody.getPosition().x-entity.getBody().getPosition().x);
 
         //Logic on what current state the enemy ship is in
-        if (distanceFromPlayer < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN){
+        if (distanceFromPlayer < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN && !isFrozen){
             currentState = FiniteState.FOLLOW;
             entity.setBehavior(arriveToPlayer);
             entity.update(delta);
-        } else if (!(entity.getLinearVelocity().isZero(0.01f))){
+        } else if (!(entity.getLinearVelocity().isZero(0.01f)) && !isFrozen){
             currentState = FiniteState.RETURN;
             entity.setBehavior(arriveToStartPos);
             entity.update(delta);
