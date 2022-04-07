@@ -294,9 +294,12 @@ public class Player extends Group {
 
     public void scaleDamage(float scale){
         damageScaler *= scale;
-
     }
 
+    //Used for testing
+    public float getDamageScaler(){
+        return damageScaler;
+    }
     /**
      * Gets the body of the player
      * @return a box2D object of the player
