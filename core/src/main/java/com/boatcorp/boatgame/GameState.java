@@ -50,5 +50,8 @@ public class GameState{
     public ArrayList<String> firedFroms = new ArrayList<>();
     public ArrayList<Vector2> velocities = new ArrayList<>();
     public ArrayList<Vector2> positions = new ArrayList<>();
+
+    //test info
+    public boolean headless = false;
     }
 

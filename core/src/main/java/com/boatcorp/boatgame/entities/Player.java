@@ -21,7 +21,7 @@ import java.util.ArrayList;
  */
 public class Player extends Group {
     private final Sprite sprite;
-    private final HealthBar health;
+    private HealthBar health;
     private final float maxHealth;
     private float currentHealth;
     private int immuneSeconds;
@@ -52,7 +52,10 @@ public class Player extends Group {
         velocity = new Vector2(0,0);
         Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
         sprite = new Sprite(texture);
-        health = new HealthBar();
+        if (state.headless){
+            health = new HealthBar();
+        }
+
         maxHealth = state.maxHealth;
         currentHealth = state.currentHealth;
         gameWorld = world;

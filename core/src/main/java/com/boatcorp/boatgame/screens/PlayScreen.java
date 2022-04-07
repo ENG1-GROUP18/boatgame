@@ -28,6 +28,8 @@ import com.boatcorp.boatgame.tools.WorldContactListener;
 import com.crashinvaders.vfx.VfxManager;
 import com.crashinvaders.vfx.effects.*;
 import com.boatcorp.boatgame.GameState;
+import org.mockito.Mockito;
+
 import java.util.ArrayList;
 import java.util.Random;
 import static com.boatcorp.boatgame.screens.Constants.*;
@@ -38,10 +40,9 @@ public class PlayScreen implements Screen {
     private final SpriteBatch batch;
     private final SpriteBatch fontBatch;
     private final World world;
-    private final Box2DDebugRenderer b2dr;
     private final OrthographicCamera camera;
     private final Viewport viewport;
-    private final MapLoader mapLoader;
+    private  MapLoader mapLoader;
     private final BitmapFont font;
     private final Player player;
     private final ArrayList<College> colleges;
@@ -56,12 +57,12 @@ public class PlayScreen implements Screen {
 
 
     // For Shader
-    private final VfxManager vfxManager;
-    private final BloomEffect effectBloom;
-    private final OldTvEffect effectTv;
-    private final RadialDistortionEffect effectDistortion;
-    private final VignettingEffect effectVignetting;
-    private final FxaaEffect effectFxaa;
+    private  VfxManager vfxManager;
+    private  BloomEffect effectBloom;
+    private  OldTvEffect effectTv;
+    private  RadialDistortionEffect effectDistortion;
+    private  VignettingEffect effectVignetting;
+    private  FxaaEffect effectFxaa;
 
     // for freeze
     private long timeSinceFreeze;
@@ -79,14 +80,26 @@ public class PlayScreen implements Screen {
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;
-        batch = new SpriteBatch();
-        fontBatch = new SpriteBatch();
-        world = new World(GRAVITY, true);
-        b2dr = new Box2DDebugRenderer();
+
         camera = new OrthographicCamera();
         viewport = new FitViewport(640 / PPM, 480 / PPM, camera);
-        vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
-        gameStage = new Stage(viewport);
+        //Sets up sprite batches for testing or non-testing
+        if (boatGame.HEADLESS){
+            batch = Mockito.mock(SpriteBatch.class);
+            fontBatch = Mockito.mock(SpriteBatch.class);
+            gameStage = new Stage(viewport,Mockito.mock(SpriteBatch.class));
+        }  else {
+            batch = new SpriteBatch();
+            fontBatch = new SpriteBatch();
+            gameStage = new Stage(viewport);
+            mapLoader = new MapLoader();
+
+        }
+
+
+        world = new World(GRAVITY, true);
+
+
         this.state = state;
         shopUnlocked = state.shopUnlocked;
         hasBoughtGreen = state.hasBoughtGreen;
@@ -95,7 +108,7 @@ public class PlayScreen implements Screen {
         if (!state.isSpawn){timeSinceFreeze = TimeUtils.millis() + state.timeSinceFreeze;}
         isFrozen = state.isFrozen;
 
-        mapLoader = new MapLoader();
+
         player = new Player(world,state);
         colleges = new ArrayList<>();
         enemyShips = new ArrayList<>();
@@ -124,7 +137,6 @@ public class PlayScreen implements Screen {
             seaMonsters.add(tempSeaMonster);
         } else {
             if (!state.monsterStartPositions.isEmpty()){
-                System.out.println(state.monsterStartPositions);
                 SeaMonster tempSeaMonster =  new SeaMonster(world,player,state,0);
                 gameStage.addActor(tempSeaMonster);
                 seaMonsters.add(tempSeaMonster);
@@ -135,25 +147,31 @@ public class PlayScreen implements Screen {
 
         addWorldBorder();
 
+
         // Create shaders
-        effectTv = new OldTvEffect();
-        effectVignetting = new VignettingEffect(false);
-        effectDistortion = new RadialDistortionEffect();
-        effectBloom = new BloomEffect();
-        effectFxaa = new FxaaEffect();
+        if (!boatGame.HEADLESS){
+            vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
-        // Configure shaders
-        effectTv.setTime(0.2f);
-        effectVignetting.setIntensity(0.4f);
-        effectVignetting.setSaturation(0.2f);
-        effectDistortion.setDistortion(0.1f);
+            effectTv = new OldTvEffect();
+            effectVignetting = new VignettingEffect(false);
+            effectDistortion = new RadialDistortionEffect();
+            effectBloom = new BloomEffect();
+            effectFxaa = new FxaaEffect();
 
-        // Add shaders to manager, order matters
-        vfxManager.addEffect(effectTv);
-        vfxManager.addEffect(effectDistortion);
-        vfxManager.addEffect(effectBloom);
-        vfxManager.addEffect(effectVignetting);
-        vfxManager.addEffect(effectFxaa);
+            // Configure shaders
+            effectTv.setTime(0.2f);
+            effectVignetting.setIntensity(0.4f);
+            effectVignetting.setSaturation(0.2f);
+            effectDistortion.setDistortion(0.1f);
+
+            // Add shaders to manager, order matters
+            vfxManager.addEffect(effectTv);
+            vfxManager.addEffect(effectDistortion);
+            vfxManager.addEffect(effectBloom);
+            vfxManager.addEffect(effectVignetting);
+            vfxManager.addEffect(effectFxaa);
+        }
+
 
         //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
@@ -211,7 +229,6 @@ public class PlayScreen implements Screen {
             college.setMatrix(camera.combined);
         }
         batch.setProjectionMatrix(camera.combined);
-        b2dr.render(world, camera.combined);
         mapLoader.render(camera);
 
         for (College college : colleges) {
@@ -231,9 +248,9 @@ public class PlayScreen implements Screen {
         //hud.getStage().act(delta); //Don't think this line is needed as well as the draw function
 
         //Draws box2D hitboxes for debug
-        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
-            debugRenderer.render(world, viewport.getCamera().combined);
-        }
+//        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
+//            debugRenderer.render(world, viewport.getCamera().combined);
+//        }
 
         combat(delta);
         vfxManager.endInputCapture();
@@ -438,7 +455,6 @@ public class PlayScreen implements Screen {
         hud.dispose();
         fontBatch.dispose();
         font.dispose();
-        b2dr.dispose();
         mapLoader.dispose();
         player.dispose();
         for (College college : colleges) {
@@ -451,6 +467,7 @@ public class PlayScreen implements Screen {
         effectVignetting.dispose();
         effectBloom.dispose();
         effectFxaa.dispose();
+        debugRenderer.dispose();
     }
 
 
