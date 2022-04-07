@@ -8,88 +8,69 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.GameState;
 
-public class ResultScreen implements Screen {
+public class ResultScreen extends BasicMenuScreen {
 
     private final BoatGame boatGame;
     private static final int WORLD_HEIGHT = Gdx.graphics.getHeight();
-    private final SpriteBatch fontBatch;
-    private final BitmapFont font;
     private final String victory;
-    private final Viewport viewport;
 
     public ResultScreen(boolean win, BoatGame game) {
+        super(game);
         this.boatGame = game;
         victory = (win) ? "VICTORY" : "GAME OVER";
-        viewport = new ExtendViewport(0, WORLD_HEIGHT);
-        fontBatch = new SpriteBatch();
-        font = new BitmapFont(Gdx.files.internal("fonts/korg.fnt"), Gdx.files.internal("fonts/korg.png"), false);
+        // Create table
+        Table table = new Table();
+        table.setFillParent(true);
+        table.setDebug(game.ENABLE_TABLE_DEBUG);
+        stage.addActor(table);
+
+
+        // Add labels to table
+        Label label1 = new Label("[NORMAL]Press [HIGHLIGHTED]Enter [NORMAL]to play again", style);
+        label1.setAlignment(Align.center);
+        label1.setFontScale(1f);
+
+        Label label2 = new Label("[NORMAL]Press [HIGHLIGHTED]Esc [NORMAL]to return to main menu", style);
+        label2.setAlignment(Align.center);
+        label2.setFontScale(1f);
+
+        table.add(label1).fillX().uniformX().pad(20).row();
+        table.add(label2).fillX().uniformX().pad(20).row();
+
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.ENTER) {
+                    boatGame.changeScreen(BoatGame.screenType.PLAY);
+                }
+                return true;
+            }
+        });
+
+        stage.addListener(new InputListener(){
+            public boolean keyDown(InputEvent event, int keycode){
+                if (keycode == Input.Keys.ESCAPE) {
+                    boatGame.changeScreen(BoatGame.screenType.START_MENU);
+                }
+                return true;
+            }
+        });
     }
 
     @Override
-    public void show() {
-
+    public void update() {
+        super.update();
     }
 
-    @Override
-    public void render(float delta) {
-        fontBatch.setProjectionMatrix(viewport.getCamera().combined);
-        Gdx.gl.glClearColor(0,0,0,1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        fontBatch.begin();
-        font.getData().setScale(0.5f);
-        GlyphLayout victoryGlyph = new GlyphLayout(font, this.victory);
-        GlyphLayout enterGlyph = new GlyphLayout(font, "Press Enter to play again");
-        GlyphLayout mainMenuGlyph = new GlyphLayout(font, "Press Esc to return to main menu");
-        font.draw(fontBatch, victoryGlyph, viewport.getScreenWidth() / 2f - victoryGlyph.width / 2, viewport.getScreenHeight() / (4f/3f));
-        font.draw(fontBatch, enterGlyph, (viewport.getScreenWidth() - enterGlyph.width) / 2, viewport.getScreenHeight() / 3f);
-        font.draw(fontBatch, mainMenuGlyph, (viewport.getScreenWidth() - mainMenuGlyph.width) / 2, viewport.getScreenHeight() / 5f);
-        fontBatch.end();
-        checkInputs();
-    }
-
-    private void checkInputs() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) ) {
-            PointSystem.setPoints(0);
-            boatGame.setScreen(new PlayScreen(boatGame, new GameState()));
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) ) {
-            PointSystem.setPoints(0);
-            boatGame.setScreen(new StartMenuScreen(boatGame));
-        }
-
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height, true);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        fontBatch.dispose();
-        font.dispose();
-    }
 }

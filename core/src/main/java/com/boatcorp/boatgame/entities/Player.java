@@ -286,7 +286,9 @@ public class Player extends Group {
      * Disposes of each of the unneeded objects
      */
     public void dispose() {
-        health.dispose();
+        if (health != null){
+            health.dispose();
+        }
     }
 
 

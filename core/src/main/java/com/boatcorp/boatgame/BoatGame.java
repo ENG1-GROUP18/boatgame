@@ -37,7 +37,7 @@ public class BoatGame extends Game {
 	private PlayScreen playScreen;
 	private PauseScreen pauseScreen;
 	private ShopScreen shopScreen;
-	private EndScreen endScreen;
+	private ResultScreen resultScreen;
 	private SaveScreen saveScreen;
 	private ModeScreen modeScreen;
 
@@ -104,10 +104,10 @@ public class BoatGame extends Game {
 				break;
 
 			case END_MENU:
-				if (endScreen == null) {
-					endScreen = new EndScreen(this);
+				if (resultScreen == null) {
+					resultScreen = new ResultScreen(true, this);
 				}
-				setScreen(endScreen);
+				setScreen(resultScreen);
 				break;
 
 			case SAVE:
