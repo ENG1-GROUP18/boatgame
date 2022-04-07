@@ -248,9 +248,9 @@ public class PlayScreen implements Screen {
         //hud.getStage().act(delta); //Don't think this line is needed as well as the draw function
 
         //Draws box2D hitboxes for debug
-//        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
-//            debugRenderer.render(world, viewport.getCamera().combined);
-//        }
+        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
+            debugRenderer.render(world, viewport.getCamera().combined);
+        }
 
         combat(delta);
         vfxManager.endInputCapture();
