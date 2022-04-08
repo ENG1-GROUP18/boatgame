@@ -49,7 +49,7 @@ public class PlayScreenTest {
         BoatGame boatGameInstance = new BoatGame();
         boatGameInstance.setHeadless();
         boatGameInstance.changeScreen(BoatGame.screenType.MODE);
-        //screen = new PlayScreen(boatGameInstance, new GameState());
+        screen = new PlayScreen(boatGameInstance, new GameState());
 
     }
 

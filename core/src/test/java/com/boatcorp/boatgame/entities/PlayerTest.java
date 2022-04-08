@@ -55,7 +55,7 @@ public class PlayerTest {
         boatGameInstance.setHeadless();
         state = new GameState();
         state.headless = true;
-        player = new Player(new World(new Vector2(0,0),true),new GameState());
+        player = new Player(new World(new Vector2(0,0),true),state);
 
     }
 

@@ -52,7 +52,7 @@ public class Player extends Group {
         velocity = new Vector2(0,0);
         Texture texture = new Texture(Gdx.files.internal("Entities/boat1.png"));
         sprite = new Sprite(texture);
-        if (state.headless){
+        if (!state.headless){
             health = new HealthBar();
         }
 

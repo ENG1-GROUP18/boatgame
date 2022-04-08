@@ -10,6 +10,8 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.frameworks.HealthBar;
+import org.mockito.Mockito;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -29,7 +31,7 @@ public class College {
     private final ArrayList<Vector2> rotatingDirections;
     /**The attack patterns of the colleges*/
     private final ArrayList<ArrayList<Vector2>> attackPatterns;
-    private final HealthBar health;
+    private HealthBar health;
     /**The collages max health*/
     private final float maxHealth;
     /**The collages current health*/
@@ -49,10 +51,13 @@ public class College {
     public College(Object college, World world, GameState state) {
         final String PATH_NAME = "Entities/" + college + ".png";
         final Texture texture = new Texture(Gdx.files.internal(PATH_NAME));
-        batch = new SpriteBatch();
+        if (state.headless){ batch = Mockito.mock(SpriteBatch.class);}  else { batch = new SpriteBatch();}
+
         sprite = new Sprite(texture);
         position = state.collegePositions.get(college);
-        health = new HealthBar();
+        if (!state.headless){
+            health = new HealthBar();
+        }
         maxHealth = state.collegeHealths.get(college)[1];
         currentHealth = state.collegeHealths.get(college)[0];
         damageScaler = 1f;
@@ -150,7 +155,9 @@ public class College {
         sprite.setPosition(correctPosX, correctPosY);
         sprite.draw(batch);
         batch.end();
-        health.draw(new Vector2(correctPosX - 9.5f, correctPosY - 5), maxHealth, currentHealth, 0.5f);
+        if (!state.headless) {
+            health.draw(new Vector2(correctPosX - 9.5f, correctPosY - 5), maxHealth, currentHealth, 0.5f);
+        }
     }
 
     /**
@@ -191,7 +198,9 @@ public class College {
      */
     public void setMatrix(Matrix4 combined) {
         batch.setProjectionMatrix(combined);
-        health.setMatrix(combined);
+        if (!state.headless) {
+            health.setMatrix(combined);
+        }
     }
 
     /**
@@ -199,7 +208,9 @@ public class College {
      */
     public void dispose() {
         batch.dispose();
-        health.dispose();
+        if (!state.headless) {
+            health.dispose();
+        }
         gameWorld.destroyBody(bodyd);
     }
     /**
@@ -222,6 +233,10 @@ public class College {
     }
     public void scaleDamage(float scale){
         damageScaler *= scale;
+    }
+    //Used for testing
+    public float getDamageScaler (){
+        return damageScaler;
     }
 
 }
