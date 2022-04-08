@@ -32,7 +32,6 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Random;
-import static com.boatcorp.boatgame.screens.Constants.*;
 
 public class PlayScreen implements Screen {
 
@@ -77,6 +76,11 @@ public class PlayScreen implements Screen {
     private final boolean hasBoughtGreen;
     private final boolean hasBoughtRed;
     private final boolean hasBoughtHealth;
+
+    //Constants
+    public static final float PPM = 25f;
+    public static final Vector2 GRAVITY = new Vector2(0,0);
+    public static final float DEFAULT_ZOOM = 16f;
 
     public PlayScreen(BoatGame game, GameState state) {
         this.boatGame = game;

@@ -6,7 +6,6 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
-import static com.boatcorp.boatgame.screens.Constants.MAP_NAME;
 
 public class MapLoader implements Disposable {
 
@@ -14,7 +13,7 @@ public class MapLoader implements Disposable {
     private final OrthogonalTiledMapRenderer Renderer;
 
     public MapLoader() {
-        Map = new TmxMapLoader().load(MAP_NAME);
+        Map = new TmxMapLoader().load("Maps/map.tmx");
         Renderer = new OrthogonalTiledMapRenderer(Map, 1f);
     }
 

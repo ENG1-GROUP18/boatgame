@@ -3,9 +3,10 @@ package com.boatcorp.boatgame.tools;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
-import static com.boatcorp.boatgame.screens.Constants.PPM;
 
 public class ShapeMaker {
+
+    public static final float PPM = 25f;
     private ShapeMaker() {}
 
     public static Body createRectangle(final Vector2 position, final Vector2 size, final BodyDef.BodyType type, final World world, float density) {
