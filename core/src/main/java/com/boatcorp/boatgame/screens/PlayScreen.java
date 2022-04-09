@@ -603,7 +603,7 @@ public class PlayScreen implements Screen {
             }
 
         }
-        if (health && hasBoughtHealth){
+        if (health && hasBoughtHealth && (player.getHealth() != player.getMaxHealth())){
             if (PlunderSystem.getPlunder() > 50){
                 PlunderSystem.decrementPlunder(50);
                 player.setHealth(player.getMaxHealth());
