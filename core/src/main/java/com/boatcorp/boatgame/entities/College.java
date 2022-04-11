@@ -65,7 +65,7 @@ public class College {
         this.state = state;
         this.college = college;
         timeSinceLastShot = TimeUtils.millis();
-        if (!state.isSpawn){timeSinceLastShot = TimeUtils.millis() + state.collegeTimes.get(college);}
+        if (!state.isSpawn){timeSinceLastShot = TimeUtils.millis() - state.collegeTimes.get(college);}
 
         cardinalDirections = new ArrayList<>();
         cardinalDirections.add(new Vector2(5,0));
