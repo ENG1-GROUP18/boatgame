@@ -158,6 +158,8 @@ public class EnemyShip extends Group {
 
     public void unfreeze(){isFrozen = false;}
 
+    public boolean get_freeze(){return isFrozen;}
+
     public boolean isHit(){
         return body.getUserData() == "Hit";
     }
@@ -176,6 +178,8 @@ public class EnemyShip extends Group {
     public float getDamageScaler() {
         return damageScaler;
     }
+
+    public float getHealth(){return health;}
 
     public boolean isAlive() {
         return health > 0;
