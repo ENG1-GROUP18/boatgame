@@ -151,9 +151,13 @@ public class SeaMonster extends Group {
         gameWorld.destroyBody(startBody);
     }
 
+    public float getHealth(){return health;}
+
     public void freeze(){isFrozen = true;}
 
     public void unfreeze(){isFrozen = false;}
+
+    public boolean get_freeze(){return isFrozen;}
 
     public Integer getId(){
         return id;

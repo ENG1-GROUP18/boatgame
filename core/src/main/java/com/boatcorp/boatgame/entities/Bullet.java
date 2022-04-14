@@ -114,6 +114,10 @@ public class Bullet extends Group {
         gameWorld.destroyBody(bodyd);
     }
 
+    public Vector2 getVelocity(){
+        return bodyd.getLinearVelocity();
+    }
+
     public void updateState(GameState newState){
         newState.firedFroms.add(firedFrom);
         newState.velocities.add(velocity);
@@ -121,5 +125,7 @@ public class Bullet extends Group {
         newState.bulletColors.add(color);
     }
 }
+
+
 
 
