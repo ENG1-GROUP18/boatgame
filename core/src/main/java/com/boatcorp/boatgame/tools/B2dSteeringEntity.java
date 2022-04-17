@@ -15,6 +15,7 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
     float maxLinearVelocity,maxLinearAcceleration;
     float maxAngularVelocity,maxAngularAcceleration;
     float ZeroLinearSpeedThreshold;
+    float orientation;
 
     /**
      * Sets the behaviour for the AI entity to tell it how to move and interact
@@ -202,7 +203,7 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
 
     @Override
     public void setOrientation(float orientation) {
-        System.out.println("her");
+        this.orientation = orientation;
     }
 
 }

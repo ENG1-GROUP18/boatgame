@@ -130,6 +130,7 @@ public class PlayScreen implements Screen {
         world.setContactListener(new WorldContactListener(this));
         gameStage.addActor(player);
 
+
         //TODO make the sea monsters spawn in different locations - currently this is just lazily implemented
         if (state.isSpawn){
 
@@ -470,21 +471,25 @@ public class PlayScreen implements Screen {
     public void dispose() {
         batch.dispose();
         hud.dispose();
-        fontBatch.dispose();
+        if (!state.headless){
+            fontBatch.dispose();
+            vfxManager.dispose();
+            effectTv.dispose();
+            effectDistortion.dispose();
+            effectVignetting.dispose();
+            effectBloom.dispose();
+            effectFxaa.dispose();
+            debugRenderer.dispose();
+            mapLoader.dispose();
+        }
         font.dispose();
-        mapLoader.dispose();
+
         player.dispose();
         for (College college : colleges) {
             college.dispose();
         }
         world.dispose();
-        vfxManager.dispose();
-        effectTv.dispose();
-        effectDistortion.dispose();
-        effectVignetting.dispose();
-        effectBloom.dispose();
-        effectFxaa.dispose();
-        debugRenderer.dispose();
+
     }
 
 

@@ -116,9 +116,7 @@ public class EnemyShipTest {
     public void testUpdateState() {
         GameState newGameState = new GameState();
         float health = (float)ship.getHealth();
-        System.out.println(ship.getHealth());
         ship.takeDamage(3);
-        System.out.println(ship.getHealth());
         ship.updateState(newGameState);
         float random = 0f;
         float newhealth = health - (ship.getDamageScaler() * 3);
