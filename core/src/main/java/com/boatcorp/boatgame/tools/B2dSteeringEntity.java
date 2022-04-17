@@ -187,7 +187,7 @@ public class B2dSteeringEntity implements Steerable<Vector2> {
 
     @Override
     public Location<Vector2> newLocation() {
-        return new EntityLocation();
+        return null;
     }
 
     @Override
