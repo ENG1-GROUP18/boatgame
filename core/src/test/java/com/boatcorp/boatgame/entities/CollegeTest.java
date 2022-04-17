@@ -117,9 +117,7 @@ public class CollegeTest {
     public void updateState() {
         GameState newState = new GameState();
         int health = (int)collage.getHealth();
-        System.out.println(collage.getHealth());
         collage.takeDamage(5);
-        System.out.println(collage.getHealth());
         collage.updateState(newState);
         assertEquals("Update state",health-5,(int) newState.collegeHealths.get("langwith")[0]);
 

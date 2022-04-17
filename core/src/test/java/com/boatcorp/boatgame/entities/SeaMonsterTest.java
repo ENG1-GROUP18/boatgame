@@ -120,12 +120,10 @@ public class SeaMonsterTest {
     @Test
     public void testUpdateState() {
         GameState newGameState = new GameState();
-        float health = (float)monster.getHealth();
-        System.out.println(monster.getHealth());
+        float health = monster.getHealth();
         monster.takeDamage(3);
-        System.out.println(monster.getHealth());
         monster.updateState(newGameState);
         float random = 0f;
-        assertEquals("Update state", health-3, (float)newGameState.monsterHealths.get(0),random);
+        assertEquals("Update state", health-3, newGameState.monsterHealths.get(0),random);
     }
 }

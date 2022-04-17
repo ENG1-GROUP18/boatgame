@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.boatcorp.boatgame.BoatGame;
@@ -79,6 +80,7 @@ public class BulletTest {
     //this test not needed
     @Test
     public void testGetFiredFrom() {
+        assertEquals("Check if fired from correct object","Player",bullet.getFiredFrom());
     }
 
     @Test
@@ -96,7 +98,7 @@ public class BulletTest {
     @Test
     public void testMove() {
         bullet.move(2f);
-        assertEquals("Move not made",new Vector2(5, 5),(Vector2) bullet.getVelocity());
+        assertEquals("Move not made",new Vector2(5, 5),bullet.getVelocity());
     }
 
     @Test
@@ -106,14 +108,11 @@ public class BulletTest {
 
     @Test
     public void testUpdateState() {
-        // do the same but eith velocity
-        //GameState newGameState = new GameState();
-        //float velocity1 = (float)bullet.velocity;
-        //System.out.println(monster.getHealth());
-        //monster.takeDamage(3);
-        //System.out.println(monster.getHealth());
-        //monster.updateState(newGameState);
-        //float random = 0f;
-        //assertEquals("Update state", health-3, (float)newGameState.monsterHealths.get(0),random);
+        GameState newGameState = new GameState();
+        bullet.move(2f);
+        bullet.updateState(newGameState);
+        assertEquals("Game state saved current state",new Vector2(5, 5),newGameState.velocities.get(0));
+
+
     }
 }

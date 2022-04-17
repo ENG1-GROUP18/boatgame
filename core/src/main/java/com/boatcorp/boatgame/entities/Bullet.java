@@ -120,7 +120,7 @@ public class Bullet extends Group {
 
     public void updateState(GameState newState){
         newState.firedFroms.add(firedFrom);
-        newState.velocities.add(velocity);
+        newState.velocities.add(bodyd.getLinearVelocity());
         newState.positions.add(bodyd.getPosition());
         newState.bulletColors.add(color);
     }
