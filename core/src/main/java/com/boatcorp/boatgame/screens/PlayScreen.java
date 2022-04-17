@@ -48,7 +48,7 @@ public class PlayScreen implements Screen {
     private final ArrayList<EnemyShip> enemyShips;
     private final ArrayList<SeaMonster> seaMonsters;
     private final Hud hud;
-    private final Box2DDebugRenderer debugRenderer;
+    private  Box2DDebugRenderer debugRenderer;
     private final Stage gameStage;
     private final GameState state;
     private ArrayList<Bullet> globalBullets = new ArrayList<>();
@@ -153,7 +153,7 @@ public class PlayScreen implements Screen {
 
 
         // Create shaders
-        if (!boatGame.HEADLESS){
+        if (!boatGame.HEADLESS) {
             vfxManager = new VfxManager(Pixmap.Format.RGBA8888);
 
             effectTv = new OldTvEffect();
@@ -174,13 +174,13 @@ public class PlayScreen implements Screen {
             vfxManager.addEffect(effectBloom);
             vfxManager.addEffect(effectVignetting);
             vfxManager.addEffect(effectFxaa);
+
+
+            //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+            //Box2D debug renderer
+            debugRenderer = new Box2DDebugRenderer(true, false, false, false, true, true);
         }
-
-
-        //resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        //Box2D debug renderer
-        debugRenderer = new Box2DDebugRenderer(true,false,false,false,true,true);
     }
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
@@ -221,8 +221,11 @@ public class PlayScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(0,0,0,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        vfxManager.cleanUpBuffers();
-        vfxManager.beginInputCapture();
+        if (!boatGame.HEADLESS){
+            vfxManager.cleanUpBuffers();
+            vfxManager.beginInputCapture();
+        }
+
 
         update(delta);
 
@@ -233,12 +236,15 @@ public class PlayScreen implements Screen {
             college.setMatrix(camera.combined);
         }
         batch.setProjectionMatrix(camera.combined);
-        mapLoader.render(camera);
+        if (!boatGame.HEADLESS) {
+            mapLoader.render(camera);
+            gameStage.draw();
+        }
 
         for (College college : colleges) {
             college.draw();
         }
-        gameStage.draw();
+
 
 
         fontBatch.setProjectionMatrix(hud.getStage().getCamera().combined);
@@ -246,27 +252,30 @@ public class PlayScreen implements Screen {
         hud.setHealthValue(player.getHealth());
         hud.setPlunderScore("Plunder: " + PlunderSystem.getPlunder());
 
+        if (!boatGame.HEADLESS) {
+            hud.getStage().draw();
+        }
 
-        hud.getStage().draw();
 
         //hud.getStage().act(delta); //Don't think this line is needed as well as the draw function
 
-        //Draws box2D hitboxes for debug
-        if (boatGame.ENABLE_BOX2D_WIREFRAME) {
-            debugRenderer.render(world, viewport.getCamera().combined);
-        }
-
         combat(delta);
-        vfxManager.endInputCapture();
 
-        if (boatGame.ENABLE_SHADERS) {
-            vfxManager.applyEffects();
+        //Draws box2D hitboxes for debug
+        if (!boatGame.HEADLESS) {
+            if (boatGame.ENABLE_BOX2D_WIREFRAME) {
+                debugRenderer.render(world, viewport.getCamera().combined);
+                vfxManager.endInputCapture();
+            }
+
+            if (boatGame.ENABLE_SHADERS) {
+                vfxManager.applyEffects();
+            }
+
+            vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth()) / 2,
+                    (Gdx.graphics.getHeight() - viewport.getScreenHeight()) / 2,
+                    viewport.getScreenWidth(), viewport.getScreenHeight());
         }
-
-        vfxManager.renderToScreen((Gdx.graphics.getWidth() - viewport.getScreenWidth())/2,
-                (Gdx.graphics.getHeight() - viewport.getScreenHeight())/2,
-                viewport.getScreenWidth(), viewport.getScreenHeight());
-
     }
 
     //TODO rename this, maybe implement directly into act/render method
@@ -401,10 +410,7 @@ public class PlayScreen implements Screen {
 
         camera.zoom = DEFAULT_ZOOM;
 
-        // Get properties of the map from the TileMap
-        MapProperties prop = mapLoader.getMap().getProperties();
-        int mapWidth = prop.get("width", Integer.class);
-        int mapHeight = prop.get("height", Integer.class);
+
 
         // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
         float lerp = 10f;
@@ -416,10 +422,17 @@ public class PlayScreen implements Screen {
         float vw = camera.viewportWidth * camera.zoom;
         float vh = camera.viewportHeight * camera.zoom;
 
-        // clamp the camera position to the size of the map
-        camera.position.x = MathUtils.clamp(camera.position.x, vw / 2f, mapWidth * PPM / 2f);
-        camera.position.y = MathUtils.clamp(camera.position.y, vh / 2f, mapHeight * PPM / 2f);
 
+        if (!boatGame.HEADLESS) {
+            // Get properties of the map from the TileMap
+            MapProperties prop = mapLoader.getMap().getProperties();
+            int mapWidth = prop.get("width", Integer.class);
+            int mapHeight = prop.get("height", Integer.class);
+
+            // clamp the camera position to the size of the map
+            camera.position.x = MathUtils.clamp(camera.position.x, vw / 2f, mapWidth * PPM / 2f);
+            camera.position.y = MathUtils.clamp(camera.position.y, vh / 2f, mapHeight * PPM / 2f);
+        }
         camera.update();
 
 
@@ -485,13 +498,12 @@ public class PlayScreen implements Screen {
                 state.collegeHealths.put(state.collegeNames.get(i), state.collegeHealth);
                 if (i < divider){
                     state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i)) + buffer + rand.nextInt(xUnit - (2*buffer)), buffer + rand.nextInt(600 - (2*buffer))));
-
                 }
                 else{
                     state.collegePositions.put(state.collegeNames.get(i), new Vector2((xUnit*(i%divider)) + buffer + rand.nextInt(xUnit - (2*buffer)), 600 + buffer + rand.nextInt(600 - (2*buffer))));
                 }
             }
-            System.out.println();
+
             colleges.add(new College(state.collegeNames.get(i), world,state));
         }
 
@@ -503,7 +515,7 @@ public class PlayScreen implements Screen {
                 state.shipPositions.add(tempEnemyShipPosition);
                 state.shipStartPositions.add(tempEnemyShipPosition);
                 state.shipHealths.add(20f);
-                state.shipTimes.add(0l);
+                state.shipTimes.add(0L);
                 enemyShips.add(new EnemyShip(world,state,player,i));
                 gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
             }
@@ -513,8 +525,6 @@ public class PlayScreen implements Screen {
                 gameStage.addActor(enemyShips.get(enemyShips.size() - 1));
             }
         }
-
-
     }
     /**
     * Sets the difficulty mode of the game
@@ -579,6 +589,22 @@ public class PlayScreen implements Screen {
         }
     }
 
+    /**
+     * Used for testing to get info about the player
+     * @return the current player object
+     */
+    public Player getPlayer(){
+        return player;
+    }
+
+    /**
+     * Used for testing to get info about the enemy ships
+     * @return the array of current enemy ships
+     */
+    public ArrayList<EnemyShip> getEnemyShips(){
+        return enemyShips;
+    }
+
     public void handleMacros(){
         boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
         boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
@@ -639,11 +665,6 @@ public class PlayScreen implements Screen {
             enemyShip.unfreeze();
         }
         isFrozen = false;
-    }
-
-    public void loadBullets(){
-
-
     }
 
     public void handleBullets(){

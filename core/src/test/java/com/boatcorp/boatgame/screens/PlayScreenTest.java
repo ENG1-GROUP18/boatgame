@@ -19,6 +19,7 @@ public class PlayScreenTest {
 
     private PlayScreen screen;
     public static Application app;
+    private static GameState state;
     @BeforeClass
     public static void setUp(){
         //Any set up for tests go here
@@ -49,52 +50,82 @@ public class PlayScreenTest {
         BoatGame boatGameInstance = new BoatGame();
         boatGameInstance.setHeadless();
         boatGameInstance.changeScreen(BoatGame.screenType.MODE);
-        screen = new PlayScreen(boatGameInstance, new GameState());
+        state = new GameState();
+        state.headless = true;
+        screen = new PlayScreen(boatGameInstance, state);
 
     }
 
-//    @Test
-//    public void playScreenCreated(){
-//        assertNull("Play screen not initialised",screen);
-//    }
-//
-//    @Test
-//    public void addColleges() {
-//    }
-//
-//    @Test
-//    public void setMode() {
-//    }
-//
-//    @Test
-//    public void upgradePlayer() {
-//    }
-//
-//    @Test
-//    public void handleMacros() {
-//    }
-//
-//    @Test
-//    public void freeze() {
-//    }
-//
-//    @Test
-//    public void unfreeze() {
-//    }
-//
-//    @Test
-//    public void loadBullets() {
-//    }
-//
-//    @Test
-//    public void handleBullets() {
-//    }
-//
-//    @Test
-//    public void addBullets() {
-//    }
-//
-//    @Test
-//    public void getState() {
-//    }
+    @Test
+    public void playScreenCreated(){
+        assertTrue("Check if Play screen initialised",screen instanceof Screen);
+    }
+
+    @Test
+    public void render(){
+        screen.render(0.016f);
+    }
+
+
+
+    @Test
+    public void setMode() {
+        screen.setMode(0);
+        assertEquals(0.7f,screen.getPlayer().getDamageScaler(),0);
+        screen.setMode(2);
+        assertEquals(1.3f,screen.getPlayer().getDamageScaler(),0.1f);
+    }
+
+    @Test
+    public void upgradePlayer() {
+        //Need to figure out a way to test this
+        screen.upgradePlayer(0);
+        screen.upgradePlayer(1);
+        screen.upgradePlayer(2);
+        screen.upgradePlayer(3);
+        screen.upgradePlayer(4);
+
+    }
+
+    @Test
+    public void handleMacros() {
+        //Need to figure out a way to test this
+        screen.handleMacros();
+    }
+
+
+    @Test
+    public void freeze() {
+        screen.freeze();
+        assertEquals("Check if ships are frozen",true,screen.getEnemyShips().get(0).get_freeze());
+    }
+
+    @Test
+    public void unfreeze() {
+        screen.unfreeze();
+        assertEquals("Check if ships are unfrozen",false,screen.getEnemyShips().get(0).get_freeze());
+    }
+
+
+    @Test
+    public void handleBullets() {
+        screen.handleBullets();
+    }
+
+    @Test
+    public void addBullets() {
+        screen.addBullets();
+    }
+
+    @Test
+    public void getState() {
+        screen.freeze();
+        GameState newState = screen.getState();
+        assertEquals("Check if state has saved new info", true,newState.isFrozen);
+    }
+
+    @Test
+    public void dispose(){
+        screen.dispose();
+    }
 }
