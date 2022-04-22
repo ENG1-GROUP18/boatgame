@@ -298,9 +298,18 @@ public class PlayScreen implements Screen {
                 state.collegePositions.remove(college.getUserData().toString());
                 toRemoveCollage.add(college);
                 college.dispose();
-                PointSystem.incrementPoint(500);
-                float doubleRandomNumber = (float) Math.random() * 50;
-                PlunderSystem.incrementPlunder(doubleRandomNumber + 50);
+                if (boatGame.difficulty == 0){
+                    PointSystem.incrementPoint(100);
+                    float doubleRandomNumber = (float) Math.random() * 100;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 100);}
+                if (boatGame.difficulty == 1){
+                    PointSystem.incrementPoint(250);
+                    float doubleRandomNumber = (float) Math.random() * 50;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 50);}
+                if (boatGame.difficulty == 2){
+                    PointSystem.incrementPoint(500);
+                    float doubleRandomNumber = (float) Math.random() * 25;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 25);}
             }
         }
 
