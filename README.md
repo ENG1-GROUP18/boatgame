@@ -1,4 +1,5 @@
 [![Java CI with Gradle](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/gradle.yml/badge.svg?branch=main)](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/gradle.yml)
+[![Lint Code Base](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/linter.yml/badge.svg)](https://github.com/ENG1-GROUP18/boatgame/actions/workflows/linter.yml)
 ```
        ~
     _ )_) _
