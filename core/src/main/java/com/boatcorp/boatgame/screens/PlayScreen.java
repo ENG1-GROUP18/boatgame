@@ -33,29 +33,51 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.Random;
 
+
+/**
+ * Contains all the functions necessary to run the game and displays it on the screen.
+ */
 public class PlayScreen implements Screen {
 
+    /** The object which holds the data for the game*/
     private final BoatGame boatGame;
+    /** A batch to draw images onto the screen */
     private final SpriteBatch batch;
+    /** A front batch to draw the HUD onto the screen */
     private final SpriteBatch fontBatch;
+    /** A world object which holds data about the box2D world */
     private final World world;
+    /** The camera object which is used to set the relative position of objects on the screen*/
     private final OrthographicCamera camera;
+    /** The viewport object which determines how world coordinates are mapped */
     private final Viewport viewport;
+    /** Loads and renders the map*/
     private  MapLoader mapLoader;
+    /** An object to hold the font for the game*/
     private final BitmapFont font;
+    /** The player object which takes user inputs to interact with the game*/
     private final Player player;
+    /** An arraylist to hold all the currently rendered collages*/
     private final ArrayList<College> colleges;
+    /** An arraylist to hold all the currently rendered enemyShips*/
     private final ArrayList<EnemyShip> enemyShips;
+    /** An arraylist to hold all the currently rendered seaMonsters*/
     private final ArrayList<SeaMonster> seaMonsters;
+    /** A hud object to display information on the screen for the player*/
     private final Hud hud;
+    /** A debug renderer for BOX2d to show hit-boxes during development*/
     private  Box2DDebugRenderer debugRenderer;
+    /** A game stage where the game objects are rendered on in a specific order*/
     private final Stage gameStage;
+    /** A game state which contains the information about the game objects on load*/
     private final GameState state;
+    /** An arraylist to hold all the current bullets on screen*/
     private ArrayList<Bullet> globalBullets = new ArrayList<>();
 
 
 
     // For Shader
+    /** */
     private  VfxManager vfxManager;
     private  BloomEffect effectBloom;
     private  OldTvEffect effectTv;
