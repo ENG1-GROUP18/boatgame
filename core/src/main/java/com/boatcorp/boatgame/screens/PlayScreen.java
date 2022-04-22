@@ -319,9 +319,18 @@ public class PlayScreen implements Screen {
                 globalBullets.addAll(ship.shoot());
             } else{
                 ship.dispose();
-                PointSystem.incrementPoint(100);
-                float doubleRandomNumber = (float) Math.random() * 10;
-                PlunderSystem.incrementPlunder(doubleRandomNumber + 10);
+                if (boatGame.difficulty == 0){
+                    PointSystem.incrementPoint(25);
+                    float doubleRandomNumber = (float) Math.random() * 25;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 25);}
+                if (boatGame.difficulty == 1){
+                    PointSystem.incrementPoint(50);
+                    float doubleRandomNumber = (float) Math.random() * 10;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 10);}
+                if (boatGame.difficulty == 2){
+                    PointSystem.incrementPoint(100);
+                    float doubleRandomNumber = (float) Math.random() * 0;
+                    PlunderSystem.incrementPlunder(doubleRandomNumber + 0);}
                 toRemoveShip.add(ship);
             }
         }
