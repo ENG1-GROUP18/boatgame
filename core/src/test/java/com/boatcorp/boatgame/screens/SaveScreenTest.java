@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.graphics.GL20;
 import com.boatcorp.boatgame.BoatGame;
-import com.boatcorp.boatgame.GameState;
-import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,7 +18,6 @@ public class SaveScreenTest{
 
     private SaveScreen screen;
     public static Application app;
-    private static GameState state;
 
     @BeforeClass
     public static void setUp(){
@@ -56,13 +53,13 @@ public class SaveScreenTest{
     @Test
     public void SaveScreenCreated(){
         screen.resize(5,5);
-        assertNotNull("Save Screen not initialised",screen);
+        assertNotNull("Save Screen not initialised", screen);
     }
 
     @Test
     public void disposeTest(){
         screen.dispose();
-        assertNotNull("Save Screen not initialised",screen);
+        assertNotNull("Save Screen not initialised", screen);
     }
 
     @AfterClass

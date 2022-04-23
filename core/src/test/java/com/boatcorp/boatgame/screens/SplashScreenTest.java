@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.graphics.GL20;
 import com.boatcorp.boatgame.BoatGame;
-import com.boatcorp.boatgame.GameState;
-import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,7 +17,6 @@ import static org.junit.Assert.assertNotNull;
 public class SplashScreenTest{
     private SplashScreen screen;
     public static Application app;
-    private static GameState state;
 
     @BeforeClass
     public static void setUp(){
