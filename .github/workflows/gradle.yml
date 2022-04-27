@@ -32,9 +32,6 @@ jobs:
     - name: Build with Gradle
       run: gradle build
       
-    - name: Compile Jar File
-      run: gradle dist
-      
     - name: Get Java Docs
       run: gradle javadoc
 
