@@ -31,6 +31,12 @@ jobs:
 
     - name: Build with Gradle
       run: gradle build
+      
+    - name: Compile Jar File
+      run: gradle dist
+      
+    - name: Get Java Docs
+      run: gradle javadoc
 
     - name: getCurrentDir
       run: |
@@ -40,3 +46,13 @@ jobs:
       with:
         name: Tests
         path: ./core/build/reports/tests/test
+        
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Jar file
+        path: ./desktop/build/libs
+        
+    - uses: actions/upload-artifact@v2
+      with:
+        name: javadocs
+        path: ./core/build/docs/javadoc
