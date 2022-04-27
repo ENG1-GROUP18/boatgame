@@ -14,7 +14,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -30,13 +29,12 @@ jobs:
         distribution: 'adopt'
         cache: gradle
 
+    - name: Build with Gradle
+      run: gradle build
 
     - name: getCurrentDir
       run: |
         ls -R
-
-    - name: Build with Gradle
-      run: gradle build
 
     - uses: actions/upload-artifact@v2
       with:
