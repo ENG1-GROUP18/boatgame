@@ -28,7 +28,6 @@ public class Bullet extends Group {
      * @param velocity The velocity of the object which created it
      * @param world The world object which box2D objects are stored in
      */
-
     public Bullet(Vector2 position, Vector2 velocity, World world, String firedFrom, String color, GameState state) {
         final Texture texture = new Texture("Entities/" + color + ".png");
         sprite = new Sprite(texture);
@@ -63,14 +62,21 @@ public class Bullet extends Group {
 
     }
 
-
+    /**
+     * Moves the bullet the required distance on screen
+     * @param delta The current frame time
+     */
     @Override
     public void act(float delta) {
         super.act(delta);
         move(delta);
-
     }
 
+    /**
+     * Draws the bullet object at the required position
+     * @param batch a Batch object which is used to collate all the renewable objects in each render cycle
+     * @param parentAlpha the opacity of the object
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
@@ -78,6 +84,10 @@ public class Bullet extends Group {
 
     }
 
+    /**
+     * Gets the object the bullet was fired from
+     * @return a string representing which object the bullet was fired from
+     */
     public String getFiredFrom(){return firedFrom;}
 
 
@@ -114,10 +124,18 @@ public class Bullet extends Group {
         gameWorld.destroyBody(bodyd);
     }
 
+    /**
+     * Gets the velocity of the bullet
+     * @return the linear velocity of the bullet body as a Vector2
+     */
     public Vector2 getVelocity(){
         return bodyd.getLinearVelocity();
     }
 
+    /**
+     * Updates the information about this bullet into a new state
+     * @param newState a GameState object to hold the updated info about the Bullet
+     */
     public void updateState(GameState newState){
         newState.firedFroms.add(firedFrom);
         newState.velocities.add(bodyd.getLinearVelocity());
