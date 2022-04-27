@@ -53,3 +53,12 @@ jobs:
       with:
         name: javadocs
         path: ./core/build/docs/javadoc
+  
+  test:
+    runs-on: windows-latest
+    
+    steps:
+    - name: getCurrentDir
+      run: |
+        ls -R
+  
