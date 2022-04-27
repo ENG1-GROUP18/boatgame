@@ -38,5 +38,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: Package
-        path: build/libs
+        name: Tests
+        path: ./core/build/reports/tests/test
