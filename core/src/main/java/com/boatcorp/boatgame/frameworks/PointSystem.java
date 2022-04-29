@@ -11,9 +11,6 @@ public class PointSystem {
         points = newPoints;
     }
 
-    public static void incrementPoint() {
-        points += 1f;
-    }
 
     public static void incrementPoint(float amount) {
         points += amount;

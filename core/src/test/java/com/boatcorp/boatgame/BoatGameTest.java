@@ -69,16 +69,14 @@ public class BoatGameTest {
 
     @Test
     public void changeScreen(){
+        boatGameInstance.changeScreen(BoatGame.screenType.START_MENU);
+        boatGameInstance.changeScreen(BoatGame.screenType.PAUSE_MENU);
+        boatGameInstance.changeScreen(BoatGame.screenType.SHOP);
+        boatGameInstance.changeScreen(BoatGame.screenType.END_MENU);
+        boatGameInstance.changeScreen(BoatGame.screenType.SAVE);
     }
 
-    @Test
-    public void saveGame() {
 
-    }
-
-    @Test
-    public void loadGame() {
-    }
 
     @AfterClass
     public static void dispose(){
