@@ -35,7 +35,7 @@ public class ShopScreen extends BasicMenuScreen{
         label3.setAlignment(Align.center);
         label3.setFontScale(1f);
 
-        Label label4 = new Label("[NORMAL]buy the H macro with[HIGHLIGHTED] H! \n[NORMAL]press [HIGHLIGHTED]H [NORMAL]to trade health for plunder\n at any time", style);
+        Label label4 = new Label("[NORMAL]buy the H macro with[HIGHLIGHTED] H! \n[NORMAL]press [HIGHLIGHTED]H [NORMAL]to trade plunder for health\n at any time", style);
         label4.setAlignment(Align.center);
         label4.setFontScale(1f);
 
