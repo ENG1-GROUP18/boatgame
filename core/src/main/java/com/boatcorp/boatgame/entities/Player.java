@@ -274,8 +274,9 @@ public class Player extends Group {
                 float velY = inputVector.y * BULLET_SPEED;
 
                 Vector2 bulletVelocity = new Vector2(velX, velY);
-                // Sets bullet velocity to current velocity of boat x2, ensuring no division by zero errors
-                bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player", bulletColor,state));
+                if (!bulletVelocity.equals(new Vector2(0.0f, 0.0f))) {
+                    bullets.add(new Bullet(bodyd.getPosition(), bulletVelocity, gameWorld, "Player", bulletColor, state));
+                }
             }
         }
 
