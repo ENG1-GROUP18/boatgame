@@ -651,30 +651,35 @@ public class PlayScreen implements Screen {
     }
 
     public void handleMacros(){
-        boolean red = Gdx.input.isKeyPressed(Input.Keys.R);
-        boolean green = Gdx.input.isKeyPressed(Input.Keys.G);
-        boolean health = Gdx.input.isKeyPressed(Input.Keys.H);
+        boolean red = Gdx.input.isKeyJustPressed(Input.Keys.R);
+        boolean green = Gdx.input.isKeyJustPressed(Input.Keys.G);
+        boolean health = Gdx.input.isKeyJustPressed(Input.Keys.H);
         String bulletColor = player.getBulletColor();
-        if (red && hasBoughtRed){
-            if (bulletColor.equals("bullet") || bulletColor.equals("greenbullet")){
-                player.setBulletColor("redbullet");
-                scaleShips(2);
-            }
-            else{
-                player.setBulletColor("bullet");
-                scaleShips(1/2f);
+        if (red && !hasBoughtRed){
+            if (PlunderSystem.getPlunder() > 50) {
+                if (bulletColor.equals("bullet") || bulletColor.equals("greenbullet")) {
+                    PlunderSystem.decrementPlunder(50);
+                    player.setBulletColor("redbullet");
+                    scaleShips(2);
+                } else {
+                    PlunderSystem.decrementPlunder(50);
+                    player.setBulletColor("bullet");
+                    scaleShips(1 / 2f);
+                }
             }
         }
-        if (green && hasBoughtGreen){
-            if (bulletColor.equals("bullet") || bulletColor.equals("redbullet") ){
-                player.setBulletColor("greenbullet");
+        if (green && !hasBoughtGreen){
+            if (PlunderSystem.getPlunder() > 50) {
+                if (bulletColor.equals("bullet") || bulletColor.equals("redbullet")) {
+                    PlunderSystem.decrementPlunder(50);
+                    player.setBulletColor("greenbullet");
+                } else {
+                    PlunderSystem.decrementPlunder(50);
+                    player.setBulletColor("bullet");
+                }
             }
-            else{
-                player.setBulletColor("bullet");
-            }
-
         }
-        if (health && hasBoughtHealth && (player.getHealth() != player.getMaxHealth())){
+        if (health && !hasBoughtHealth && (player.getHealth() != player.getMaxHealth())){
             if (PlunderSystem.getPlunder() > 50){
                 PlunderSystem.decrementPlunder(50);
                 player.setHealth(player.getMaxHealth());
