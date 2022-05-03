@@ -1,5 +1,8 @@
 package com.boatcorp.boatgame.frameworks;
 
+/**
+ * A class which holds and performs arithmetic on the players points.
+ */
 public class PointSystem {
     private static float points;
 

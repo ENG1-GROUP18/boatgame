@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
- * Creates a college object
+ * Creates a college object which holds relevant information such as position, health and collision data.
+ * Changed in assessment 2 by adding box2D to the collages to improve collision detection.
  */
 public class College {
     private final SpriteBatch batch;

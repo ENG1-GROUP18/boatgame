@@ -10,7 +10,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.boatcorp.boatgame.GameState;
 
 /**
- * Creates a Bullet object
+ * Creates a Bullet object which contains relevant information such as speed, position and colour.
+ * In assessment 2 this class has been changed by implementing box2D into the bullet, so it is now a body.
+ * This was done to improve collision detection.
  */
 public class Bullet extends Group {
     private final Sprite sprite;

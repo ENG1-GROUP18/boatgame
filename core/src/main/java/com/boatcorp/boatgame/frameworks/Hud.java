@@ -17,7 +17,8 @@ import com.boatcorp.boatgame.entities.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Creates a Hud Object
+ * This class creates a HUD which displays to the user useful metrics, such as health and points.
+ * Changed in assessment 2 to use labels to keep consistency with other screens/text.
  */
 public class Hud {
     private final Stage stage;

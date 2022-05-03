@@ -17,7 +17,9 @@ import com.boatcorp.boatgame.GameState;
 import java.util.ArrayList;
 
 /**
- * Creates a Player object
+ * Creates a Player object which holds relevant data such as position and health, as well as allowing the user to
+ * control the playable ship.
+ * In assessment 2, some features which have been added are Power ups and difficulty - USR22.
  */
 public class Player extends Group {
     private final Sprite sprite;

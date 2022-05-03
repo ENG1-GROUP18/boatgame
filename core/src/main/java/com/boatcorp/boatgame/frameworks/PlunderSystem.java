@@ -1,5 +1,9 @@
 package com.boatcorp.boatgame.frameworks;
 
+/**
+ * A class which holds and performs arithmetic on the players plunder.
+ * Added in assessment 2 to help fulfil the requirement of spending plunder - USR25.
+ */
 public class PlunderSystem {
     private static float plunder;
 

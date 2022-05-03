@@ -15,6 +15,11 @@ import com.boatcorp.boatgame.tools.B2dSteeringEntity;
 
 import java.util.ArrayList;
 
+/**
+ * A class which creates enemy ships which follow the player and try to kill them. And it holds relevant data about
+ * them such as position, damage scalar and if it is frozen.
+ * This was added in assessment 2 to fulfil the requirement of combat enemy ships - USR23.
+ */
 public class EnemyShip extends Group {
     private final Sprite sprite;
     private float health;

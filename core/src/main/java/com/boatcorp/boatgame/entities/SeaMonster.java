@@ -12,6 +12,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.boatcorp.boatgame.GameState;
 import com.boatcorp.boatgame.tools.B2dSteeringEntity;
 
+/**
+ * This class creates sea monster objects which has the aim to hit into the player to damage them. It holds data about
+ * the sea monster such as position, target and if it is frozen.
+ * This was added in assessment 2 to fulfil the requirement of obstacles in the game - USR24.
+ */
 public class SeaMonster extends Group {
     Sprite sprite;
     private final Player player;
@@ -27,7 +32,7 @@ public class SeaMonster extends Group {
     private int id;
 
     public SeaMonster(World world,Player player, GameState state, int Id){
-        Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png")); //TODO make better sprite
+        Texture texture = new Texture(Gdx.files.internal("Entities/seaMonster.png"));
         gameWorld = world;
         sprite = new Sprite(texture);
         currentState = FiniteState.STAY;
@@ -159,9 +164,6 @@ public class SeaMonster extends Group {
 
     public boolean get_freeze(){return isFrozen;}
 
-    public Integer getId(){
-        return id;
-    }
 
     public void updateState(GameState newState){
         newState.monsterHealths.add(health);

@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Creates a HealthBar object
+ * Creates a HealthBar object which is rendered underneath
  */
 public class HealthBar {
     private final ShapeRenderer health;
@@ -31,9 +31,6 @@ public class HealthBar {
      * @param scale how large the bar should be
      */
     public void draw(@NotNull Vector2 position, float maxHealth, float currentHealth, float scale) {
-        //TODO change way health bar is drawn
-        // Rather than using the max health for the length, set a bar length and then barlength*(currenthp/maxhp) it
-
 
         float x = position.x;
         float y = position.y;
