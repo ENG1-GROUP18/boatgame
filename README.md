@@ -29,7 +29,7 @@ desktop/
 
 ```
 
-###Core Folder Architecture
+### Core Folder Architecture
 
 ```
 src/main/java/...
