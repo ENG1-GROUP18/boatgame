@@ -4,7 +4,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.*;
 
 /**
-* Creates game state used for intiliasing, saving and loading game.
+ * Creates game state used for initialising, saving and loading game.
+ * This class was added in assessment 2 to fill the new requirement of a save feature - USR20.
 */
 
 public class GameState{

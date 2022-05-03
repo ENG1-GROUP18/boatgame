@@ -9,6 +9,10 @@ import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.GameState;
 
+/**
+ * This class provides the screen of the text to inform the user of what can be purchased with their plunder.
+ * This was added in assessment 2 to help fulfil the requirement of spending plunder - USR25.
+ */
 public class ShopScreen extends BasicMenuScreen{
 
     private GameState state;

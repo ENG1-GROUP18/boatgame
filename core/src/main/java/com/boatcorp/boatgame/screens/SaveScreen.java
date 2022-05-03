@@ -8,6 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 
+/**
+ * This class contains the screen to get which save game state the user wants to pick.
+ * This was added in assessment 2 to fulfil the requirement of a saving a game - USR20.
+ */
 public class SaveScreen extends BasicMenuScreen{
 
 

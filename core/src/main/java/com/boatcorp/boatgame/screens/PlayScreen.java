@@ -35,7 +35,9 @@ import java.util.Random;
 
 
 /**
- * Contains all the functions necessary to run the game and displays it on the screen.
+ * Contains all the functions necessary to run the game and displays it on the screen. 
+ * There have been multiple additions in this class in assessment 2 such as: Difficulty selection, Enemy ship and
+ * Sea monster creation, a shop and more. Changes detailed in 3.b.
  */
 public class PlayScreen implements Screen {
 
@@ -205,6 +207,10 @@ public class PlayScreen implements Screen {
             debugRenderer = new Box2DDebugRenderer(true, false, false, false, true, true);
         }
     }
+
+    /**
+     * Adds box2D collision boxes to all side of the map to stop the player from going outside the play area.
+     */
     private void addWorldBorder(){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;

@@ -8,6 +8,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 
+/**
+ * This class is what the user uses to learn the controls, and pick if they want to start a game or look at past
+ * saved games.
+ * This has been changed in assessment 2 by it now using tables to show to text and an option to go to save selection
+ * screen - USR15.
+ */
 public class StartMenuScreen extends BasicMenuScreen{
 
 

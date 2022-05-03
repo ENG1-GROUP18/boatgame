@@ -1,28 +1,21 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.boatcorp.boatgame.frameworks.PointSystem;
 import com.boatcorp.boatgame.BoatGame;
-import com.boatcorp.boatgame.GameState;
 
+/**
+ * This class gives the screen which displays weather the user has won or lost at the end of the game.
+ * In assessment 2 the way the text was implemented is replaced by a table to keep constant with the rest of the screens.
+ */
 public class ResultScreen extends BasicMenuScreen {
 
     private final BoatGame boatGame;
-    private static final int WORLD_HEIGHT = Gdx.graphics.getHeight();
     private final String victory;
 
     public ResultScreen(boolean win, BoatGame game) {

@@ -7,6 +7,10 @@ import com.badlogic.gdx.ai.utils.Location;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
+/**
+ * This class contains the logic to add steering behaviors to the enemy ships and monsters.
+ * This class was added in assessment 2 to help implement AI - FR17.
+ */
 public class B2dSteeringEntity implements Steerable<Vector2> {
 
     Body body;

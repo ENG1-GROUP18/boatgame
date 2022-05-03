@@ -6,7 +6,9 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.Disposable;
 
-
+/**
+ * This class allows the map texture to be rendered onto the game screen.
+ */
 public class MapLoader implements Disposable {
 
     private final TiledMap Map;

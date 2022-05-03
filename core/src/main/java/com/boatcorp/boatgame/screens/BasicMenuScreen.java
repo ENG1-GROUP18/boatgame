@@ -13,14 +13,13 @@ import com.boatcorp.boatgame.BoatGame;
 import com.crashinvaders.vfx.VfxManager;
 import org.mockito.Mockito;
 
-
+/**
+ * A base class to use ensure consistency across menus.
+ * Create a menu by extending this and adding items to the protected stage.
+ * Created in assessment 2 to simplify screens.
+ */
 public class BasicMenuScreen implements Screen {
-    /**
-     * A base class to use ensure consistency across menus.
-     * Create a menu by extending this and adding items to the protected stage.
-     */
 
-    // TODO tidy all of this stuff a tiny bit.
 
     private BoatGame boatGame;
     private OrthographicCamera camera;
@@ -68,7 +67,6 @@ public class BasicMenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        update();
 
         // Clean up buffers
         Gdx.gl.glClearColor(0,0,0,1);

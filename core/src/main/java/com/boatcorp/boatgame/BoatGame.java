@@ -10,7 +10,8 @@ import com.crashinvaders.vfx.effects.*;
 import com.google.gson.Gson;
 
 /**
- *  Main class which initialises the Game.
+ *  Main class which initialises the Game and implements changing between screens.
+ *  This class has been extended to include new screen types, like Pause,Shop and Save screens - USR20.
  */
 public class BoatGame extends Game {
 

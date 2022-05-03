@@ -12,6 +12,10 @@ import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 import com.boatcorp.boatgame.GameState;
 
+/**
+ * This class creates a pause screen which the user can interact with to return to the game or quit.
+ * This was added in assessment 2 to improve user experience.
+ */
 public class PauseScreen extends BasicMenuScreen{
 
     private GameState state;

@@ -3,16 +3,20 @@ package com.boatcorp.boatgame.tools;
 import com.badlogic.gdx.physics.box2d.*;
 import com.boatcorp.boatgame.screens.PlayScreen;
 
+/**
+ * This class listens to any contacts between bodies during the game and performs the necessary actions when they collide.
+ * This has been added in assessment 2 to improve the collision system for enemy ships, sea monsters and others. - USR10.
+ */
 public class WorldContactListener implements ContactListener {
 
-    private PlayScreen parent;
-
     public WorldContactListener (PlayScreen parent){
-        this.parent = parent;
     }
 
 
-
+    /**
+     * For each collision which occurs in the world, it checks which objects have collided and performs the appropriate actions
+     * @param contact a contact object which holds the info on all the contacts on this frame
+     */
     @Override
     public void beginContact(Contact contact) {
         Fixture fa = contact.getFixtureA();
@@ -49,6 +53,10 @@ public class WorldContactListener implements ContactListener {
 
     }
 
+    /**
+     * Performs the actions needed to tell the system that the bodies are no longer colliding
+     * @param contact a contact object which holds the info on all the contacts on this frame
+     */
     @Override
     public void endContact(Contact contact) {
         Fixture fa = contact.getFixtureA();
@@ -64,12 +72,8 @@ public class WorldContactListener implements ContactListener {
     }
 
     @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
-
-    }
+    public void preSolve(Contact contact, Manifold oldManifold) {}
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-
-    }
+    public void postSolve(Contact contact, ContactImpulse impulse) {}
 }

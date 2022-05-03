@@ -1,9 +1,6 @@
 package com.boatcorp.boatgame.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -11,6 +8,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.boatcorp.boatgame.BoatGame;
 
+/**
+ * This screen allows the user to choose what difficulty the game is.
+ * This was added in assessment 2 to fulfil the  user being able to adjust the difficulty - USR21
+ */
 public class ModeScreen extends BasicMenuScreen{
 
 

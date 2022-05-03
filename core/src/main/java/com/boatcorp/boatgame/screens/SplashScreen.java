@@ -6,6 +6,10 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.boatcorp.boatgame.BoatGame;
 
+/**
+ * This class contains the methods to create a splash screen at the start of the game.
+ * This was added in assessment 2 to create a nicer user experience when launching the game.
+ */
 public class SplashScreen extends BasicMenuScreen {
 
     public SplashScreen(final BoatGame game) {
