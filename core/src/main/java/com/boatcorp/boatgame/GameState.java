@@ -35,7 +35,6 @@ public class GameState{
     public ArrayList<Long> shipTimes = new ArrayList<>();
 
     //monster info
-    public float monsterDamageScaler = 1;
     public ArrayList<Float> monsterHealths = new ArrayList<>();
     public ArrayList<Vector2> monsterPositions = new ArrayList<>();
     public ArrayList<Vector2> monsterStartPositions = new ArrayList<>();
