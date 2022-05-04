@@ -294,8 +294,8 @@ public class PlayScreen implements Screen {
         if (!boatGame.HEADLESS) {
             if (boatGame.ENABLE_BOX2D_WIREFRAME) {
                 debugRenderer.render(world, viewport.getCamera().combined);
-                vfxManager.endInputCapture();
             }
+            vfxManager.endInputCapture();
 
             if (boatGame.ENABLE_SHADERS) {
                 vfxManager.applyEffects();
