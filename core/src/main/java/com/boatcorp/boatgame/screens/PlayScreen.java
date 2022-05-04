@@ -75,12 +75,13 @@ public class PlayScreen implements Screen {
     private final GameState state;
     /** An arraylist to hold all the current bullets on screen*/
     private ArrayList<Bullet> globalBullets = new ArrayList<>();
+    /** A float to store time since last plunder increment due to time progression*/
     private float plunderIncrementTimer;
 
 
 
     // For Shader
-    /** */
+    /** gdx-vfx shader objects used to configure and render shaders*/
     private  VfxManager vfxManager;
     private  BloomEffect effectBloom;
     private  OldTvEffect effectTv;
@@ -104,7 +105,6 @@ public class PlayScreen implements Screen {
 
     //Constants
     public static final float PPM = 25f;
-    public static final Vector2 GRAVITY = new Vector2(0,0);
     public static final float DEFAULT_ZOOM = 16f;
 
     public PlayScreen(BoatGame game, GameState state) {
@@ -126,7 +126,7 @@ public class PlayScreen implements Screen {
         }
 
 
-        world = new World(GRAVITY, true);
+        world = new World(new Vector2(0,0), true);
 
 
         this.state = state;
