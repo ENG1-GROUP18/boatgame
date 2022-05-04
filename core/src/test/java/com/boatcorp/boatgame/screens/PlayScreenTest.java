@@ -73,7 +73,7 @@ public class PlayScreenTest {
         screen.setMode(0);
         assertEquals(0.7f,screen.getPlayer().getDamageScaler(),0);
         screen.setMode(2);
-        assertEquals(1.3f,screen.getPlayer().getDamageScaler(),0.1f);
+        assertEquals(0.91f,screen.getPlayer().getDamageScaler(),0.1f);
     }
 
     @Test
