@@ -296,7 +296,7 @@ public class Player extends Group {
 
 
     public void scaleDamage(float scale){
-        damageScaler *= scale;
+        damageScaler = scale;
     }
 
     //Used for testing
