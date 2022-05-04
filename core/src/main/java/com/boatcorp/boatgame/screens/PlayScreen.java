@@ -588,6 +588,7 @@ public class PlayScreen implements Screen {
                 player.scaleDamage(0.7f);
                 for (College college : this.colleges){
                     college.scaleDamage(1.3f);}
+                scaleShips(1.3f);
                 break;
             case 1:
                 break;
@@ -595,6 +596,7 @@ public class PlayScreen implements Screen {
                 player.scaleDamage(1.3f);
                 for (College college : this.colleges){
                     college.scaleDamage(0.7f);}
+                scaleShips(0.7f);
                 break;
         }
     }
