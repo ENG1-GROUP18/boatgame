@@ -112,7 +112,7 @@ public class EnemyShip extends Group {
 
         //Logic on what current state the enemy ship is in
         if (dist < 150 && distanceFromHome < 300 && currentState != FiniteState.RETURN && !isFrozen){
-            entity.setBehavior(arriveToPlayer); //TODO change so only sets on state change, could cause lag otherwise
+            entity.setBehavior(arriveToPlayer);
             currentState = FiniteState.FOLLOW;
             entity.update(delta);
         } else if (!(entity.getLinearVelocity().isZero(0.01f)) && !isFrozen){

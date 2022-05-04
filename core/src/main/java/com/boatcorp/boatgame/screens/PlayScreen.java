@@ -75,6 +75,7 @@ public class PlayScreen implements Screen {
     private final GameState state;
     /** An arraylist to hold all the current bullets on screen*/
     private ArrayList<Bullet> globalBullets = new ArrayList<>();
+    private float plunderIncrementTimer;
 
 
 
@@ -155,7 +156,6 @@ public class PlayScreen implements Screen {
         gameStage.addActor(player);
 
 
-        //TODO make the sea monsters spawn in different locations - currently this is just lazily implemented
         if (state.isSpawn){
 
             state.monsterPositions.add(new Vector2(200,250));
@@ -261,7 +261,7 @@ public class PlayScreen implements Screen {
         gameStage.act();
 
         // Batch drawing
-        for (College college : colleges) { //TODO this really needs rethinking.
+        for (College college : colleges) {
             college.setMatrix(camera.combined);
         }
         batch.setProjectionMatrix(camera.combined);
@@ -307,7 +307,7 @@ public class PlayScreen implements Screen {
         }
     }
 
-    //TODO rename this, maybe implement directly into act/render method
+
     private void combat(float delta) {
         ArrayList<String> toRemoveName = new ArrayList<>();
         ArrayList<College> toRemoveCollage = new ArrayList<>();
@@ -453,13 +453,12 @@ public class PlayScreen implements Screen {
         if(hudUpdateNeeded && (TimeUtils.timeSinceMillis(timeSinceUpdate) > 4000)){
             hud.setUpdateAlert("");
             hudUpdateNeeded = false;
+            PlunderSystem.incrementPlunder(1);
         }
 
         camera.zoom = DEFAULT_ZOOM;
 
 
-
-        // Using `lerping` to slightly lag camera behind player //TODO modify this, player gets too close to edge of screen
         float lerp = 10f;
         Vector2 playerPos = player.getPosition();
         camera.position.x += ((playerPos.x) - camera.position.x) * lerp * delta;
@@ -485,8 +484,11 @@ public class PlayScreen implements Screen {
 
         world.step(delta, 6,2);
 
-
-
+        plunderIncrementTimer += delta;
+        if (plunderIncrementTimer > 1f) {
+            PlunderSystem.incrementPlunder(1);
+            plunderIncrementTimer =0;
+        }
     }
 
     @Override

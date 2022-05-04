@@ -133,7 +133,6 @@ public class Player extends Group {
             if(timeSeconds > period){
                 timeSeconds -= period;
                 immuneSeconds -= period;
-                //TODO: display to screen
             }
         }
 
