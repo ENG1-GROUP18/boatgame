@@ -44,12 +44,16 @@ public class ShopScreen extends BasicMenuScreen{
         label4.setFontScale(1f);
 
         Label label5 = new Label("[HIGHLIGHTED]50 plunder [NORMAL]a piece", style);
-        label4.setAlignment(Align.center);
-        label4.setFontScale(1f);
+        label5.setAlignment(Align.center);
+        label5.setFontScale(1f);
 
-        Label label6 = new Label("[NORMAL]return with [HIGHLIGHTED]SPACE", style);
-        label4.setAlignment(Align.center);
-        label4.setFontScale(1f);
+        Label label6 = new Label("[HIGHLIGHTED]NOTE: [NORMAL] You must be in the store \nto purchase an item", style);
+        label6.setAlignment(Align.center);
+        label6.setFontScale(0.8f);
+
+        Label label7 = new Label("[NORMAL]return with [HIGHLIGHTED]SPACE", style);
+        label7.setAlignment(Align.center);
+        label7.setFontScale(1f);
 
 
         table.add(label1).fillX().uniformX().pad(20).row();
@@ -57,7 +61,8 @@ public class ShopScreen extends BasicMenuScreen{
         table.add(label3).fillX().uniformX().pad(20).row();
         table.add(label4).fillX().uniformX().pad(20).row();
         table.add(label5).fillX().uniformX().pad(20).row();
-        table.add(label6).fillX().uniformX().pad(20);
+        table.add(label6).fillX().uniformX().pad(20).row();
+        table.add(label7).fillX().uniformX().pad(20);
 
         stage.addListener(new InputListener(){
             public boolean keyDown(InputEvent event, int keycode){
