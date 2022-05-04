@@ -233,7 +233,7 @@ public class College {
         newState.collegeTimes.put(college, TimeUtils.timeSinceMillis(timeSinceLastShot));
     }
     public void scaleDamage(float scale){
-        damageScaler = scale;
+        damageScaler *= scale;
     }
     //Used for testing
     public float getDamageScaler (){
